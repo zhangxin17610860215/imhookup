@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="49dp"
+        android:orientation="vertical">
+
+        <com.yuanqi.hangzhou.imhookup.view.MyNoScrollViewPager
+            android:id="@+id/view_pager_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <View
+            android:id="@+id/bottom_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/activity_grey_bg"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|fill_horizontal"
+        android:background="@android:color/transparent">
+
+        <LinearLayout
+            android:id="@+id/ll_main_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/ll_main_tab_home"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_main_tab_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@mipmap/home_logo_yes"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:text="公园"
+                    android:textColor="@color/text_theme_color"
+                    android:textSize="@dimen/text_size_10" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_main_tab_radio"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_main_tab_radio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@mipmap/radio_logo_no"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:text="电台"
+                    android:textColor="@color/color_gray_999999"
+                    android:textSize="@dimen/text_size_10" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_main_tab_message"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_main_tab_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@mipmap/message_logo_no"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:text="消息"
+                    android:textColor="@color/color_gray_999999"
+                    android:textSize="@dimen/text_size_10" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/ll_main_tab_me"
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_main_tab_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@mipmap/me_logo_no"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="3dp"
+                    android:text="我"
+                    android:textColor="@color/color_gray_999999"
+                    android:textSize="10dp" />
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/img_my_visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_main_tab_me"
+                    android:layout_marginLeft="-5dp"
+                    android:layout_marginTop="5dp"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+</RelativeLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="theme_color">#BEAA73</color>
+    <color name="text_theme_color">#988557</color>
+    <color name="text2_theme_color">#ACA694</color>
+    <color name="bg_theme_color">#BEAA73</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#333333</color>
+    <color name="grey_bg">#F6F6F6</color>
+    <color name="color_gray_d9d9d9">#d9d9d9</color>
+    <color name="color_green_89fbff">#89fbff</color>
+    <color name="color_green_7CB764">#7CB764</color>
+    <color name="color_gray_333333">#333333</color>
+    <color name="color_gray_666666">#666666</color>
+    <color name="color_gray_999999">#999999</color>
+    <color name="activity_grey_bg">#ECECEC</color>
+    <color name="color_grey_EDEDED">#EDEDED</color>
+    <color name="edit_hint_color">#C2C2C2</color>
+    <color name="vip_text_color">#B6ACA3</color>
+    <color name="color_7265F6">#7265F6</color>
+    <color name="color_red_E17F7F">#E17F7F</color>
+    <color name="color_red_F1F1F1">#F1F1F1</color>
+    <color name="divider">#E5E5E5</color>
+    <color name="text_grey_color">#808080</color>
+    <color name="help_color">#ff999999</color>
+</resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_home_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="成都"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:drawableLeft="@mipmap/dingwei_logo"
+            android:drawableRight="@mipmap/bottom_jiantou_logo"
+            android:drawablePadding="@dimen/dimen_10"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_15"/>
+        <ImageView
+            android:id="@+id/img_selecte_Gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/gender_logo_nv"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dimen_15"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/el_Search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:layout_marginRight="@dimen/dimen_15"
+        android:background="@drawable/edittext_bg_shape_bg"
+        android:paddingTop="@dimen/dimen_5"
+        android:paddingBottom="@dimen/dimen_5"
+        android:paddingLeft="@dimen/dimen_10">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/search_logo"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_nearby"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="附近"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/text_theme_color"
+            android:paddingLeft="25dp"
+            android:paddingTop="@dimen/dimen_15"
+            android:paddingRight="@dimen/dimen_18"
+            android:drawableBottom="@mipmap/xiabiao_logo"
+            android:drawablePadding="4dp"/>
+        <TextView
+            android:id="@+id/tv_newRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="新注册"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:paddingLeft="@dimen/dimen_18"
+            android:paddingTop="@dimen/dimen_15"
+            android:paddingRight="@dimen/dimen_18"
+            android:drawableBottom="@drawable/line_not_selected"
+            android:drawablePadding="4dp"
+            android:layout_toRightOf="@+id/tv_nearby"/>
+        <TextView
+            android:id="@+id/tv_goddess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="女神"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:paddingLeft="@dimen/dimen_18"
+            android:paddingTop="@dimen/dimen_15"
+            android:paddingRight="@dimen/dimen_18"
+            android:drawableBottom="@drawable/line_not_selected"
+            android:drawablePadding="4dp"
+            android:layout_toRightOf="@+id/tv_newRegister"/>
+        <TextView
+            android:id="@+id/tv_onLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在线优先"
+            android:textColor="@color/color_gray_999999"
+            android:textSize="@dimen/text_size_12"
+            android:layout_alignParentRight="true"
+            android:paddingTop="@dimen/dimen_17"
+            android:paddingRight="@dimen/dimen_15"
+            android:drawableLeft="@mipmap/online_yes_logo"
+            android:drawablePadding="@dimen/dimen_5"/>
+    </RelativeLayout>
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_mRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:gravity="center"
+    android:background="@drawable/round_white_shape"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/titleLayout"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:textColor="@color/theme_color"
+            android:layout_margin="10dp"
+            android:id="@+id/tv_title"
+            />
+        <View
+            style="@style/MyNormalDivider"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/content_layout"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/tv_content"
+            android:textColor="@color/text_grey_color"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+
+            />
+
+
+    </LinearLayout>
+
+
+    <View
+        style="@style/MyNormalDivider"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="41dp"
+            android:layout_weight="1"
+            android:id="@+id/btn_cancel"
+            android:text="@string/cancel"
+            android:textColor="@color/text_grey_color"
+            android:gravity="center"
+            />
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/divider"
+            android:id="@+id/diver_view"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="41dp"
+            android:layout_weight="1"
+            android:text="确定"
+            android:id="@+id/btn_sure"
+            android:gravity="center"
+            android:textColor="@color/theme_color"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

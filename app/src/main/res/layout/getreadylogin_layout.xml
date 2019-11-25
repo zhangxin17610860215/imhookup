@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradualchange_bg">
+    
+    <ImageView
+        android:id="@+id/img_xinxing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/login_xinxing"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_100"/>
+
+    <TextView
+        android:id="@+id/tv_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/white_oval"
+        android:text="登录"
+        android:textSize="@dimen/text_size_15"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/img_xinxing"
+        android:layout_marginTop="@dimen/dimen_60"/>
+
+    <TextView
+        android:id="@+id/tv_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/purple_ellipse"
+        android:text="手机号注册"
+        android:textSize="@dimen/text_size_15"
+        android:textColor="@color/text_theme_color"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_login"
+        android:layout_marginTop="@dimen/dimen_15"/>
+
+    <TextView
+        android:id="@+id/tv_Other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="其他登录方式"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_12"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_register"
+        android:layout_marginTop="@dimen/dimen_90"/>
+
+    <TextView
+        android:id="@+id/tv_weixin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="微信"
+        android:textSize="@dimen/text_size_10"
+        android:textColor="@color/white"
+        android:drawableTop="@mipmap/weixin_logo"
+        android:drawablePadding="@dimen/dimen_5"
+        android:gravity="center"
+        android:layout_below="@+id/tv_Other"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:layout_alignLeft="@+id/tv_register"
+        android:layout_marginLeft="@dimen/dimen_50"/>
+
+    <TextView
+        android:id="@+id/tv_qq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QQ"
+        android:textSize="@dimen/text_size_10"
+        android:textColor="@color/white"
+        android:drawableTop="@mipmap/qq_logo"
+        android:drawablePadding="@dimen/dimen_5"
+        android:gravity="center"
+        android:layout_below="@+id/tv_Other"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:layout_alignRight="@+id/tv_register"
+        android:layout_marginRight="@dimen/dimen_50"/>
+
+</RelativeLayout>
