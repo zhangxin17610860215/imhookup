@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -103,6 +102,7 @@ public class MainActivity extends BaseActivity {
         checkPermission();
         initView();
         initData();
+
     }
 
     @OnClick({R.id.ll_main_tab_home, R.id.ll_main_tab_radio, R.id.ll_main_tab_message, R.id.ll_main_tab_me})

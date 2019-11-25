@@ -38,6 +38,7 @@ import com.yuanqi.hangzhou.imhookup.requestutils.RequestInterceptor;
 import com.yuanqi.hangzhou.imhookup.utils.AppCrashHandler;
 import com.yuanqi.hangzhou.imhookup.utils.DemoCache;
 import com.yuanqi.hangzhou.imhookup.utils.DemoMixPushMessageHandler;
+import com.yuanqi.hangzhou.imhookup.utils.EventBusUtils;
 import com.yuanqi.hangzhou.imhookup.utils.LogHelper;
 import com.yuanqi.hangzhou.imhookup.utils.NimDemoLocationProvider;
 import com.yuanqi.hangzhou.imhookup.utils.Preferences;
@@ -108,7 +109,7 @@ public class MyApplication extends Application {
         initOkgo();
         initUMeng();
         initNIM();
-
+        EventBusUtils.init();
     }
 
     private void initNIM() {

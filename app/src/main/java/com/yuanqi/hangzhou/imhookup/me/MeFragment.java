@@ -25,7 +25,11 @@ import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseFragment;
+import com.yuanqi.hangzhou.imhookup.utils.EventBusUtils;
 import com.yuanqi.hangzhou.imhookup.utils.UMShareUtil;
+import com.yuanqi.hangzhou.imhookup.wxapi.WXUtil;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +86,7 @@ public class MeFragment extends BaseFragment {
         if (getArguments() != null) {
             // TODO: get params
         }
+        EventBusUtils.register(this);
     }
 
     @Override
@@ -144,6 +149,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_Setting:
                 //设置
+                WXUtil.weiChatPay(mActivity);
                 break;
             case R.id.tv_Share:
                 //分享
@@ -173,6 +179,29 @@ public class MeFragment extends BaseFragment {
                 //客服帮助
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBusUtils.unregister(this);
+    }
+
+    /**
+     * 微信支付结果回调
+     * */
+    @Subscribe
+    public void getWXPayData(EventBusUtils.CommonEvent commonEvent){
+        if (null == commonEvent) {
+            return;
+        }
+        if (null == commonEvent.data){
+            dismissProgress();
+            return;
+        }
+        Bundle bundle = commonEvent.data;
+        String result = (String) bundle.get("payResult");
+        Log.e("TAG","微信支付结果回调>>>>>>>>" + result);
     }
 
 }
