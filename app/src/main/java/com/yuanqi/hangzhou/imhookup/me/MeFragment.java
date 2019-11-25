@@ -8,14 +8,24 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
+import com.umeng.socialize.shareboard.SnsPlatform;
+import com.umeng.socialize.utils.ShareBoardlistener;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseFragment;
+import com.yuanqi.hangzhou.imhookup.utils.UMShareUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -137,14 +147,32 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_Share:
                 //分享
-                if(Build.VERSION.SDK_INT>=23){
-                    String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_EXTERNAL_STORAGE};
-                    ActivityCompat.requestPermissions(mActivity,mPermissionList,REQUEST_PERMISSION);
-                }
+                UMShareUtil.shareText(mActivity, "http://baidu.com", "这是标题", R.mipmap.icon, "这是内容", new UMShareUtil.ShareListener() {
+                    @Override
+                    public void onStart() {
+                        Log.e("TAG","开始分享");
+                    }
+
+                    @Override
+                    public void onResult() {
+                        Log.e("TAG","分享成功");
+                    }
+
+                    @Override
+                    public void onError() {
+                        Log.e("TAG","分享失败");
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.e("TAG","取消分享");
+                    }
+                });
                 break;
             case R.id.tv_Help:
                 //客服帮助
                 break;
         }
     }
+
 }
