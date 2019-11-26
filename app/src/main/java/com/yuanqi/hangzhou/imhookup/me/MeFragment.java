@@ -25,8 +25,10 @@ import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseFragment;
+import com.yuanqi.hangzhou.imhookup.requestutils.api.ApiUrl;
 import com.yuanqi.hangzhou.imhookup.utils.EventBusUtils;
 import com.yuanqi.hangzhou.imhookup.utils.UMShareUtil;
+import com.yuanqi.hangzhou.imhookup.utils.pay.MyALipayUtils;
 import com.yuanqi.hangzhou.imhookup.wxapi.WXUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.yuanqi.hangzhou.imhookup.MyApplication.ALIPAY_APPID;
 import static com.yuanqi.hangzhou.imhookup.main.MainActivity.REQUEST_PERMISSION;
 
 /**
@@ -146,6 +149,15 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_recovery:
                 //一键恢复
+                final MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
+                MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID)
+                        .setMoney("12")       //设置金额
+                        .setTitle("杭州吾乐玩网络科技有限公司")     //设置商品信息
+                        .setBody("杭州吾乐玩网络科技有限公司")       //设置商品信息描述
+                        .setOrderTradeId("123123132")   //设置订单ID
+                        .setNotifyUrl(ApiUrl.BASE_URL_HEAD + ApiUrl.BASE_URL + "/notify/alipay") //服务器异步通知页面路径
+                        .build();
+                myALipayUtils.goAliPay("112",mActivity);
                 break;
             case R.id.tv_Setting:
                 //设置

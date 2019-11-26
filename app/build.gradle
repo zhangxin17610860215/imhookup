@@ -101,11 +101,11 @@ dependencies {
 
     // 万能RecyclerViewAdapter
     implementation 'com.yuyh.easyadapter:library:1.2.0'
-//    implementation 'com.arjinmc.android:recyclerviewdecoration:2.5.2'
+    implementation 'com.arjinmc.android:recyclerviewdecoration:2.5.2'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
 
     // 可添加头布局的RecyclerView
-//    implementation 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
+    implementation 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
 
     //汉语转拼音
     implementation 'com.belerweb:pinyin4j:2.5.1'
@@ -152,4 +152,7 @@ dependencies {
     // 小米等厂商推送需要
     implementation 'com.netease.nimlib:push:6.9.1'
     implementation files('libs/AMap2DMap_3.0.0_AMapSearch_3.6.1_AMapLocation_3.2.1_20161228.jar')
+
+    //支付宝支付
+    compile (name: 'alipaySdk-15.6.8-20191021122514', ext: 'aar')
 }

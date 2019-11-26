@@ -63,7 +63,8 @@ public class MyApplication extends Application {
 
     private static MyApplication instance;
     public static OkHttpClient okHttpClient;
-    public static final String WXAPP_ID = "wx4bdf018c8750d2b2";//微信支付AppID
+    public static final String WXAPP_ID = "wx4bdf018c8750d2b2";     //微信支付AppID
+    public static final String ALIPAY_APPID = "wx4bdf018c8750d2b2"; //支付宝支付AppID
 
     public static synchronized MyApplication getInstance() {
         return instance;
