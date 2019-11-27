@@ -10,9 +10,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="个人动态"
-        android:textColor="@color/black"
+        android:text="我喜欢的"
         android:textSize="@dimen/text_size_30"
+        android:textColor="@color/black"
         android:layout_marginLeft="@dimen/dimen_15"/>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
@@ -22,10 +22,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dimen_15"
-            android:layout_marginRight="@dimen/dimen_15"/>
+            android:layout_height="match_parent"/>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
 </LinearLayout>

@@ -14,7 +14,6 @@
         android:textColor="@color/black"
         android:background="@color/white"
         android:paddingLeft="@dimen/dimen_15"
-        android:paddingTop="@dimen/dimen_20"
         android:paddingBottom="@dimen/dimen_30"/>
 
     <TextView

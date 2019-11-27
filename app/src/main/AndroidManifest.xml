@@ -241,6 +241,42 @@
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme" />
+        <activity
+            android:name=".me.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.BlacklistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.AuthenticationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.GoddessCertificationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.RealPersonCertificationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.MyLikeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.MyDynamicsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".me.SendDynamicsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".main.SeePictureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
     </application>
 
 </manifest>

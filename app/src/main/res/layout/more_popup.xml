@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:visibility="gone"
-        android:id="@+id/ll_more_home"
+        android:id="@+id/ll_more_home_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -44,7 +44,8 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_more_popup_Report"
+        android:visibility="gone"
+        android:id="@+id/tv_more_popup_AnonymousReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="匿名举报"
@@ -54,5 +55,77 @@
         android:paddingLeft="@dimen/dimen_30"
         android:paddingRight="@dimen/dimen_30"
         android:paddingBottom="@dimen/dimen_10"/>
+
+    <LinearLayout
+        android:id="@+id/ll_more_home_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_cancelBlackout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消拉黑"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_30"
+            android:paddingRight="@dimen/dimen_30"
+            android:paddingBottom="@dimen/dimen_10"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/color_gray_999999" />
+
+        <TextView
+            android:id="@+id/tv_Report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="举报"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_30"
+            android:paddingRight="@dimen/dimen_30"
+            android:paddingBottom="@dimen/dimen_10"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_more_home_fore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_cancelCollection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消收藏"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_30"
+            android:paddingRight="@dimen/dimen_30"
+            android:paddingBottom="@dimen/dimen_10"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/color_gray_999999" />
+
+        <TextView
+            android:id="@+id/tv_Blackout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="拉黑"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_30"
+            android:paddingRight="@dimen/dimen_30"
+            android:paddingBottom="@dimen/dimen_10"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
 </LinearLayout>

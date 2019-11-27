@@ -7,13 +7,25 @@
 
     <include layout="@layout/toobar_layout"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="个人动态"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_30"
-        android:layout_marginLeft="@dimen/dimen_15"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的动态"
+            android:textSize="@dimen/text_size_30"
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dimen_15"/>
+        <ImageView
+            android:id="@+id/img_goSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/fabu_icon"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/dimen_15"/>
+    </RelativeLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refresh_layout"

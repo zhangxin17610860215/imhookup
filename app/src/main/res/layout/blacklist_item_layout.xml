@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/dp_size_25">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_15">
+        <ImageView
+            android:id="@+id/img_head"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
+            android:src="@mipmap/default_home_head"
+            android:scaleType="fitXY"/>
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="女神一号"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:layout_marginLeft="@dimen/dimen_15"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/img_head"/>
+        <ImageView
+            android:id="@+id/img_More"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/more_logo"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dimen_15"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/dimen_15"
+        android:background="@color/activity_grey_bg"
+        android:layout_marginLeft="102dp"/>
+
+</LinearLayout>

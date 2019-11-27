@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <include layout="@layout/toobar_layout"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="女神认证"
+        android:textSize="@dimen/text_size_30"
+        android:textColor="@color/black"
+        android:layout_marginLeft="@dimen/dimen_15"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/goddess_img_logo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_30"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="上传照片"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/color_gray_999999"
+        android:layout_marginLeft="@dimen/dp_size_15"
+        android:layout_marginTop="@dimen/dimen_30"
+        android:drawableBottom="@mipmap/fenli_logo"
+        android:drawablePadding="@dimen/dimen_5"/>
+
+    <TextView
+        android:id="@+id/tv_Tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_30"
+        android:layout_marginRight="@dimen/dimen_30"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:text="若你对自己的颜值非常自信,可进行女神认证,获得特殊标识"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/black"
+        android:drawableLeft="@mipmap/dian_logo"
+        android:drawablePadding="@dimen/dimen_5"/>
+
+    <ImageView
+        android:id="@+id/img_upPhotos"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
+        android:src="@mipmap/default_head_logo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_30"/>
+
+    <TextView
+        android:id="@+id/tv_Submission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:layout_marginTop="@dimen/dimen_30"
+        android:background="@drawable/circular_bt_shape_bg"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_15"
+        android:gravity="center"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_OK"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_20"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:layout_marginTop="@dimen/dimen_30"
+        android:paddingBottom="@dimen/dimen_15"
+        android:paddingTop="@dimen/dimen_15"
+        android:background="@drawable/shape_circularline_base"
+        android:text="好的"
+        android:textColor="@color/text_theme_color"
+        android:textSize="@dimen/text_size_15"
+        android:gravity="center"/>
+
+</LinearLayout>

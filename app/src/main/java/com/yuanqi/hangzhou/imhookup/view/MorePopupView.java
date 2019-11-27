@@ -11,12 +11,18 @@ import com.lxj.xpopup.core.AttachPopupView;
 import com.yuanqi.hangzhou.imhookup.R;
 
 /**
- * 自定义会话页面加好Popuwindow背景
+ * 自定义Popuwindow背景
  */
 public class MorePopupView extends AttachPopupView implements View.OnClickListener {
 
     private Context context;
-    private int type;               //type == 1  显示  收藏和拉黑两个按钮    type == 2  显示匿名举报一个按钮
+    /**
+     * type == 1  显示收藏和拉黑两个按钮
+     * type == 2  显示匿名举报一个按钮
+     * type == 3  显示取消拉黑和举报两个按钮
+     * type == 4  显示取消收藏和拉黑两个按钮
+     * */
+    private int type;
 
     public MorePopupView(@NonNull Context context,int type) {
         super(context);
@@ -38,20 +44,44 @@ public class MorePopupView extends AttachPopupView implements View.OnClickListen
     private void initView() {
         TextView tvCollection = findViewById(R.id.tv_more_popup_Collection);
         TextView tvPullBlack = findViewById(R.id.tv_more_popup_PullBlack);
-        TextView tvReport = findViewById(R.id.tv_more_popup_Report);
-        LinearLayout llMoreHome = findViewById(R.id.ll_more_home);
+        TextView tvAnonymousReport = findViewById(R.id.tv_more_popup_AnonymousReport);
+        TextView tvCancelBlackout = findViewById(R.id.tv_cancelBlackout);
+        TextView tvReport = findViewById(R.id.tv_Report);
+        TextView tvCancelCollection = findViewById(R.id.tv_cancelCollection);
+        TextView tvBlackout = findViewById(R.id.tv_Blackout);
+        LinearLayout llMoreHomeOne = findViewById(R.id.ll_more_home_one);
+        LinearLayout llMoreHomeThree = findViewById(R.id.ll_more_home_three);
+        LinearLayout llMoreHomeFore = findViewById(R.id.ll_more_home_fore);
 
         if (type == 1){
-            llMoreHome.setVisibility(VISIBLE);
-            tvReport.setVisibility(GONE);
+            llMoreHomeOne.setVisibility(VISIBLE);
+            tvAnonymousReport.setVisibility(GONE);
+            llMoreHomeThree.setVisibility(GONE);
+            llMoreHomeFore.setVisibility(GONE);
         }else if (type == 2){
-            llMoreHome.setVisibility(GONE);
-            tvReport.setVisibility(VISIBLE);
+            llMoreHomeOne.setVisibility(GONE);
+            tvAnonymousReport.setVisibility(VISIBLE);
+            llMoreHomeThree.setVisibility(GONE);
+            llMoreHomeFore.setVisibility(GONE);
+        }else if (type == 3){
+            llMoreHomeOne.setVisibility(GONE);
+            tvAnonymousReport.setVisibility(GONE);
+            llMoreHomeThree.setVisibility(VISIBLE);
+            llMoreHomeFore.setVisibility(GONE);
+        }else if (type == 4){
+            llMoreHomeOne.setVisibility(GONE);
+            tvAnonymousReport.setVisibility(GONE);
+            llMoreHomeThree.setVisibility(GONE);
+            llMoreHomeFore.setVisibility(VISIBLE);
         }
 
         tvCollection.setOnClickListener(this);
         tvPullBlack.setOnClickListener(this);
+        tvAnonymousReport.setOnClickListener(this);
         tvReport.setOnClickListener(this);
+        tvCancelBlackout.setOnClickListener(this);
+        tvCancelCollection.setOnClickListener(this);
+        tvBlackout.setOnClickListener(this);
     }
 
     @Override
@@ -65,9 +95,25 @@ public class MorePopupView extends AttachPopupView implements View.OnClickListen
                 //拉黑
                 Toast.makeText(context,"拉黑",Toast.LENGTH_LONG).show();
                 break;
-            case R.id.tv_more_popup_Report:
+            case R.id.tv_more_popup_AnonymousReport:
+                //匿名举报
+                Toast.makeText(context,"匿名举报",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.tv_Report:
                 //举报
                 Toast.makeText(context,"举报",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.tv_cancelBlackout:
+                //取消拉黑
+                Toast.makeText(context,"取消拉黑",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.tv_cancelCollection:
+                //取消收藏
+                Toast.makeText(context,"取消收藏",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.tv_Blackout:
+                //拉黑
+                Toast.makeText(context,"拉黑",Toast.LENGTH_LONG).show();
                 break;
         }
         dismiss();

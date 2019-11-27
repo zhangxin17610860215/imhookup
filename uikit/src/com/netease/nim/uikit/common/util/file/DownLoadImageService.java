@@ -1,4 +1,4 @@
-package com.yuanqi.hangzhou.imhookup.utils;
+package com.netease.nim.uikit.common.util.file;
 
 import android.content.Context;
 

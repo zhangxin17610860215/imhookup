@@ -128,12 +128,15 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_Authentication:
                 //真人认证
+                AuthenticationActivity.start(mActivity);
                 break;
             case R.id.tv_PrivacySetting:
                 //隐私与连麦设置
+                WXUtil.weiChatPay(mActivity);
                 break;
             case R.id.tv_dynamic:
                 //我的动态
+                MyDynamicsActivity.start(mActivity);
                 break;
             case R.id.tv_myAlbum:
                 //我的相册
@@ -143,9 +146,11 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_myLike:
                 //我喜欢的
+                MyLikeActivity.start(mActivity);
                 break;
             case R.id.tv_Blacklist:
                 //黑名单
+                BlacklistActivity.start(mActivity);
                 break;
             case R.id.tv_recovery:
                 //一键恢复
@@ -161,7 +166,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_Setting:
                 //设置
-                WXUtil.weiChatPay(mActivity);
+                SettingsActivity.start(mActivity);
                 break;
             case R.id.tv_Share:
                 //分享

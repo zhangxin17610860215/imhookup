@@ -198,7 +198,7 @@
     <string name="picker_image_send_select">完成（%d）</string>
     <string name="picker_image_preview_original">发送原图</string>
     <string name="picker_image_preview_original_select">发送原图（%s）</string>
-    <string name="picker_image_error">获取图片出错</string>
+    <string name="picker_image_error">未能获取到图片</string>
     <string name="image_compressed_size">该原始图片大小为: %1$s,</string>
     <string name="unknow_size">未知大小</string>
     <string name="is_send_image">是否发送该原始图片？</string>
