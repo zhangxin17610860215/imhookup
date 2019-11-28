@@ -1,6 +1,7 @@
 package com.netease.nim.uikit.common.activity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +15,10 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.common.fragment.TFragment;
 import com.netease.nim.uikit.common.util.log.LogUtil;
 import com.netease.nim.uikit.common.util.sys.ReflectionUtil;
@@ -73,6 +77,50 @@ public abstract class UI extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setToolbar(final Activity activity, int leftLogo, String title) {
+        TextView tvTitle = activity.findViewById(R.id.tv_tooblertitle);
+        ImageView imgBack = activity.findViewById(R.id.img_tooblerback);
+        tvTitle.setText(title);
+        if (leftLogo == 0){
+            imgBack.setImageResource(R.drawable.nim_actionbar_dark_back_icon);
+        }else {
+            imgBack.setImageResource(leftLogo);
+        }
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.finish();
+            }
+        });
+    }
+
+    public void setToolbarTitleRightImg(final Activity activity){
+        ImageView imgTitleRightImg = activity.findViewById(R.id.img_titleRightImg);
+        imgTitleRightImg.setVisibility(View.VISIBLE);
+        imgTitleRightImg.setImageResource(R.drawable.vip_logo);
+
+    }
+
+    public void setRightImg(final Activity activity, int imgRes, final onToolBarRightImgListener rightImgListener){
+        if(imgRes != 0){
+            ImageView img_right = activity.findViewById(R.id.img_toobleRight);
+            img_right.setVisibility(View.VISIBLE);
+            img_right.setImageResource(imgRes);
+            if(rightImgListener!=null){
+                img_right.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        rightImgListener.onRight(view);
+                    }
+                });
+            }
+        }
+    }
+
+    public interface onToolBarRightImgListener{
+        void onRight(View view);
     }
 
     public void setToolBar(int toolBarId, ToolBarOptions options) {

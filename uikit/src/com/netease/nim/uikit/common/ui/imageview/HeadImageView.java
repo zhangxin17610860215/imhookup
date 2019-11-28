@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.common.util.GlideUtil;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.msg.constant.MsgTypeEnum;

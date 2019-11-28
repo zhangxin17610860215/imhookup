@@ -23,7 +23,7 @@
     <!--<include layout="@layout/nim_action_bar_right_clickable_tv" />-->
     <!--</android.support.v7.widget.Toolbar>-->
     <!--</android.support.design.widget.AppBarLayout>-->
-    <include layout="@layout/toobar_layout" />
+    <include layout="@layout/nim_toobar_layout" />
 
     <com.amap.api.maps2d.MapView
         android:id="@+id/autonavi_mapView"

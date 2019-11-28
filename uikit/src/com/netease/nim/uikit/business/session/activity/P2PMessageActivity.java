@@ -3,6 +3,8 @@ package com.netease.nim.uikit.business.session.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+
 import com.netease.nim.uikit.common.ToastHelper;
 
 import com.alibaba.fastjson.JSON;
@@ -80,7 +82,7 @@ public class P2PMessageActivity extends BaseMessageActivity {
     }
 
     private void requestBuddyInfo() {
-        setTitle(UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
+        setToolbar(P2PMessageActivity.this,0,UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
     }
 
     private void displayOnlineState() {
@@ -125,22 +127,22 @@ public class P2PMessageActivity extends BaseMessageActivity {
     private ContactChangedObserver friendDataChangedObserver = new ContactChangedObserver() {
         @Override
         public void onAddedOrUpdatedFriends(List<String> accounts) {
-            setTitle(UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
+            setToolbar(P2PMessageActivity.this,0,UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
         }
 
         @Override
         public void onDeletedFriends(List<String> accounts) {
-            setTitle(UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
+            setToolbar(P2PMessageActivity.this,0,UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
         }
 
         @Override
         public void onAddUserToBlackList(List<String> account) {
-            setTitle(UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
+            setToolbar(P2PMessageActivity.this,0,UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
         }
 
         @Override
         public void onRemoveUserFromBlackList(List<String> account) {
-            setTitle(UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
+            setToolbar(P2PMessageActivity.this,0,UserInfoHelper.getUserTitleName(sessionId, SessionTypeEnum.P2P));
         }
     };
 
@@ -204,8 +206,16 @@ public class P2PMessageActivity extends BaseMessageActivity {
 
     @Override
     protected void initToolBar() {
-        ToolBarOptions options = new NimToolBarOptions();
-        setToolBar(R.id.toolbar, options);
+//        onInitSetBack(this);
+//        String accontId = getIntent().getStringExtra(Extras.EXTRA_ACCOUNT);
+//        onInitRightSure(this, R.drawable.nim_more_logo, "", 15);
+        setToolbarTitleRightImg(this);
+        setRightImg(this, R.drawable.nim_more_logo, new onToolBarRightImgListener() {
+            @Override
+            public void onRight(View view) {
+                ToastHelper.showToast(P2PMessageActivity.this,"更多");
+            }
+        });
     }
 
     @Override

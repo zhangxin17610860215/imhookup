@@ -24,6 +24,9 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
@@ -34,9 +37,7 @@ import android.util.AttributeSet;
 
 import com.netease.nim.uikit.R;
 
-import androidx.appcompat.widget.AppCompatImageView;
-
-public class CircleImageView extends AppCompatImageView {
+public class CircleImageView extends android.support.v7.widget.AppCompatImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 
@@ -74,6 +75,9 @@ public class CircleImageView extends AppCompatImageView {
     private boolean mSetupPending;
     private boolean mBorderOverlay;
 
+    private boolean isRect;
+    private boolean isNoHandler;
+
     public CircleImageView(Context context) {
         super(context);
 
@@ -86,7 +90,6 @@ public class CircleImageView extends AppCompatImageView {
 
     public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0);
 
         mBorderWidth = a.getDimensionPixelSize(R.styleable.CircleImageView_civ_border_width, DEFAULT_BORDER_WIDTH);
@@ -102,6 +105,7 @@ public class CircleImageView extends AppCompatImageView {
     private void init() {
         super.setScaleType(SCALE_TYPE);
         mReady = true;
+        isRect = true;
 
         if (mSetupPending) {
             setup();
@@ -134,13 +138,61 @@ public class CircleImageView extends AppCompatImageView {
             return;
         }
 
-        if (mFillColor != Color.TRANSPARENT) {
-            canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, mDrawableRadius, mFillPaint);
+        if(isNoHandler){
+
+            super.onDraw(canvas);
+
+        }else{
+
+            if(isRect){
+                Bitmap b = getRoundBitmap(mBitmap, 20);
+                final Rect rectSrc = new Rect(0, 0, b.getWidth(), b.getHeight());
+                final Rect rectDest = new Rect(0,0,getWidth(),getHeight());
+                mBitmapPaint.reset();
+                canvas.drawBitmap(b, rectSrc, rectDest, mBitmapPaint);
+                return ;
+            }
+
+            if (mFillColor != Color.TRANSPARENT) {
+                canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, mDrawableRadius, mFillPaint);
+            }
+            canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, mDrawableRadius, mBitmapPaint);
+            if (mBorderWidth != 0) {
+                canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, mBorderRadius, mBorderPaint);
+            }
+
         }
-        canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, mDrawableRadius, mBitmapPaint);
-        if (mBorderWidth != 0) {
-            canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, mBorderRadius, mBorderPaint);
-        }
+
+
+    }
+
+    /**
+     * 获取圆角矩形图片方法
+     * @param bitmap
+     * @param roundPx,一般设置成14
+     * @return Bitmap
+     * @author caizhiming
+     */
+    private Bitmap getRoundBitmap(Bitmap bitmap, int roundPx) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        mBitmapPaint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        mBitmapPaint.setColor(color);
+        int x = bitmap.getWidth();
+
+        canvas.drawRoundRect(rectF, roundPx, roundPx, mBitmapPaint);
+        mBitmapPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, mBitmapPaint);
+        return output;
+
+
     }
 
     @Override
@@ -169,6 +221,15 @@ public class CircleImageView extends AppCompatImageView {
 
     public int getFillColor() {
         return mFillColor;
+    }
+
+    public void setIsRect(boolean isRect) {
+        this.isRect = isRect;
+    }
+
+    //调用此方法可解决图片加载不全的问题
+    public void setIsNoHandler(boolean isNoHandler){
+        this.isNoHandler = isNoHandler;
     }
 
     public void setFillColor(int fillColor) {

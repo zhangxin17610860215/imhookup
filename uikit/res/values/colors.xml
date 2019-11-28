@@ -37,7 +37,7 @@
     <color name="main_bg_color">#FFFFFF</color>
 
     <!-- session -->
-    <color name="color_message_default_bg">#e9ecf0</color>
+    <color name="color_message_default_bg">#fff0f0f0</color>
     <color name="input_panel_text_color_757572">#757572</color>
     <color name="color_gray_cbd0d8">#cbd0d8</color>
 
