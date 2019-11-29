@@ -94,7 +94,7 @@ public class MsgViewHolderAudio extends MsgViewHolderBase {
             setGravity(animationView, Gravity.LEFT | Gravity.CENTER_VERTICAL);
             setGravity(durationLabel, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 
-            containerView.setBackgroundResource(NimUIKitImpl.getOptions().messageLeftBackground);
+//            containerView.setBackgroundResource(NimUIKitImpl.getOptions().messageLeftBackground);
             containerView.setPadding(ScreenUtil.dip2px(15), ScreenUtil.dip2px(8), ScreenUtil.dip2px(10), ScreenUtil.dip2px(8));
             animationView.setBackgroundResource(R.drawable.nim_audio_animation_list_left);
             durationLabel.setTextColor(Color.BLACK);
@@ -104,7 +104,7 @@ public class MsgViewHolderAudio extends MsgViewHolderBase {
             setGravity(durationLabel, Gravity.LEFT | Gravity.CENTER_VERTICAL);
             unreadIndicator.setVisibility(View.GONE);
 
-            containerView.setBackgroundResource(NimUIKitImpl.getOptions().messageRightBackground);
+//            containerView.setBackgroundResource(NimUIKitImpl.getOptions().messageRightBackground);
             containerView.setPadding(ScreenUtil.dip2px(10), ScreenUtil.dip2px(8), ScreenUtil.dip2px(15), ScreenUtil.dip2px(8));
             animationView.setBackgroundResource(R.drawable.nim_audio_animation_list_right);
             durationLabel.setTextColor(Color.WHITE);
@@ -298,11 +298,11 @@ public class MsgViewHolderAudio extends MsgViewHolderBase {
 
     @Override
     protected int leftBackground() {
-        return 0;
+        return R.drawable.nim_message_left_white_bg;
     }
 
     @Override
     protected int rightBackground() {
-        return 0;
+        return R.drawable.nim_message_right_blue_bg;
     }
 }

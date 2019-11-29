@@ -11,6 +11,7 @@ import android.widget.GridView;
 
 import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.business.session.actions.BaseAction;
+import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,9 @@ public class ActionsPagerAdapter extends PagerAdapter {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int index = ((Integer) parent.getTag()) * ITEM_COUNT_PER_GRID_VIEW + position;
-                actions.get(index).onClick();
+                if (!NoDoubleClickUtils.isDoubleClick(500)){
+                    actions.get(index).onClick();
+                }
             }
         });
 

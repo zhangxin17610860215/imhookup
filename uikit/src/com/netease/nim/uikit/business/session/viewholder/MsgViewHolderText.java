@@ -50,11 +50,11 @@ public class MsgViewHolderText extends MsgViewHolderBase {
 
     private void layoutDirection() {
         if (isReceivedMessage()) {
-            bodyTextView.setBackgroundResource(NimUIKitImpl.getOptions().messageLeftBackground);
+//            bodyTextView.setBackgroundResource(NimUIKitImpl.getOptions().messageLeftBackground);
             bodyTextView.setTextColor(Color.BLACK);
             bodyTextView.setPadding(ScreenUtil.dip2px(15), ScreenUtil.dip2px(8), ScreenUtil.dip2px(10), ScreenUtil.dip2px(8));
         } else {
-            bodyTextView.setBackgroundResource(NimUIKitImpl.getOptions().messageRightBackground);
+//            bodyTextView.setBackgroundResource(NimUIKitImpl.getOptions().messageRightBackground);
             bodyTextView.setTextColor(Color.WHITE);
             bodyTextView.setPadding(ScreenUtil.dip2px(10), ScreenUtil.dip2px(8), ScreenUtil.dip2px(15), ScreenUtil.dip2px(8));
         }
@@ -62,12 +62,12 @@ public class MsgViewHolderText extends MsgViewHolderBase {
 
     @Override
     protected int leftBackground() {
-        return 0;
+        return R.drawable.nim_message_left_white_bg;
     }
 
     @Override
     protected int rightBackground() {
-        return 0;
+        return R.drawable.nim_message_right_blue_bg;
     }
 
     protected String getDisplayText() {

@@ -21,8 +21,10 @@
 
     <!-- session -->
     <string name="input_panel_photo">图 片</string>
-    <string name="input_panel_video">视 频</string>
+    <string name="input_panel_video">拍 摄</string>
+    <string name="input_panel_redpackage">红 包</string>
     <string name="input_panel_location">位 置</string>
+    <string name="input_panel_snapchat">阅后即焚</string>
     <string name="input_panel_take">拍 摄</string>
     <string name="im_choose_pic">请选择JPG PNG BMP GIF格式的图片文件</string>
     <string name="repeat_download_message">重新下载?</string>

@@ -1,10 +1,10 @@
 package com.yuanqi.hangzhou.imhookup.action;
 
+import com.netease.nim.uikit.R;
+import com.netease.nim.uikit.business.session.actions.PickImageAction;
 import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.model.CustomMessageConfig;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
-import com.netease.nim.uikit.business.session.actions.PickImageAction;
-import com.yuanqi.hangzhou.imhookup.R;
 
 import java.io.File;
 

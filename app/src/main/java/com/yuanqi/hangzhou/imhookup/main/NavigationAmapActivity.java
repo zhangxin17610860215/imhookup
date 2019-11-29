@@ -221,7 +221,7 @@ public class NavigationAmapActivity extends BaseActivity implements LocationExtr
     private MarkerOptions defaultMarkerOptions() {
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.anchor(0.5f, 0.5f);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.pin));
         return markerOptions;
     }
 

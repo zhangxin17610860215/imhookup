@@ -45,6 +45,7 @@ import com.netease.nim.uikit.impl.cache.TeamDataCache;
 import com.netease.nim.uikit.impl.customization.DefaultRecentCustomization;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.action.AVChatAction;
+import com.yuanqi.hangzhou.imhookup.action.RedPackageAction;
 import com.yuanqi.hangzhou.imhookup.action.SnapChatAction;
 import com.yuanqi.hangzhou.imhookup.action.SnapChatAttachment;
 import com.yuanqi.hangzhou.imhookup.action.TeamAVChatAction;
@@ -280,11 +281,13 @@ public class SessionHelper {
 
             // 定制加号点开后可以包含的操作， 默认已经有图片，视频等消息了
             ArrayList<BaseAction> actions = new ArrayList<>();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                actions.add(new AVChatAction(AVChatType.AUDIO));
-                actions.add(new AVChatAction(AVChatType.VIDEO));
-//                actions.add(new SysNotifyAction());
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//                actions.add(new AVChatAction(AVChatType.AUDIO));
+//                actions.add(new AVChatAction(AVChatType.VIDEO));
+////                actions.add(new SysNotifyAction());
+//            }
+            actions.add(new SnapChatAction());
+            actions.add(new RedPackageAction());
 
             sysNotifyCustomization.actions = actions;
             sysNotifyCustomization.showInput = false;

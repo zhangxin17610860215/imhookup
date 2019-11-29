@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.netease.nimlib.sdk.msg.attachment.FileAttachment;
-import com.yuanqi.hangzhou.imhookup.attachment.CustomAttachParser;
+import com.yuanqi.hangzhou.imhookup.main.CustomAttachParser;
 import com.yuanqi.hangzhou.imhookup.main.CustomAttachmentType;
 
 /**

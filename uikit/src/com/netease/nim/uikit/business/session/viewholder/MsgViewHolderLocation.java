@@ -60,4 +60,15 @@ public class MsgViewHolderLocation extends MsgViewHolderBase {
     public static int getLocationDefEdge() {
         return (int) (0.5 * ScreenUtil.screenWidth);
     }
+
+    @Override
+    protected int leftBackground() {
+        return 0;
+    }
+
+    @Override
+    protected int rightBackground() {
+        return 0;
+    }
+
 }

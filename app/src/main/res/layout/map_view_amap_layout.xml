@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/pin" />
+            android:src="@mipmap/pin" />
 
         <LinearLayout
             android:id="@+id/location_info"

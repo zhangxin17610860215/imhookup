@@ -9,8 +9,6 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/input_panel_image_margin_bottom"
-        android:layout_marginTop="@dimen/input_panel_image_margin_top"
         android:contentDescription="@string/empty" />
 
     <TextView
@@ -18,6 +16,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/input_panel_text_color_757572"
-        android:textSize="13sp" />
+        android:textSize="13sp"/>
 
 </LinearLayout>

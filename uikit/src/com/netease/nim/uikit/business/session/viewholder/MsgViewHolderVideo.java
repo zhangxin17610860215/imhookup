@@ -31,4 +31,14 @@ public class MsgViewHolderVideo extends MsgViewHolderThumbBase {
         String thumb = attachment.getThumbPathForSave();
         return BitmapDecoder.extractThumbnail(path, thumb) ? thumb : null;
     }
+
+    @Override
+    protected int leftBackground() {
+        return 0;
+    }
+
+    @Override
+    protected int rightBackground() {
+        return 0;
+    }
 }

@@ -27,4 +27,14 @@ public class MsgViewHolderPicture extends MsgViewHolderThumbBase {
     protected String thumbFromSourceFile(String path) {
         return path;
     }
+
+    @Override
+    protected int leftBackground() {
+        return 0;
+    }
+
+    @Override
+    protected int rightBackground() {
+        return 0;
+    }
 }
