@@ -144,7 +144,8 @@
                 android:gravity="center"
                 android:text="微博"
                 android:textColor="@color/color_gray_999999"
-                android:textSize="@dimen/text_size_10" />
+                android:textSize="@dimen/text_size_10"
+                android:visibility="gone"/>
         </LinearLayout>
     </RelativeLayout>
 

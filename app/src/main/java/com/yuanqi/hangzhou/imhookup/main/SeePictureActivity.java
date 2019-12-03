@@ -75,6 +75,11 @@ public class SeePictureActivity extends BaseActivity {
     private void initView() {
         alertDialog = new CustomAlertDialog(this);
         mViewPager = (ViewPager) findViewById(R.id.mViewPager);
+        for (String url : urlList){
+            if (StringUtil.isNotEmpty(url) && url.equals("add")){
+                urlList.remove(urlList.size() - 1);
+            }
+        }
         pagerAdapter = new MyPagerAdapter(mActivity,urlList);
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setCurrentItem(position);

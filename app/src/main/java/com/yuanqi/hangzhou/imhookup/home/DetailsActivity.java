@@ -117,13 +117,19 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onRight(View view) {
                 //更多
-                new XPopup.Builder(mActivity).asBottomList(null,new String[]{"拉黑(屏蔽双方)", "匿名举报"},
+                new XPopup.Builder(mActivity).asBottomList(null,new String[]{"备注", "匿名举报"},
                         // null, /** 图标Id数组，可无 **/
                         // 1,    /** 选中的position，默认没有选中效果 **/
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
                                 toast("click "+text);
+                                if (position == 1){
+                                    //匿名举报
+                                    AnonymousReportActivity.start(mActivity);
+                                }else {
+                                    //备注
+                                }
                             }
                         })
                         .show();

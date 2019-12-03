@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/bri_send"
+        android:layout_width="230dp"
+        android:layout_height="@dimen/dimen_80"
+        android:background="@mipmap/red_packet_send_bg"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_bri_mess_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_60"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="20dp"
+            android:gravity="center|left"
+            android:singleLine="true"
+            android:text="恭喜发财，大吉大利"
+            android:textColor="@color/red_text_color"
+            android:textSize="@dimen/text_size_15"/>
+
+        <TextView
+            android:id="@+id/tv_bri_target_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_60"
+            android:layout_marginTop="@dimen/dp_size_46"
+            android:gravity="center|left"
+            android:text="等待领取"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12"/>
+
+        <TextView
+            android:id="@+id/tv_bri_name_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="6dip"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:text="红包"
+            android:textColor="@color/color_999999"
+            android:textSize="10sp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bri_rev"
+        android:layout_width="230dp"
+        android:layout_height="@dimen/dimen_80"
+        android:background="@mipmap/red_packet_rev_bg">
+
+        <TextView
+            android:id="@+id/tv_bri_mess_rev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_size_65"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:gravity="center|left"
+            android:singleLine="true"
+            android:text="恭喜发财，大吉大利"
+            android:textColor="@color/red_text_color"
+            android:textSize="@dimen/text_size_15"/>
+        <TextView
+            android:id="@+id/tv_bri_target_rev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_size_65"
+            android:layout_marginTop="@dimen/dp_size_46"
+            android:gravity="center|left"
+            android:text="等待领取"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_12"/>
+        <TextView
+            android:id="@+id/tv_bri_name_rev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="6dp"
+            android:gravity="center|left"
+            android:paddingLeft="14dp"
+            android:text="红包"
+            android:textColor="@color/color_999999"
+            android:textSize="10sp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+</FrameLayout>

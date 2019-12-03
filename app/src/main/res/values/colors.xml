@@ -4,6 +4,9 @@
     <color name="text_theme_color">#988557</color>
     <color name="text2_theme_color">#ACA694</color>
     <color name="bg_theme_color">#BEAA73</color>
+    <color name="red_text_color">#F4D13F</color>
+    <color name="red_text_color_ffa507">#FFA507</color>
+    <color name="red_text_color_f5db92">#F5DB92</color>
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -17,6 +20,7 @@
     <color name="color_gray_999999">#999999</color>
     <color name="activity_grey_bg">#ECECEC</color>
     <color name="color_grey_EDEDED">#EDEDED</color>
+    <color name="color_c9c9c9">#c9c9c9</color>
     <color name="edit_hint_color">#C2C2C2</color>
     <color name="vip_text_color">#B6ACA3</color>
     <color name="color_7265F6">#7265F6</color>

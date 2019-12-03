@@ -5,30 +5,29 @@ import android.content.Intent;
 
 import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.business.session.actions.BaseAction;
-import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.model.CustomMessageConfig;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
-import com.yuanqi.hangzhou.imhookup.attachment.RedPacketAttachment;
-import com.yuanqi.hangzhou.imhookup.message.CashRedPackageActivity;
+import com.yuanqi.hangzhou.imhookup.attachment.CurrencyRedPacketAttachment;
+import com.yuanqi.hangzhou.imhookup.message.CurrencyRedPackageActivity;
 
 import java.util.Map;
 
 /**
  * Created by zhoujianghua on 2015/7/31.
  */
-public class RedPackageAction extends BaseAction {
+public class CurrencyRedPackageAction extends BaseAction {
 
     private static final int CREATE_SINGLE_RED_PACKET = 10;
 
-    public RedPackageAction() {
-        super(R.drawable.nim_message_plus_location_normalredpackage, R.string.input_panel_redpackage);
+    public CurrencyRedPackageAction() {
+        super(R.drawable.nim_message_plus_location_normalcurrencyredpackage, R.string.input_panel_currencyredpackage);
     }
 
     @Override
     public void onClick() {
         int requestCode = makeRequestCode(CREATE_SINGLE_RED_PACKET);
-        CashRedPackageActivity.start(getActivity(),requestCode);
+        CurrencyRedPackageActivity.start(getActivity(),requestCode);
     }
 
     @Override
@@ -37,7 +36,8 @@ public class RedPackageAction extends BaseAction {
             String redId = data.getStringExtra("redId");
             String redTitle = data.getStringExtra("redTitle");
             String redContent = data.getStringExtra("redContent");
-            RedPacketAttachment attachment = new RedPacketAttachment();
+            Map<String,Object> map = (Map<String, Object>) data.getSerializableExtra("redData");
+            CurrencyRedPacketAttachment attachment = new CurrencyRedPacketAttachment();
             // 红包id，红包信息，红包名称
             attachment.setRpId(redId);
             attachment.setRpContent(redContent);
@@ -46,6 +46,7 @@ public class RedPackageAction extends BaseAction {
             CustomMessageConfig config = new CustomMessageConfig();
             config.enableHistory = true;
             IMMessage message = MessageBuilder.createCustomMessage(getAccount(), getSessionType(), "发来了一个红包", attachment, config);
+            message.setRemoteExtension(map);
             sendMessage(message);
         }
     }

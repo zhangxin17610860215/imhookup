@@ -45,16 +45,25 @@ import com.netease.nim.uikit.impl.cache.TeamDataCache;
 import com.netease.nim.uikit.impl.customization.DefaultRecentCustomization;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.action.AVChatAction;
+import com.yuanqi.hangzhou.imhookup.action.CurrencyRedPackageAction;
 import com.yuanqi.hangzhou.imhookup.action.RedPackageAction;
 import com.yuanqi.hangzhou.imhookup.action.SnapChatAction;
 import com.yuanqi.hangzhou.imhookup.action.SnapChatAttachment;
 import com.yuanqi.hangzhou.imhookup.action.TeamAVChatAction;
+import com.yuanqi.hangzhou.imhookup.attachment.CurrencyRedPacketAttachment;
+import com.yuanqi.hangzhou.imhookup.attachment.CurrencyRedPacketOpenedAttachment;
+import com.yuanqi.hangzhou.imhookup.attachment.RedPacketAttachment;
+import com.yuanqi.hangzhou.imhookup.attachment.RedPacketOpenedAttachment;
 import com.yuanqi.hangzhou.imhookup.attachment.StickerAttachment;
 import com.yuanqi.hangzhou.imhookup.utils.DemoCache;
 import com.yuanqi.hangzhou.imhookup.view.EasyAlertDialogHelper;
+import com.yuanqi.hangzhou.imhookup.viewholder.CurrencyMsgViewHolderOpenRedPacket;
+import com.yuanqi.hangzhou.imhookup.viewholder.CurrencyMsgViewHolderRedPacket;
 import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderAVChat;
 import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderDefCustom;
 import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderFile;
+import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderOpenRedPacket;
+import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderRedPacket;
 import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderSnapChat;
 import com.yuanqi.hangzhou.imhookup.viewholder.MsgViewHolderSticker;
 
@@ -288,6 +297,7 @@ public class SessionHelper {
 //            }
             actions.add(new SnapChatAction());
             actions.add(new RedPackageAction());
+            actions.add(new CurrencyRedPackageAction());
 
             sysNotifyCustomization.actions = actions;
             sysNotifyCustomization.showInput = false;
@@ -601,6 +611,12 @@ public class SessionHelper {
 //            NimUIKit.registerMsgItemViewHolder(RedPacketAttachment.class, MsgViewHolderUnknown.class);
 //            NimUIKit.registerMsgItemViewHolder(RedPacketOpenedAttachment.class, MsgViewHolderUnknown.class);
 //        }
+        //现金红包
+        NimUIKit.registerMsgItemViewHolder(RedPacketAttachment.class, MsgViewHolderRedPacket.class);
+        NimUIKit.registerMsgItemViewHolder(RedPacketOpenedAttachment.class, MsgViewHolderOpenRedPacket.class);
+        //虚拟币红包
+        NimUIKit.registerMsgItemViewHolder(CurrencyRedPacketAttachment.class, CurrencyMsgViewHolderRedPacket.class);
+        NimUIKit.registerMsgItemViewHolder(CurrencyRedPacketOpenedAttachment.class, CurrencyMsgViewHolderOpenRedPacket.class);
     }
 
     private static void setSessionListener() {

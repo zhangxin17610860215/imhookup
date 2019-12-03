@@ -1,4 +1,4 @@
-package com.yuanqi.hangzhou.imhookup.me;
+package com.yuanqi.hangzhou.imhookup.home;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,11 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.netease.nim.uikit.business.session.constant.RequestCode;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
-import com.netease.nim.uikit.business.team.ui.TeamInfoGridView;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePickerLauncher;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
@@ -36,36 +36,41 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 发布动态
+ * 匿名举报
  */
-public class SendDynamicsActivity extends BaseActivity {
+public class AnonymousReportActivity extends BaseActivity {
 
-    @BindView(R.id.et_Content)
-    EditText etContent;
+    @BindView(R.id.tv_Advertising)
+    TextView tvAdvertising;
+    @BindView(R.id.tv_Harass)
+    TextView tvHarass;
+    @BindView(R.id.tv_Photo)
+    TextView tvPhoto;
+    @BindView(R.id.tv_vulgar)
+    TextView tvVulgar;
+    @BindView(R.id.tv_Liar)
+    TextView tvLiar;
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
-    @BindView(R.id.img_NoComment)
-    ImageView imgNoComment;
-    @BindView(R.id.img_hide)
-    ImageView imgHide;
+    @BindView(R.id.et_describe)
+    EditText etDescribe;
 
     private Activity mActivity;
+    private int reason;
     private EasyRVAdapter mAdapter;
     private List<String> list = new ArrayList<>();
-    private boolean noCommentNotice = false;            //禁止评论
-    private boolean hideNotice = false;                 //隐藏
+    private int selectorNumber = 5;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, SendDynamicsActivity.class);
+        Intent intent = new Intent(context, AnonymousReportActivity.class);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.senddynamics_activity_layout);
+        setContentView(R.layout.anonymousreport_activity_layout);
         ButterKnife.bind(this);
-
         mActivity = this;
         initView();
         initData();
@@ -73,6 +78,12 @@ public class SendDynamicsActivity extends BaseActivity {
 
     private void initView() {
         setToolbar(mActivity, 0, "");
+        onInitRightSure(mActivity, "提交", new onToolBarRightTextListener() {
+            @Override
+            public void onRight(View view) {
+                toast("提交");
+            }
+        });
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity,3));
     }
 
@@ -85,17 +96,38 @@ public class SendDynamicsActivity extends BaseActivity {
                     return;
                 }
                 HeadImageView imageView = viewHolder.getView(R.id.img_dynamic);
+                ImageView imgDeletePictures = viewHolder.getView(R.id.img_deletePictures);
+
                 if (StringUtil.isNotEmpty(list.get(position)) && list.get(position).equals("add")){
                     imageView.setImageResource(R.mipmap.add_img_icon);
+                    imgDeletePictures.setVisibility(View.GONE);
                 }else {
+                    imageView.setIsRect(true);
                     Glide.with(mActivity).load(list.get(position)).into(imageView);
+                    imgDeletePictures.setVisibility(View.VISIBLE);
                 }
+                imgDeletePictures.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean isShowAdd = false;
+                        list.remove(position);
+
+                        for (String url : list){
+                            isShowAdd = url.equals("add") ? false : true;
+                        }
+                        if (isShowAdd){
+                            list.add("add");
+                        }
+
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (list.get(position).equals("add")){
                             //添加图片
-                            showSelector(R.string.input_panel_photo, RequestCode.PICK_IMAGE, true);
+                            showSelector(R.string.input_panel_photo, 100, true, selectorNumber - (list.size() - 1));
                         }else {
                             //查看图片
                             SeePictureActivity.start(mActivity,position,list,"123123");
@@ -110,16 +142,17 @@ public class SendDynamicsActivity extends BaseActivity {
     /**
      * 打开图片选择器
      */
-    private void showSelector(int titleId, int requestCode, boolean multiSelect) {
+    private void showSelector(int titleId, int requestCode, boolean multiSelect, int number) {
         ImagePickerOption option = DefaultImagePickerOption.getInstance().setShowCamera(true).setPickType(
-                ImagePickerOption.PickType.Image).setMultiMode(multiSelect).setSelectMax(9);
+                ImagePickerOption.PickType.Image).setMultiMode(multiSelect).setSelectMax(number);
+        option.setSaveRectangle(true);
         ImagePickerLauncher.selectImage(mActivity, requestCode, option, titleId);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case RequestCode.PICK_IMAGE:
+            case 100:
                 onPickImageActivityResult(requestCode, data);
                 break;
         }
@@ -145,7 +178,7 @@ public class SendDynamicsActivity extends BaseActivity {
             @Override
             public void sendImage(File file, boolean isOrig) {
                 list.add(list.size() - 1,file.getPath());
-                if (list.size() > 9){
+                if (list.size() > 5){
                     list.remove(list.size() -1);
                 }
                 mAdapter.notifyDataSetChanged();
@@ -153,35 +186,62 @@ public class SendDynamicsActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.img_NoComment, R.id.img_hide, R.id.tv_send})
+    @OnClick({R.id.tv_Advertising, R.id.tv_Harass, R.id.tv_Photo, R.id.tv_vulgar, R.id.tv_Liar})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.img_NoComment:
-                //是否禁止评论
-                toggleSwitch(1,noCommentNotice,imgNoComment);
+            case R.id.tv_Advertising:
+                //发广告
+                reason = 1;
+                selectReason();
                 break;
-            case R.id.img_hide:
-                //是否对同性别用户隐藏
-                toggleSwitch(2,hideNotice,imgHide);
+            case R.id.tv_Harass:
+                //骚扰
+                reason = 2;
+                selectReason();
                 break;
-            case R.id.tv_send:
-                //发布
+            case R.id.tv_Photo:
+                //虚假照片
+                reason = 3;
+                selectReason();
+                break;
+            case R.id.tv_vulgar:
+                //色情低俗
+                reason = 4;
+                selectReason();
+                break;
+            case R.id.tv_Liar:
+                //她是骗子
+                reason = 5;
+                selectReason();
                 break;
         }
     }
 
     /**
-     * 切换开关
+     * 选择举报原因
      * */
-    private void toggleSwitch(int type, boolean b, ImageView imageView) {
-        switch (type){
+    private void selectReason() {
+        tvAdvertising.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+        tvHarass.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+        tvPhoto.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+        tvVulgar.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+        tvLiar.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+        switch (reason){
             case 1:
-                noCommentNotice = !b;
+                tvAdvertising.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.selected_logo), null);
                 break;
             case 2:
-                hideNotice = !b;
+                tvHarass.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                break;
+            case 3:
+                tvPhoto.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                break;
+            case 4:
+                tvVulgar.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                break;
+            case 5:
+                tvLiar.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.selected_logo), null);
                 break;
         }
-        imageView.setImageResource(b ? R.mipmap.isshow_open : R.mipmap.isshow_close);
     }
 }

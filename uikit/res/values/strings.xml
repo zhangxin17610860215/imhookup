@@ -23,6 +23,7 @@
     <string name="input_panel_photo">图 片</string>
     <string name="input_panel_video">拍 摄</string>
     <string name="input_panel_redpackage">红 包</string>
+    <string name="input_panel_currencyredpackage">约会币红包</string>
     <string name="input_panel_location">位 置</string>
     <string name="input_panel_snapchat">阅后即焚</string>
     <string name="input_panel_take">拍 摄</string>

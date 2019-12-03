@@ -191,6 +191,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
+            android:name=".login.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
             android:name=".login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
@@ -219,6 +223,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
+            android:name=".home.AnonymousReportActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
             android:name=".home.DynamicActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
@@ -230,6 +238,30 @@
             android:name=".message.MessageSettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
+        <activity
+            android:name=".message.CashRedPackageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/RedTheme"/>
+        <activity
+            android:name=".message.CurrencyRedPackageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CurrencyTheme"/>
+        <activity
+            android:name=".message.CurrencyOthersCashRPDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CurrencyTheme"/>
+        <activity
+            android:name=".message.CurrencyRedPackageDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CurrencyTheme"/>
+        <activity
+            android:name=".message.CashRedPackageDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/RedTheme"/>
+        <activity
+            android:name=".message.OthersCashRPDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/RedTheme"/>
         <!-- 下载文件 -->
         <activity
             android:name=".main.FileDownloadActivity"

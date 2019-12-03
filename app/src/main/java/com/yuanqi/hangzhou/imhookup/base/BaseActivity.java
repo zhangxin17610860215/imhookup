@@ -106,7 +106,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.ui("ui" + getClass().getSimpleName() + " onCreate()");
+        LogUtil.ui("ui>>>>>>>>>>" + getClass().getSimpleName() + " onCreate()");
     }
 
     @Override

@@ -103,6 +103,7 @@
     <color name="pinkLipstickColor">#ff69b4</color>
     <color name="paleRoseColor">#ffe4e1</color>
     <color name="crimsonColor">#bb1224</color>
+    <color name="redpackageColor">#D43F3F</color>
 
     <!-- Purples -->
     <color name="eggplantColor">#690562</color>
@@ -150,4 +151,5 @@
     <color name="mudColor">#462d1d</color>
     <color name="siennaColor">#a0522d</color>
     <color name="dustColor">#ecd6c5</color>
+    <color name="_3d3d3d_color">#3D3D3D</color>
 </resources>
