@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.common.ToastHelper;
 
 import com.alibaba.fastjson.JSON;
@@ -20,6 +21,7 @@ import com.netease.nim.uikit.business.session.constant.Extras;
 import com.netease.nim.uikit.business.session.fragment.MessageFragment;
 import com.netease.nim.uikit.business.uinfo.UserInfoHelper;
 import com.netease.nim.uikit.common.activity.ToolBarOptions;
+import com.netease.nim.uikit.common.ui.popupmenu.MessageBottomDialog;
 import com.netease.nim.uikit.impl.NimUIKitImpl;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
@@ -213,7 +215,10 @@ public class P2PMessageActivity extends BaseMessageActivity {
         setRightImg(this, R.drawable.nim_more_logo, new onToolBarRightImgListener() {
             @Override
             public void onRight(View view) {
-                ToastHelper.showToast(P2PMessageActivity.this,"更多");
+                new XPopup.Builder(P2PMessageActivity.this)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new MessageBottomDialog(P2PMessageActivity.this,sessionId))
+                        .show();
             }
         });
     }

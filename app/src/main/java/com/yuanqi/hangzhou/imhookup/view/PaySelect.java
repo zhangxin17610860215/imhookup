@@ -116,6 +116,9 @@ public class PaySelect extends CenterPopupView implements View.OnClickListener {
         commodityName.setText("商品名称:" + this.commodityName);
 
         resetBtnIcon();
+        //默认选中支付宝支付
+        currSeletPayType = SelectPayType.ALI;
+        ali_btn_icon.setImageResource(R.mipmap.selected_logo);
 
     }
 

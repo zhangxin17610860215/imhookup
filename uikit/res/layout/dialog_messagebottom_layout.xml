@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/dp_size_8"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_CloseMsgRemind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="关闭消息提醒"
+        android:textSize="@dimen/text_size_18"
+        android:textColor="#BEAA73"
+        android:paddingTop="@dimen/dp_size_30"
+        android:paddingBottom="@dimen/dp_size_17"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_size_1"
+        android:background="#ECECEC"/>
+
+    <TextView
+        android:id="@+id/tv_PullBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="拉黑"
+        android:textSize="@dimen/text_size_18"
+        android:textColor="#BEAA73"
+        android:paddingTop="@dimen/dp_size_17"
+        android:paddingBottom="@dimen/dp_size_17"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_size_1"
+        android:background="#ECECEC"/>
+
+    <TextView
+        android:id="@+id/tv_Report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="举报"
+        android:textSize="@dimen/text_size_18"
+        android:textColor="#BEAA73"
+        android:paddingTop="@dimen/dp_size_17"
+        android:paddingBottom="@dimen/dp_size_17"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_size_1"
+        android:background="#ECECEC"/>
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="取消"
+        android:textSize="@dimen/text_size_18"
+        android:textColor="#BEAA73"
+        android:paddingTop="@dimen/dp_size_17"
+        android:paddingBottom="@dimen/dp_size_17"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_size_1"
+        android:background="#ECECEC"/>
+
+</LinearLayout>

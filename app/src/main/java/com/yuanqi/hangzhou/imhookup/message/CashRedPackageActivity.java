@@ -127,7 +127,7 @@ public class CashRedPackageActivity extends BaseActivity {
      * amount  当前余额
      * */
     private void showPayMode(final String amount, View v) {
-        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",amount,1);
+        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",amount,2);
         new XPopup.Builder(mActivity)
                 .atView(v)
                 .asCustom(paySelect)

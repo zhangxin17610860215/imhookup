@@ -20,8 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.netease.nim.uikit.common.ModuleUIComFn;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
+import com.yuanqi.hangzhou.imhookup.home.AnonymousReportActivity;
 import com.yuanqi.hangzhou.imhookup.home.HomeFragment;
 import com.yuanqi.hangzhou.imhookup.me.MeFragment;
 import com.yuanqi.hangzhou.imhookup.message.MessageFragment;
@@ -176,6 +178,8 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
+
+        initModuleComFn();
         mTabTextColorSelecdted = getResources().getColor(R.color.text_theme_color);
         mTabTextColorNormal = getResources().getColor(R.color.color_gray_999999);
 
@@ -207,6 +211,16 @@ public class MainActivity extends BaseActivity {
         viewPagerMain.setOnPageChangeListener(mMainOnPageChangeListener);
         viewPagerMain.setOffscreenPageLimit(3);
         mBottomBarListener = new BottomBarListener();
+    }
+
+    private void initModuleComFn() {
+        ModuleUIComFn.getInstance().toReportActivityInstance = new ModuleUIComFn.ToReportActivity() {
+            @Override
+            public void toReportActivityInstance(Context context) {
+                //进入举报页面
+                AnonymousReportActivity.start(context);
+            }
+        };
     }
 
     private void initData() {

@@ -80,7 +80,7 @@ public class CurrencyRechargeDialog extends BottomPopupView {
      * 显示支付方式弹窗
      * */
     private void showPayMode(String money, View v) {
-        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,1);
+        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,2);
         new XPopup.Builder(mActivity)
                 .atView(v)
                 .asCustom(paySelect)

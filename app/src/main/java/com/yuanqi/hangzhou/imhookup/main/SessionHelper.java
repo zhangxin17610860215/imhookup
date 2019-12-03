@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.netease.nim.avchatkit.TeamAVChatProfile;
+import com.netease.nim.uikit.common.ModuleUIComFn;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.avchat.constant.AVChatRecordState;
@@ -645,7 +646,7 @@ public class SessionHelper {
             @Override
             public void onAvatarLongClicked(Context context, IMMessage message) {
                 // 一般用于群组@功能，或者弹出菜单，做拉黑，加好友等功能
-                ModuleUIComFn.getInstance().aitMessagePassing(context,message);
+//                ModuleUIComFn.getInstance().aitMessagePassing(context,message);
             }
 
             @Override
