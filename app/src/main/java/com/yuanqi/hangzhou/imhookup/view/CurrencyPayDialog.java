@@ -37,10 +37,13 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
      * */
     private int type;
 
-    public CurrencyPayDialog(@NonNull Activity activity, int type) {
+    private String currencyNum = "";
+
+    public CurrencyPayDialog(@NonNull Activity activity, int type, String currencyNum) {
         super(activity);
         this.mActivity = activity;
         this.type = type;
+        this.currencyNum = currencyNum;
     }
 
     @Override
@@ -64,9 +67,7 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
         tv_pay = findViewById(R.id.tv_pay);
         tv_Recharge = findViewById(R.id.tv_Recharge);
 
-        if (type == 1){
-            tv_title.setText("约会币红包");
-        }
+
 
         img_Refresh.setOnClickListener(this);
         tv_pay.setOnClickListener(this);
@@ -75,7 +76,11 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
     }
 
     private void initData() {
+        tv_currencyNum.setText(currencyNum);
 
+        if (type == 1){
+            tv_title.setText("约会币红包");
+        }
     }
 
     @Override
@@ -104,7 +109,7 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
                 list.add("6");
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new CurrencyRechargeDialog(mActivity,list))
+                        .asCustom(new CurrencyRechargeDialog(mActivity,list,currencyNum))
                         .show();
                 break;
         }

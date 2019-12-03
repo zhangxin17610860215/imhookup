@@ -18,7 +18,6 @@ import com.yuanqi.hangzhou.imhookup.utils.NumberUtil;
 import com.yuanqi.hangzhou.imhookup.utils.RedPacketTextWatcher;
 import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 import com.yuanqi.hangzhou.imhookup.view.CurrencyPayDialog;
-import com.yuanqi.hangzhou.imhookup.view.PaySelect;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -129,7 +128,7 @@ public class CurrencyRedPackageActivity extends BaseActivity {
     private void showPayDialog() {
         new XPopup.Builder(mActivity)
                 .dismissOnTouchOutside(false)
-                .asCustom(new CurrencyPayDialog(mActivity,1))
+                .asCustom(new CurrencyPayDialog(mActivity,1,"99"))
                 .show();
     }
 
