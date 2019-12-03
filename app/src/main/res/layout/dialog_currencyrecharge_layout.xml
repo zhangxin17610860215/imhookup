@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/evaluate_bg_logo"
+    android:paddingLeft="@dimen/dimen_12"
+    android:paddingBottom="@dimen/dimen_30"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_size_8"
+        android:paddingBottom="@dimen/dp_size_8"
+        android:paddingRight="@dimen/dimen_12">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="支付"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="可用余额: "
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_999999"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/tv_currencyNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/text_theme_color"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="个"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_999999"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_size_1"
+        android:background="@color/activity_grey_bg"
+        android:layout_marginRight="@dimen/dimen_12"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

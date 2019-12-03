@@ -10,11 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,6 +95,17 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
                 break;
             case R.id.tv_Recharge:
                 //充值
+                List<String> list = new ArrayList<>();
+                list.add("1");
+                list.add("2");
+                list.add("3");
+                list.add("4");
+                list.add("5");
+                list.add("6");
+                new XPopup.Builder(mActivity)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new CurrencyRechargeDialog(mActivity,list))
+                        .show();
                 break;
         }
     }
