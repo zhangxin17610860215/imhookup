@@ -1,9 +1,5 @@
 package com.yuanqi.hangzhou.imhookup.requestutils;
 
-import android.content.Context;
-import android.view.Gravity;
-import android.widget.Toast;
-
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.FileCallback;
@@ -11,11 +7,11 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.request.GetRequest;
 import com.lzy.okgo.request.PostRequest;
+import com.netease.nim.uikit.common.util.SPUtils;
 import com.yuanqi.hangzhou.imhookup.MyApplication;
 import com.yuanqi.hangzhou.imhookup.config.Constants;
 import com.yuanqi.hangzhou.imhookup.utils.CrypticUtil;
 import com.yuanqi.hangzhou.imhookup.utils.LogUtil;
-import com.yuanqi.hangzhou.imhookup.utils.SPUtils;
 import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 
 import java.io.File;

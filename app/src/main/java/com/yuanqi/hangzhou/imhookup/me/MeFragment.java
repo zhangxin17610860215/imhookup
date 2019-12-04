@@ -25,6 +25,7 @@ import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.ShareBoardlistener;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseFragment;
+import com.yuanqi.hangzhou.imhookup.login.VipCoreActivity;
 import com.yuanqi.hangzhou.imhookup.requestutils.api.ApiUrl;
 import com.yuanqi.hangzhou.imhookup.utils.EventBusUtils;
 import com.yuanqi.hangzhou.imhookup.utils.UMShareUtil;
@@ -127,6 +128,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_addVIP:
                 //立即加入
+                VipCoreActivity.start(mActivity);
                 break;
             case R.id.tv_Authentication:
                 //真人认证

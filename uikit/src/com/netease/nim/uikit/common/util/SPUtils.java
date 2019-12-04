@@ -1,12 +1,11 @@
-package com.yuanqi.hangzhou.imhookup.utils;
+package com.netease.nim.uikit.common.util;
 
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import com.yuanqi.hangzhou.imhookup.MyApplication;
-import com.yuanqi.hangzhou.imhookup.config.Constants;
+import com.netease.nim.uikit.api.NimUIKit;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +41,7 @@ public class SPUtils {
      * @return {@link SPUtils}
      */
     public static SPUtils getInstance(String spName) {
-        if (isSpace(spName)) spName = Constants.APP_NAME + "SpUtils";
+        if (isSpace(spName)) spName = "YueHuiSpUtils";
         SPUtils sp = sSPMap.get(spName);
         if (sp == null) {
             sp = new SPUtils(spName);
@@ -52,7 +51,7 @@ public class SPUtils {
     }
 
     private SPUtils(String spName) {
-        sp = MyApplication.getInstance().getSharedPreferences(spName, Context.MODE_PRIVATE);
+        sp = NimUIKit.getContext().getSharedPreferences(spName, Context.MODE_PRIVATE);
     }
 
     /**

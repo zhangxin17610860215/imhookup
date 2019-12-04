@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="93dp"
+    android:layout_height="115dp"
+    android:layout_marginLeft="@dimen/dimen_10"
+    android:layout_marginRight="@dimen/dimen_10"
+    android:layout_marginTop="@dimen/dimen_15">
+
+    <ImageView
+        android:id="@+id/img_vipsetmeal_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/vipselection_no_logo"/>
+
+    <TextView
+        android:id="@+id/tv_Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="半个月"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="会员"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_12"
+        android:layout_above="@+id/tv_Time"
+        android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_size_34"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:id="@+id/tv_Amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="199"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_15"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/tv_Company"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="元/月"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_9"
+            android:layout_gravity="center_vertical"
+            android:paddingTop="@dimen/dp_size_3"
+            android:paddingLeft="@dimen/dp_size_3"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -6,7 +6,7 @@ import com.yuanqi.hangzhou.imhookup.utils.AppUtils;
 public class Constants {
 
     //用于项目中有用到APP英文名称
-    public static final String APP_NAME = "yuepao";
+    public static final String APP_NAME = "YueHui";
 
     //第三方分享登录是用到的code值
     public static final int SHARE_REQUESTCODE = 2001;
