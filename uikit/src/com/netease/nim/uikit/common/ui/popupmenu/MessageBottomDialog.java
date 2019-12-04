@@ -88,6 +88,9 @@ public class MessageBottomDialog extends BottomPopupView implements View.OnClick
         }
     }
 
+    /**
+     * 设置拉黑
+     * */
     private void setBlack() {
         if (black) {
             NIMClient.getService(FriendService.class).addToBlackList(account).setCallback(new RequestCallback<Void>() {

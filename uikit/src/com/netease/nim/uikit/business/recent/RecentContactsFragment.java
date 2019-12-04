@@ -33,6 +33,8 @@ import com.netease.nimlib.sdk.ResponseCode;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.attachment.MsgAttachment;
+import com.netease.nimlib.sdk.msg.constant.MsgStatusEnum;
+import com.netease.nimlib.sdk.msg.constant.MsgTypeEnum;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.msg.model.QueryDirectionEnum;
@@ -126,6 +128,88 @@ public class RecentContactsFragment extends TFragment {
         items = new ArrayList<>();
         cached = new HashMap<>(3);
         // adapter
+        RecentContact contact = new RecentContact() {
+            @Override
+            public String getContactId() {
+                return "17610860215";
+            }
+
+            @Override
+            public String getFromAccount() {
+                return "987987";
+            }
+
+            @Override
+            public String getFromNick() {
+                return "女神";
+            }
+
+            @Override
+            public SessionTypeEnum getSessionType() {
+                return SessionTypeEnum.P2P;
+            }
+
+            @Override
+            public String getRecentMessageId() {
+                return "17610860215";
+            }
+
+            @Override
+            public MsgTypeEnum getMsgType() {
+                return MsgTypeEnum.text;
+            }
+
+            @Override
+            public MsgStatusEnum getMsgStatus() {
+                return MsgStatusEnum.success;
+            }
+
+            @Override
+            public void setMsgStatus(MsgStatusEnum msgStatusEnum) {
+
+            }
+
+            @Override
+            public int getUnreadCount() {
+                return 45;
+            }
+
+            @Override
+            public String getContent() {
+                return "约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会约会";
+            }
+
+            @Override
+            public long getTime() {
+                return 1575371303;
+            }
+
+            @Override
+            public MsgAttachment getAttachment() {
+                return null;
+            }
+
+            @Override
+            public void setTag(long l) {
+
+            }
+
+            @Override
+            public long getTag() {
+                return 0;
+            }
+
+            @Override
+            public Map<String, Object> getExtension() {
+                return null;
+            }
+
+            @Override
+            public void setExtension(Map<String, Object> map) {
+
+            }
+        };
+        items.add(contact);
         adapter = new RecentContactAdapter(recyclerView, items);
         initCallBack();
         adapter.setCallback(callback);

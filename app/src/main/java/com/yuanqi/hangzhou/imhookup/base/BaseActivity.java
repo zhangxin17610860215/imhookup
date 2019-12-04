@@ -1,20 +1,15 @@
 package com.yuanqi.hangzhou.imhookup.base;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.netease.nim.uikit.common.activity.UI;
 import com.netease.nim.uikit.common.util.log.LogUtil;
 import com.umeng.socialize.UMShareAPI;
 import com.yuanqi.hangzhou.imhookup.R;
@@ -25,15 +20,11 @@ import com.yuanqi.hangzhou.imhookup.view.LoadingDialog;
 
 import java.util.List;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends UI {
 
     public static boolean isActive; //全局变量  app是否进入后台
 
     protected LoadingDialog mProgressDialog;
-
-    private static Handler handler;
-
-    private boolean destroyed = false;
 
     public void setToolbar(final Activity activity, int leftLogo, String title) {
         TextView tvTitle = activity.findViewById(R.id.tv_tooblertitle);
@@ -96,19 +87,6 @@ public class BaseActivity extends AppCompatActivity {
         void onRight(View view);
     }
 
-    protected final Handler getHandler() {
-        if (handler == null) {
-            handler = new Handler(getMainLooper());
-        }
-        return handler;
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LogUtil.ui("ui>>>>>>>>>>" + getClass().getSimpleName() + " onCreate()");
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -132,20 +110,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         LogUtil.ui("activity: " + getClass().getSimpleName() + " onDestroy()");
-        destroyed = true;
-    }
-
-    public boolean isDestroyedCompatible() {
-        if (Build.VERSION.SDK_INT >= 17) {
-            return isDestroyedCompatible17();
-        } else {
-            return destroyed || super.isFinishing();
-        }
-    }
-
-    @TargetApi(17)
-    private boolean isDestroyedCompatible17() {
-        return super.isDestroyed();
     }
 
     /**

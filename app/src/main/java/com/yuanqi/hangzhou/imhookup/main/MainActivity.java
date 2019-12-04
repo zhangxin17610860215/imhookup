@@ -20,13 +20,30 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.netease.nim.uikit.api.model.main.LoginSyncDataStatusObserver;
 import com.netease.nim.uikit.common.ModuleUIComFn;
+import com.netease.nim.uikit.common.reminder.ReminderItem;
+import com.netease.nim.uikit.common.reminder.ReminderManager;
+import com.netease.nim.uikit.common.reminder.ReminderSettings;
+import com.netease.nim.uikit.common.ui.dialog.DialogMaker;
+import com.netease.nim.uikit.common.ui.drop.DropCover;
+import com.netease.nim.uikit.common.ui.drop.DropFake;
+import com.netease.nim.uikit.common.ui.drop.DropManager;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.Observer;
+import com.netease.nimlib.sdk.RequestCallback;
+import com.netease.nimlib.sdk.msg.MsgService;
+import com.netease.nimlib.sdk.msg.SystemMessageObserver;
+import com.netease.nimlib.sdk.msg.SystemMessageService;
+import com.netease.nimlib.sdk.msg.model.RecentContact;
+import com.netease.nimlib.sdk.msg.model.SystemMessage;
 import com.yuanqi.hangzhou.imhookup.R;
+import com.yuanqi.hangzhou.imhookup.SplashActivity;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
 import com.yuanqi.hangzhou.imhookup.home.AnonymousReportActivity;
 import com.yuanqi.hangzhou.imhookup.home.HomeFragment;
 import com.yuanqi.hangzhou.imhookup.me.MeFragment;
-import com.yuanqi.hangzhou.imhookup.message.MessageFragment;
+import com.yuanqi.hangzhou.imhookup.message.NewMessageFragment;
 import com.yuanqi.hangzhou.imhookup.radio.RadioFragment;
 import com.yuanqi.hangzhou.imhookup.utils.StatusBarsUtil;
 import com.yuanqi.hangzhou.imhookup.view.MyNoScrollViewPager;
@@ -37,22 +54,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements ReminderManager.UnreadNumChangedCallback {
 
     @BindView(R.id.view_pager_main)
     MyNoScrollViewPager viewPagerMain;
     @BindView(R.id.tv_main_tab_home)
     TextView tvMainTabHome;
     @BindView(R.id.ll_main_tab_home)
-    LinearLayout llMainTabHome;
+    RelativeLayout llMainTabHome;
     @BindView(R.id.tv_main_tab_radio)
     TextView tvMainTabRadio;
     @BindView(R.id.ll_main_tab_radio)
-    LinearLayout llMainTabRadio;
+    RelativeLayout llMainTabRadio;
     @BindView(R.id.tv_main_tab_message)
     TextView tvMainTabMessage;
     @BindView(R.id.ll_main_tab_message)
-    LinearLayout llMainTabMessage;
+    RelativeLayout llMainTabMessage;
     @BindView(R.id.tv_main_tab_me)
     TextView tvMainTabMe;
     @BindView(R.id.img_my_visible)
@@ -61,6 +78,14 @@ public class MainActivity extends BaseActivity {
     RelativeLayout llMainTabMe;
     @BindView(R.id.ll_main_bottom)
     LinearLayout llMainBottom;
+    @BindView(R.id.unread_number_home)
+    DropFake unread_number_home;
+    @BindView(R.id.unread_number_radio)
+    DropFake unread_number_radio;
+    @BindView(R.id.unread_number_message)
+    DropFake unread_number_message;
+    @BindView(R.id.unread_number_me)
+    DropFake unread_number_me;
 
     private Activity activity;
 
@@ -73,7 +98,7 @@ public class MainActivity extends BaseActivity {
     private BottomBarListener mBottomBarListener;
     private HomeFragment mHomeFragment;
     private RadioFragment mRadioFragment;
-    private MessageFragment mMessageFragment;
+    private NewMessageFragment mMessageFragment;
     private MeFragment mMeFragment;
     private MainPagerAdapter mMainPagerAdapter;
     private MainOnPageChangeListener mMainOnPageChangeListener;
@@ -102,7 +127,13 @@ public class MainActivity extends BaseActivity {
         initStatusBars();
         //检查权限
         checkPermission();
+        observerSyncDataComplete();
         initView();
+        initModuleComFn();
+        initUnreadCover();
+        registerMsgUnreadInfoObserver(true);
+        registerSystemMessageObservers(true);
+        requestSystemMessageUnreadCount();
         initData();
 
     }
@@ -178,8 +209,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
-
-        initModuleComFn();
         mTabTextColorSelecdted = getResources().getColor(R.color.text_theme_color);
         mTabTextColorNormal = getResources().getColor(R.color.color_gray_999999);
 
@@ -205,12 +234,47 @@ public class MainActivity extends BaseActivity {
         mMainOnPageChangeListener = new MainOnPageChangeListener();
         mHomeFragment = HomeFragment.newInstance("Home", "");
         mRadioFragment = RadioFragment.newInstance("Radio", "");
-        mMessageFragment = MessageFragment.newInstance("Message", "");
+        mMessageFragment = NewMessageFragment.newInstance("Message", "");
         mMeFragment = MeFragment.newInstance("Me", "");
         viewPagerMain.setAdapter(mMainPagerAdapter);
         viewPagerMain.setOnPageChangeListener(mMainOnPageChangeListener);
         viewPagerMain.setOffscreenPageLimit(3);
         mBottomBarListener = new BottomBarListener();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        registerMsgUnreadInfoObserver(false);
+        registerSystemMessageObservers(false);
+        DropManager.getInstance().destroy();
+    }
+
+    /**
+     * 注册未读消息数量观察者
+     */
+    private void registerMsgUnreadInfoObserver(boolean register) {
+        if (register) {
+            ReminderManager.getInstance().registerUnreadNumChangedCallback(this);
+        } else {
+            ReminderManager.getInstance().unregisterUnreadNumChangedCallback(this);
+        }
+    }
+
+    /**
+     * 注册/注销系统消息未读数变化
+     */
+    private void registerSystemMessageObservers(boolean register) {
+        NIMClient.getService(SystemMessageObserver.class).observeUnreadCountChange(sysMsgUnreadCountChangedObserver, register);
+    }
+
+    /**
+     * 查询系统消息未读数
+     */
+    private void requestSystemMessageUnreadCount() {
+        int unread = NIMClient.getService(SystemMessageService.class).querySystemMessageUnreadCountBlock();
+//        SystemMessageUnreadManager.getInstance().setSysMsgUnreadCount(unread);
+        ReminderManager.getInstance().updateContactUnreadNum(unread);
     }
 
     private void initModuleComFn() {
@@ -225,6 +289,113 @@ public class MainActivity extends BaseActivity {
 
     private void initData() {
 
+    }
+
+    private Observer<Integer> sysMsgUnreadCountChangedObserver = new Observer<Integer>() {
+        @Override
+        public void onEvent(Integer unreadCount) {
+
+            NIMClient.getService(SystemMessageService.class).querySystemMessageUnread()
+                    .setCallback(new RequestCallback<List<SystemMessage>>() {
+                        @Override
+                        public void onSuccess(List<SystemMessage> systemMessages) {
+                            for (int i = 0; i < systemMessages.size(); i++){
+                                SystemMessage msg = systemMessages.get(i);
+                                for (int j = systemMessages.size() - 1 ; j > i; j--){
+                                    SystemMessage msg2 = systemMessages.get(j);
+                                    if (msg.getFromAccount().equals(msg2.getFromAccount()) && msg.getType().getValue() == msg2.getType().getValue()){
+                                        systemMessages.remove(msg2);
+                                    }
+
+                                }
+                            }
+//                            SystemMessageUnreadManager.getInstance().setSysMsgUnreadCount(systemMessages.size());
+                            ReminderManager.getInstance().updateContactUnreadNum(systemMessages.size());
+                        }
+
+                        @Override
+                        public void onFailed(int i) {
+
+                        }
+
+                        @Override
+                        public void onException(Throwable throwable) {
+
+                        }
+                    });
+        }
+    };
+
+    @Override
+    public void onUnreadNumChanged(ReminderItem item) {
+        setRedPoint(unread_number_message, item);
+    }
+
+    private void setRedPoint(DropFake redPointView, ReminderItem item) {
+        if (redPointView != null) {
+            redPointView.setTouchListener(new DropFake.ITouchListener() {
+                @Override
+                public void onDown() {
+                    DropManager.getInstance().setCurrentId(String.valueOf(item.getId()));
+                    DropManager.getInstance().down(redPointView, redPointView.getText());
+                }
+
+                @Override
+                public void onMove(float curX, float curY) {
+                    DropManager.getInstance().move(curX, curY);
+                }
+
+                @Override
+                public void onUp() {
+                    DropManager.getInstance().up();
+                }
+            });
+        }
+        int unread = item.unread();
+        redPointView.setVisibility(unread > 0 ? View.VISIBLE : View.GONE);
+        if (unread > 0) {
+            redPointView.setText(String.valueOf(ReminderSettings.unreadMessageShowRule(unread)));
+        }
+    }
+
+    private void observerSyncDataComplete() {
+        boolean syncCompleted = LoginSyncDataStatusObserver.getInstance().observeSyncDataCompletedEvent(new Observer<Void>() {
+            @Override
+            public void onEvent(Void v) {
+                DialogMaker.dismissProgressDialog();
+            }
+        });
+        //如果数据没有同步完成，弹个进度Dialog
+        if (!syncCompleted) {
+            DialogMaker.showProgressDialog(activity, "正在准备数据...").setCanceledOnTouchOutside(false);
+        }
+    }
+
+    //初始化未读红点动画
+    private void initUnreadCover() {
+        DropManager.getInstance().init(this, (DropCover) findView(R.id.unread_cover),
+                new DropCover.IDropCompletedListener() {
+                    @Override
+                    public void onCompleted(Object id, boolean explosive) {
+                        if (id == null || !explosive) {
+                            return;
+                        }
+
+                        if (id instanceof RecentContact) {
+                            RecentContact r = (RecentContact) id;
+                            NIMClient.getService(MsgService.class).clearUnreadCount(r.getContactId(), r.getSessionType());
+                            return;
+                        }
+
+                        if (id instanceof String) {
+                            if (((String) id).contentEquals("0")) {
+                                NIMClient.getService(MsgService.class).clearAllUnreadCount();
+                            } else if (((String) id).contentEquals("1")) {
+                                NIMClient.getService(SystemMessageService.class).resetSystemMessageUnreadCount();
+                            }
+                        }
+                    }
+                });
     }
 
     private class BottomBarListener implements View.OnClickListener {

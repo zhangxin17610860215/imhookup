@@ -40,15 +40,13 @@
             android:orientation="horizontal">
 
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_main_tab_home"
                 android:layout_width="0dp"
                 android:layout_height="49dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_main_tab_home"
@@ -60,19 +58,30 @@
                     android:paddingTop="3dp"
                     android:text="公园"
                     android:textColor="@color/text_theme_color"
-                    android:textSize="@dimen/text_size_10" />
+                    android:textSize="@dimen/text_size_10"
+                    android:layout_centerInParent="true"/>
 
-            </LinearLayout>
+                <com.netease.nim.uikit.common.ui.drop.DropFake
+                    android:id="@+id/unread_number_home"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_22"
+                    android:layout_alignTop="@id/tv_main_tab_home"
+                    android:layout_toEndOf="@id/tv_main_tab_home"
+                    android:layout_toRightOf="@id/tv_main_tab_home"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
 
 
-            <LinearLayout
+            <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/ll_main_tab_radio"
                 android:layout_width="0dp"
                 android:layout_height="49dp"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/tv_main_tab_radio"
@@ -84,17 +93,26 @@
                     android:paddingTop="3dp"
                     android:text="电台"
                     android:textColor="@color/color_gray_999999"
-                    android:textSize="@dimen/text_size_10" />
-            </LinearLayout>
+                    android:textSize="@dimen/text_size_10"
+                    android:layout_centerInParent="true"/>
+                <com.netease.nim.uikit.common.ui.drop.DropFake
+                    android:id="@+id/unread_number_radio"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_22"
+                    android:layout_alignTop="@id/tv_main_tab_radio"
+                    android:layout_toEndOf="@id/tv_main_tab_radio"
+                    android:layout_toRightOf="@id/tv_main_tab_radio"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_main_tab_message"
                 android:layout_width="0dp"
                 android:layout_height="49dp"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/tv_main_tab_message"
@@ -106,16 +124,27 @@
                     android:paddingTop="3dp"
                     android:text="消息"
                     android:textColor="@color/color_gray_999999"
-                    android:textSize="@dimen/text_size_10" />
-            </LinearLayout>
+                    android:textSize="@dimen/text_size_10"
+                    android:layout_centerInParent="true"/>
+
+                <com.netease.nim.uikit.common.ui.drop.DropFake
+                    android:id="@+id/unread_number_message"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_22"
+                    android:layout_alignTop="@id/tv_main_tab_message"
+                    android:layout_toEndOf="@id/tv_main_tab_message"
+                    android:layout_toRightOf="@id/tv_main_tab_message"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/ll_main_tab_me"
                 android:layout_width="0dp"
                 android:layout_height="49dp"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:visibility="visible">
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/tv_main_tab_me"
@@ -137,9 +166,24 @@
                     android:layout_toRightOf="@+id/tv_main_tab_me"
                     android:layout_marginLeft="-5dp"
                     android:layout_marginTop="5dp"/>
+                <com.netease.nim.uikit.common.ui.drop.DropFake
+                    android:id="@+id/unread_number_me"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_22"
+                    android:layout_alignTop="@id/tv_main_tab_me"
+                    android:layout_toEndOf="@id/tv_main_tab_me"
+                    android:layout_toRightOf="@id/tv_main_tab_me"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 
         </LinearLayout>
     </FrameLayout>
+    <com.netease.nim.uikit.common.ui.drop.DropCover
+        android:id="@+id/unread_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
 </RelativeLayout>
