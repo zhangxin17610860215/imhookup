@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dimen_15">
+
+    <com.netease.nim.uikit.common.ui.imageview.HeadImageView
+        android:id="@+id/img_header"
+        android:layout_width="@dimen/my_item_height_45"
+        android:layout_height="@dimen/my_item_height_45"
+        android:src="@mipmap/default_home_head"/>
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="@dimen/text_size_11"
+        android:textColor="@color/redpackageColor"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:layout_alignTop="@+id/img_header"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="你申请了约会币兑换"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/black"
+        android:layout_toRightOf="@+id/img_header"
+        android:layout_toLeftOf="@+id/tv_number"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_alignTop="@+id/img_header"
+        android:layout_marginTop="@dimen/dimen_5"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="11-28 16:49"
+        android:textSize="@dimen/text_size_11"
+        android:textColor="@color/color_gray_666666"
+        android:layout_toRightOf="@+id/img_header"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_alignBottom="@+id/img_header"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_toLeftOf="@+id/tv_number"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/activity_grey_bg"
+        android:layout_below="@+id/img_header"
+        android:layout_alignLeft="@+id/tv_time"
+        android:layout_marginTop="@dimen/dimen_10"/>
+
+</RelativeLayout>

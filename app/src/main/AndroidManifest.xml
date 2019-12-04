@@ -278,6 +278,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
+            android:name=".me.WalletActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
             android:name=".me.BlacklistActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>

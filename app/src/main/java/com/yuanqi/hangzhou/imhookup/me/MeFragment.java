@@ -61,6 +61,8 @@ public class MeFragment extends BaseFragment {
     TextView tvSeeNum;
     @BindView(R.id.tv_BurnDownNum)
     TextView tvBurnDownNum;
+    @BindView(R.id.tv_wallet)
+    TextView tvWallet;
 
     private Activity mActivity;
 
@@ -114,7 +116,7 @@ public class MeFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.img_editingmaterials, R.id.img_header, R.id.tv_addVIP, R.id.tv_Authentication, R.id.tv_PrivacySetting, R.id.tv_dynamic, R.id.tv_myAlbum, R.id.tv_evaluate, R.id.tv_myLike, R.id.tv_Blacklist, R.id.tv_recovery, R.id.tv_Setting, R.id.tv_Share, R.id.tv_Help})
+    @OnClick({R.id.img_editingmaterials, R.id.tv_wallet, R.id.img_header, R.id.tv_addVIP, R.id.tv_Authentication, R.id.tv_PrivacySetting, R.id.tv_dynamic, R.id.tv_myAlbum, R.id.tv_evaluate, R.id.tv_myLike, R.id.tv_Blacklist, R.id.tv_recovery, R.id.tv_Setting, R.id.tv_Share, R.id.tv_Help})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_editingmaterials:
@@ -129,6 +131,10 @@ public class MeFragment extends BaseFragment {
             case R.id.tv_Authentication:
                 //真人认证
                 AuthenticationActivity.start(mActivity);
+                break;
+            case R.id.tv_wallet:
+                //钱包
+                WalletActivity.start(mActivity);
                 break;
             case R.id.tv_PrivacySetting:
                 //隐私与连麦设置
