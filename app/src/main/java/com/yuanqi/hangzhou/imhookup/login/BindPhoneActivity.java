@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
+import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +31,13 @@ public class BindPhoneActivity extends BaseActivity {
     EditText etVerCode;
     @BindView(R.id.et_psw)
     EditText etPsw;
+    private Handler mHandler = new Handler();
     private Activity activity;
+    private Runnable mRunnable;
+    private int mSeconds = 30;
+    private String phone = "";
+    private String vfCode = "";
+    private String psw = "";
 
     public static void start(Context context) {
         Intent intent = new Intent(context, BindPhoneActivity.class);
@@ -43,13 +51,52 @@ public class BindPhoneActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         activity = this;
+        initView();
+    }
+
+    private void initView() {
         setToolbar(activity, 0, "");
+    }
+
+    private void initData() {
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mSeconds--;
+                if (mSeconds <= 0) {
+                    tvSendVerCode.setText("重新获取验证码");
+                    mRunnable = null;
+                    mSeconds = 30;
+                } else {
+                    tvSendVerCode.setText(mSeconds + "s后重新获取");
+                    mHandler.postDelayed(mRunnable, 1000);
+                }
+            }
+        };
+        mHandler.postDelayed(mRunnable, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != mHandler) {
+            mHandler.removeCallbacks(mRunnable);
+        }
     }
 
     @OnClick({R.id.tv_sendVerCode, R.id.tv_bindPhone})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_sendVerCode:
+                //发送验证码
+                if (null == mRunnable){
+                    phone = etPhone.getText().toString().trim();
+                    if (StringUtil.isEmpty(phone)){
+                        toast("请先输入手机号");
+                    }else {
+                        initData();
+                    }
+                }
                 break;
             case R.id.tv_bindPhone:
                 WelcomActivity.start(activity);

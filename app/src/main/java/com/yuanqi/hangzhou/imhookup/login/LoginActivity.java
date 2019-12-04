@@ -49,6 +49,7 @@ public class LoginActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_forgetPsw:
                 //忘记密码
+                ForgetPasswordActivity.start(activity);
                 break;
             case R.id.tv_login:
                 //登录

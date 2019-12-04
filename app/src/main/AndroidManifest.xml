@@ -199,6 +199,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
+            android:name=".login.ForgetPasswordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
             android:name=".login.BindPhoneActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>

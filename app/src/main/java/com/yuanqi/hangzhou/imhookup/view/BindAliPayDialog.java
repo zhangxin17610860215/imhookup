@@ -2,6 +2,8 @@ package com.yuanqi.hangzhou.imhookup.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -63,6 +65,21 @@ public class BindAliPayDialog extends CenterPopupView implements View.OnClickLis
 
         imgClose.setOnClickListener(this);
         tvConfirm.setOnClickListener(this);
+
+        // 不允许输入汉字
+        etAccount.setKeyListener(new DigitsKeyListener() {
+            @Override
+            public int getInputType() {
+                return InputType.TYPE_TEXT_VARIATION_PASSWORD;
+            }
+
+            @Override
+            protected char[] getAcceptedChars() {
+                String a = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+{}|:?\"<>/.,';\\][=-`";
+                char[] data = a.toCharArray();
+                return data;
+            }
+        });
     }
 
     private void initData() {

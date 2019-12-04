@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
-import com.yuanqi.hangzhou.imhookup.user.GenderSelectionAct;
 import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 
 import butterknife.BindView;
@@ -20,9 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * 注册
+ * 忘记密码
  */
-public class RegisterActivity extends BaseActivity {
+public class ForgetPasswordActivity extends BaseActivity {
 
     @BindView(R.id.et_phone)
     EditText etPhone;
@@ -32,7 +31,6 @@ public class RegisterActivity extends BaseActivity {
     EditText etVfCode;
     @BindView(R.id.et_setPsw)
     EditText etSetPsw;
-
     private Activity activity;
     private Handler mHandler = new Handler();
 
@@ -43,18 +41,17 @@ public class RegisterActivity extends BaseActivity {
     private String psw = "";
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, RegisterActivity.class);
+        Intent intent = new Intent(context, ForgetPasswordActivity.class);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_activity_layout);
+        setContentView(R.layout.forgetpassword_layout);
         ButterKnife.bind(this);
 
         activity = this;
-
         initView();
     }
 
@@ -88,8 +85,7 @@ public class RegisterActivity extends BaseActivity {
             mHandler.removeCallbacks(mRunnable);
         }
     }
-
-    @OnClick({R.id.tv_send_vfCode, R.id.tv_Next, R.id.tv_Agreement, R.id.img_weixin, R.id.img_qq})
+    @OnClick({R.id.tv_send_vfCode, R.id.tv_Next})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_send_vfCode:
@@ -104,7 +100,6 @@ public class RegisterActivity extends BaseActivity {
                 }
                 break;
             case R.id.tv_Next:
-                //下一步
                 phone = etPhone.getText().toString().trim();
                 vfCode = etVfCode.getText().toString().trim();
                 psw = etSetPsw.getText().toString().trim();
@@ -120,16 +115,8 @@ public class RegisterActivity extends BaseActivity {
                     toast("请输入密码");
                     return;
                 }
-                GenderSelectionAct.start(activity);
-                break;
-            case R.id.tv_Agreement:
-                //用户协议
-                break;
-            case R.id.img_weixin:
-                //微信
-                break;
-            case R.id.img_qq:
-                //QQ
+                toast("密码修改成功");
+                finish();
                 break;
         }
     }
