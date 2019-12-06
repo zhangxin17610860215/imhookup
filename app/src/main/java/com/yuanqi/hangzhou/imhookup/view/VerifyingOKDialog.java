@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.core.CenterPopupView;
 import com.yuanqi.hangzhou.imhookup.R;
-import com.yuanqi.hangzhou.imhookup.user.GenderSelectionAct;
+import com.yuanqi.hangzhou.imhookup.me.GenderSelectionAct;
 
 /**
  * 邀请码验证通过

@@ -1,20 +1,15 @@
 package com.yuanqi.hangzhou.imhookup.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lxj.xpopup.core.BottomPopupView;
-import com.lxj.xpopup.core.CenterPopupView;
 import com.yuanqi.hangzhou.imhookup.R;
-import com.yuanqi.hangzhou.imhookup.user.PerfectDataActivity;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 

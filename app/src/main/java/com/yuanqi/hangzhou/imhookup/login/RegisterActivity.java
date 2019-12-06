@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
-import com.yuanqi.hangzhou.imhookup.user.GenderSelectionAct;
+import com.yuanqi.hangzhou.imhookup.me.GenderSelectionAct;
 import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 
 import butterknife.BindView;

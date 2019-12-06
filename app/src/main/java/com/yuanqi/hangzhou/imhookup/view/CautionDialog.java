@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.core.CenterPopupView;
 import com.yuanqi.hangzhou.imhookup.R;
-import com.yuanqi.hangzhou.imhookup.user.PerfectDataActivity;
+import com.yuanqi.hangzhou.imhookup.me.PerfectDataActivity;
 
 /**
  * 警示弹窗

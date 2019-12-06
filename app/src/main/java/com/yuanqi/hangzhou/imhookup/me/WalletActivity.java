@@ -24,7 +24,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
 import com.yuanqi.hangzhou.imhookup.home.DetailsActivity;
-import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 import com.yuanqi.hangzhou.imhookup.view.BindAliPayDialog;
 import com.yuanqi.hangzhou.imhookup.view.CurrencyRechargeDialog;
 import com.yuanqi.hangzhou.imhookup.view.CurrencyWithdrawalDialog;

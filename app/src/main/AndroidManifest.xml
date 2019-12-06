@@ -215,11 +215,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".user.GenderSelectionAct"
+            android:name=".me.GenderSelectionAct"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".user.PerfectDataActivity"
+            android:name=".me.PerfectDataActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity

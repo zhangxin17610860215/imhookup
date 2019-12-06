@@ -122,6 +122,7 @@ public class MeFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.img_editingmaterials:
                 //编辑资料
+                PerfectDataActivity.start(mActivity);
                 break;
             case R.id.img_header:
                 //头像

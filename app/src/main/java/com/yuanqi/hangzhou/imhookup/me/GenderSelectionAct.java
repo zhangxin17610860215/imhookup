@@ -1,4 +1,4 @@
-package com.yuanqi.hangzhou.imhookup.user;
+package com.yuanqi.hangzhou.imhookup.me;
 
 import android.app.Activity;
 import android.content.Context;

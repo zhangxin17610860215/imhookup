@@ -34,7 +34,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="@dimen/dimen_20"
                 android:layout_marginBottom="@dimen/dimen_10"/>
-            <ImageView
+            <com.netease.nim.uikit.common.ui.imageview.HeadImageView
                 android:id="@+id/img_upHead"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
