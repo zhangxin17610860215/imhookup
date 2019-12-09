@@ -28,14 +28,19 @@ import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
 import com.yuanqi.hangzhou.imhookup.main.MainActivity;
 import com.yuanqi.hangzhou.imhookup.utils.StatusBarsUtil;
+import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 import com.yuanqi.hangzhou.imhookup.view.ChoiceCityDialog;
-import com.yuanqi.hangzhou.imhookup.view.CurrencyRechargeDialog;
+import com.yuanqi.hangzhou.imhookup.view.CustomDatePicker;
+import com.yuanqi.hangzhou.imhookup.view.MiddleListDialog;
 
 import org.json.JSONArray;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,10 +59,20 @@ public class PerfectDataActivity extends BaseActivity {
     TextView tvSelecteCity;
     @BindView(R.id.tv_Birthday)
     TextView tvBirthday;
+    @BindView(R.id.tv_Occupation)
+    TextView tvOccupation;
+    @BindView(R.id.tv_Expect)
+    TextView tvExpect;
+    @BindView(R.id.tv_height)
+    TextView tvHeight;
+    @BindView(R.id.tv_weight)
+    TextView tvWeight;
     @BindView(R.id.et_QQ)
     EditText etQQ;
     @BindView(R.id.et_wechat)
     EditText etWechat;
+    @BindView(R.id.et_introduce)
+    EditText etIntroduce;
     @BindView(R.id.tv_isShow)
     TextView tvIsShow;
     private Activity activity;
@@ -177,7 +192,7 @@ public class PerfectDataActivity extends BaseActivity {
         return detail;
     }
 
-    @OnClick({R.id.img_upHead, R.id.tv_selecteCity, R.id.tv_Birthday, R.id.tv_isShow, R.id.tv_Submission})
+    @OnClick({R.id.img_upHead, R.id.tv_selecteCity, R.id.tv_Birthday, R.id.tv_Occupation, R.id.tv_Expect, R.id.tv_height, R.id.tv_weight, R.id.tv_isShow, R.id.tv_Submission})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_upHead:
@@ -192,6 +207,49 @@ public class PerfectDataActivity extends BaseActivity {
                 break;
             case R.id.tv_Birthday:
                 //选择生日
+                DatePicker();
+                break;
+            case R.id.tv_Occupation:
+                //选择职业
+                break;
+            case R.id.tv_Expect:
+                //期望对象
+                new XPopup.Builder(activity)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new MiddleListDialog(activity, 1, new MiddleListDialog.OnClickListener() {
+                            @Override
+                            public void onClick(String text) {
+                                tvExpect.setText(text);
+                                tvExpect.setTextColor(getResources().getColor(R.color.black));
+                            }
+                        }))
+                        .show();
+                break;
+            case R.id.tv_height:
+                //身高
+                new XPopup.Builder(activity)
+                        .dismissOnTouchOutside(true)
+                        .asCustom(new MiddleListDialog(activity, 2, new MiddleListDialog.OnClickListener() {
+                            @Override
+                            public void onClick(String text) {
+                                tvHeight.setText(text);
+                                tvExpect.setTextColor(getResources().getColor(R.color.black));
+                            }
+                        }))
+                        .show();
+                break;
+            case R.id.tv_weight:
+                //体重
+                new XPopup.Builder(activity)
+                        .dismissOnTouchOutside(true)
+                        .asCustom(new MiddleListDialog(activity, 3, new MiddleListDialog.OnClickListener() {
+                            @Override
+                            public void onClick(String text) {
+                                tvWeight.setText(text);
+                                tvExpect.setTextColor(getResources().getColor(R.color.black));
+                            }
+                        }))
+                        .show();
                 break;
             case R.id.tv_isShow:
                 //是否隐藏
@@ -201,6 +259,34 @@ public class PerfectDataActivity extends BaseActivity {
                 MainActivity.start(activity);
                 break;
         }
+    }
+
+    private CustomDatePicker customDatePicker;
+    private String now;
+
+    /**
+     * 显示时间
+     */
+    private void DatePicker() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+        //获取当前时间
+        now = sdf.format(new Date());
+        customDatePicker = new CustomDatePicker(this, new CustomDatePicker.ResultHandler() {
+            @Override
+            public void handle(String time) { // 回调接口，获得选中的时间
+                tvBirthday.setText(time.split(" ")[0]);
+                tvBirthday.setTextColor(getResources().getColor(R.color.black));
+
+            }
+        }, "1960-01-01 00:00", now); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+        customDatePicker.showSpecificTime(false); // 不显示时和分
+        customDatePicker.setIsLoop(false); // 不允许循环滚动
+        if (StringUtil.isEmpty(tvBirthday.getText().toString().trim()) || tvBirthday.getText().toString().equals("请选择")){
+            customDatePicker.show(now);
+        }else {
+            customDatePicker.show(tvBirthday.getText().toString());
+        }
+
     }
 
     private void initPopupWindow() {

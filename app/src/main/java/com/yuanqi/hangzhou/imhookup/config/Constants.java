@@ -36,6 +36,11 @@ public class Constants {
     }
 
     /**
+     * 期望对象  数据源
+     * */
+    public static final String[] expectList = new String[]{"看脸","有趣","土豪","关爱我","看感觉","无所谓"};
+
+    /**
      * 错误码
      */
     public class RESPONSE_CODE {
