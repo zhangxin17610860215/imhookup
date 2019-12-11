@@ -335,7 +335,6 @@ public class MeFragment extends BaseFragment {
                 photoBean.setBurnAfterReading(false);
                 photoBean.setPhotoUrl(file.getPath());
                 list.add(photoBean);
-
                 if (sendImageNum == imgListSize){
                     Intent intent = new Intent();
                     intent.setClass(mActivity, LookPhotoActivity.class);
