@@ -77,16 +77,40 @@ public class PerfectDataActivity extends BaseActivity {
     TextView tvIsShow;
     private Activity activity;
     private CityBean cityBean = new CityBean();
+    private CityBean occupationBean = new CityBean();
     private List<CityBean.ChildBeanX> city = new ArrayList<>();
+    private List<CityBean.ChildBeanX> occupation = new ArrayList<>();
     private List<CityBean> options1Text = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Text = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Value = new ArrayList<>();
+    private List<CityBean> occupation1Text = new ArrayList<>();
+    private ArrayList<ArrayList<String>> occupation2Text = new ArrayList<>();
+    private ArrayList<ArrayList<String>> occupation2Value = new ArrayList<>();
+    private ArrayList<CityBean> beanList = new ArrayList<>();
     private ArrayList<CityBean> cityBeanList = new ArrayList<>();
+    private ArrayList<CityBean> occupationBeanList = new ArrayList<>();
     /**
      * 已选过的城市
      * */
+    private List<String> selCityValueList = new ArrayList<>();
+    private List<String> selCityTextList = new ArrayList<>();
+
+    /**
+     * 已选过的职业
+     * */
+    private List<String> selOccupationValueList = new ArrayList<>();
+    private List<String> selOccupationTextList = new ArrayList<>();
+
+    /**
+     * 已选过的城市/职业
+     * */
     private List<String> selValueList = new ArrayList<>();
     private List<String> selTextList = new ArrayList<>();
+
+    /**
+     * 是否隐藏社交账号   默认关闭(不隐藏)
+     * */
+    private boolean isHideAccounts = false;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PerfectDataActivity.class);
@@ -104,24 +128,35 @@ public class PerfectDataActivity extends BaseActivity {
 
         initData();
         initCityData();
+        initOccupationData();
+        hideAccounts();
     }
 
     private void initData() {
-        selValueList.clear();
-        selValueList.add("140800");
-        selValueList.add("110100");
-        selTextList.clear();
-        selTextList.add("运城市");
-        selTextList.add("北京市");
+        //默认选中城市
+        selCityValueList.clear();
+        selCityValueList.add("140800");
+        selCityValueList.add("110100");
+        selCityTextList.clear();
+        selCityTextList.add("运城市");
+        selCityTextList.add("北京市");
         String cityText = "";
-        for (int i = 0; i < selTextList.size(); i++){
-            cityText = cityText + selTextList.get(i) + "/";
+        for (int i = 0; i < selCityTextList.size(); i++){
+            cityText = cityText + selCityTextList.get(i) + "/";
         }
         if (cityText.contains("/")){
             cityText = cityText.substring(0,cityText.length()-1);
         }
         tvSelecteCity.setText(cityText);
         tvSelecteCity.setTextColor(getResources().getColor(R.color.color_333333));
+
+        //默认选中职业
+        selOccupationValueList.clear();
+        selOccupationValueList.add("1002");
+        selOccupationTextList.clear();
+        selOccupationTextList.add("IT");
+        tvOccupation.setText(selOccupationTextList.get(0));
+        tvOccupation.setTextColor(getResources().getColor(R.color.color_333333));
     }
 
     /**
@@ -131,49 +166,70 @@ public class PerfectDataActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                initJsonData();
+                initCityJsonData();
             }
         }).start();
     }
 
-    private void initJsonData() {
+    /**
+     * 初始化职业json数据
+     * */
+    private void initOccupationData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initOccupationJsonData();
+            }
+        }).start();
+    }
+
+    private void initCityJsonData() {
         /**
          * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
          * 关键逻辑在于循环体
          * */
         String JsonData = new GetJsonDataUtil().getJson(this, "province.json");//获取assets目录下的json文件数据
-        Log.e("TAG","JsonData>>>>>>>>" + JsonData);
+        Log.e("TAG","CityJsonData>>>>>>>>" + JsonData);
         cityBeanList = parseData(JsonData);//用Gson 转成实体
 
         for (int i = 0; i < cityBeanList.size(); i ++ ){
             cityBean = cityBeanList.get(i);
-//            LogUtil.e(TAG, "省>>>>"+cityBean.getText());
             ArrayList<String> cityStringList = new ArrayList<>();
             ArrayList<String> cityStringValue = new ArrayList<>();
-//            ArrayList<ArrayList<String>> countyStringList = new ArrayList<>();
-//            ArrayList<ArrayList<String>> countyStringValue = new ArrayList<>();
             for (int j = 0; j < cityBean.getChild().size(); j ++){
-                ArrayList<String> strings = new ArrayList<>();
-                ArrayList<String> stringv = new ArrayList<>();
                 city = cityBeanList.get(i).getChild();
-//                LogUtil.e(TAG, "市>>>>"+city.get(j).getText());
                 cityStringList.add(city.get(j).getText());
                 cityStringValue.add(city.get(j).getValue());
-//                for (int x = 0; x < city.get(j).getChild().size(); x ++){
-//                    child = city.get(j).getChild();
-////                    LogUtil.e(TAG, "县>>>>"+child.get(x).getText());
-//                    strings.add(child.get(x).getText());
-//                    stringv.add(child.get(x).getValue());
-//                }
-//                countyStringList.add(strings);
-//                countyStringValue.add(stringv);
             }
 
             options1Text.add(cityBean);
             options2Text.add(cityStringList);
             options2Value.add(cityStringValue);
-//            options3Text.add(countyStringList);
-//            options3Value.add(countyStringValue);
+        }
+    }
+
+    private void initOccupationJsonData() {
+        /**
+         * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
+         * 关键逻辑在于循环体
+         * */
+        String JsonData = new GetJsonDataUtil().getJson(this, "occupation.json");//获取assets目录下的json文件数据
+        Log.e("TAG","OccupationJsonData>>>>>>>>" + JsonData);
+        occupationBeanList = parseData(JsonData);//用Gson 转成实体
+
+        for (int i = 0; i < occupationBeanList.size(); i ++ ){
+            occupationBean = occupationBeanList.get(i);
+            ArrayList<String> occupationStringList = new ArrayList<>();
+            ArrayList<String> occupationStringValue = new ArrayList<>();
+            for (int j = 0; j < occupationBean.getChild().size(); j ++){
+                occupation = occupationBeanList.get(i).getChild();
+                occupationStringList.add(occupation.get(j).getText());
+                occupationStringValue.add(occupation.get(j).getValue());
+            }
+
+            occupation1Text.add(occupationBean);
+            occupation2Text.add(occupationStringList);
+            occupation2Value.add(occupationStringValue);
         }
     }
 
@@ -202,7 +258,7 @@ public class PerfectDataActivity extends BaseActivity {
             case R.id.tv_selecteCity:
                 //选择城市
                 if (options1Text.size() >= 0 && options2Text.size() >= 0){
-                    initPopupWindow();
+                    initPopupWindow(cityBeanList,selCityValueList,selCityTextList,1,4);
                 }
                 break;
             case R.id.tv_Birthday:
@@ -211,6 +267,9 @@ public class PerfectDataActivity extends BaseActivity {
                 break;
             case R.id.tv_Occupation:
                 //选择职业
+                if (occupation1Text.size() >= 0 &&occupation2Text.size() >= 0){
+                    initPopupWindow(occupationBeanList,selOccupationValueList,selOccupationTextList,2,1);
+                }
                 break;
             case R.id.tv_Expect:
                 //期望对象
@@ -252,13 +311,22 @@ public class PerfectDataActivity extends BaseActivity {
                         .show();
                 break;
             case R.id.tv_isShow:
-                //是否隐藏
+                //是否隐藏社交账号
+                isHideAccounts = !isHideAccounts;
+                hideAccounts();
                 break;
             case R.id.tv_Submission:
                 //提交
                 MainActivity.start(activity);
                 break;
         }
+    }
+
+    /**
+     * 切换隐藏社交账号
+     * */
+    private void hideAccounts() {
+        tvIsShow.setBackgroundResource(isHideAccounts ? R.mipmap.isshow_open : R.mipmap.isshow_close);
     }
 
     private CustomDatePicker customDatePicker;
@@ -289,28 +357,34 @@ public class PerfectDataActivity extends BaseActivity {
 
     }
 
-    private void initPopupWindow() {
+    private void initPopupWindow(ArrayList<CityBean> beanList, List<String> selValueList, List<String> selTextList, int type, int optionNumber) {
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
         int height = metric.heightPixels;   // 屏幕高度（像素）
         new XPopup.Builder(activity)
                 .dismissOnTouchOutside(false)
                 .maxHeight(height - StatusBarsUtil.getStatusBarHeight(activity))   //窗口高度减去状态栏高度
-                .asCustom(new ChoiceCityDialog(activity, cityBeanList, selValueList, selTextList, 1, 4, new ChoiceCityDialog.DetermineOnClickListener() {
+                .asCustom(new ChoiceCityDialog(activity, beanList, selValueList, selTextList, type, optionNumber, new ChoiceCityDialog.DetermineOnClickListener() {
                     @Override
                     public void determineOnClickListener(List<String> textList, List<String> valueList) {
                         if (null == valueList || textList.size() <= 0){
                             return;
                         }
-                        String cityText = "";
-                        for (int i = 0; i < textList.size(); i++){
-                            cityText = cityText + textList.get(i) + "/";
+                        if (type == 1){
+                            String cityText = "";
+                            for (int i = 0; i < textList.size(); i++){
+                                cityText = cityText + textList.get(i) + "/";
+                            }
+                            if (cityText.contains("/")){
+                                cityText = cityText.substring(0,cityText.length()-1);
+                            }
+                            tvSelecteCity.setText(cityText);
+                            tvSelecteCity.setTextColor(getResources().getColor(R.color.color_333333));
+                        }else if (type == 2){
+                            tvOccupation.setText(textList.get(0));
+                            tvOccupation.setTextColor(getResources().getColor(R.color.color_333333));
                         }
-                        if (cityText.contains("/")){
-                            cityText = cityText.substring(0,cityText.length()-1);
-                        }
-                        tvSelecteCity.setText(cityText);
-                        tvSelecteCity.setTextColor(getResources().getColor(R.color.color_333333));
+
                     }
                 }))
                 .show();
@@ -353,7 +427,7 @@ public class PerfectDataActivity extends BaseActivity {
         SendImageHelper.sendImageAfterSelfImagePicker(activity, data, new SendImageHelper.Callback() {
 
             @Override
-            public void sendImage(File file, boolean isOrig) {
+            public void sendImage(File file, boolean isOrig, int imgListSize) {
                 imgUpHead.setIsRect(true);
                 Glide.with(activity).load(file.getPath()).into(imgUpHead);
             }

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class SendImageHelper {
     public interface Callback {
-        void sendImage(File file, boolean isOrig);
+        void sendImage(File file, boolean isOrig, int imageListSize);
     }
 
     public static void sendImageAfterPreviewPhotoActivityResult(Intent data, Callback callback) {
@@ -53,11 +53,11 @@ public class SendImageHelper {
                 AttachmentStore.move(thumbMD5Path, origThumbMD5Path);
 
                 if (callback != null) {
-                    callback.sendImage(new File(origMD5Path), isOrig);
+                    callback.sendImage(new File(origMD5Path), isOrig, selectedImageFileList.size());
                 }
             } else {
                 if (callback != null) {
-                    callback.sendImage(imageFile, isOrig);
+                    callback.sendImage(imageFile, isOrig, selectedImageFileList.size());
                 }
             }
         }
@@ -66,7 +66,7 @@ public class SendImageHelper {
     public static void sendImageAfterSelfImagePicker(Context context, Intent data, final Callback callback) {
         boolean isOrig = data.getBooleanExtra(Extras.EXTRA_IS_ORIGINAL, false);
 
-        ArrayList<GLImage> images = (ArrayList<GLImage>) data.getSerializableExtra(Constants.EXTRA_RESULT_ITEMS);
+        final ArrayList<GLImage> images = (ArrayList<GLImage>) data.getSerializableExtra(Constants.EXTRA_RESULT_ITEMS);
         if (images == null) {
             ToastHelper.showToastLong(context, R.string.picker_image_error);
             return;
@@ -76,12 +76,12 @@ public class SendImageHelper {
             new SendImageTask(context, isOrig, photoInfo, new Callback() {
 
                 @Override
-                public void sendImage(File file, boolean isOrig) {
+                public void sendImage(File file, boolean isOrig, int imageListSize) {
                     if (callback != null) {
-                        callback.sendImage(file, isOrig);
+                        callback.sendImage(file, isOrig,images.size());
                     }
                 }
-            }).execute();
+            },images.size()).execute();
         }
     }
 
@@ -92,12 +92,14 @@ public class SendImageHelper {
         private boolean isOrig;
         private GLImage info;
         private Callback callback;
+        private int imageListSize;
 
-        public SendImageTask(Context context, boolean isOrig, GLImage info, Callback callback) {
+        public SendImageTask(Context context, boolean isOrig, GLImage info, Callback callback, int imageListSize) {
             this.context = context;
             this.isOrig = isOrig;
             this.info = info;
             this.callback = callback;
+            this.imageListSize = imageListSize;
         }
 
         @Override
@@ -150,7 +152,7 @@ public class SendImageHelper {
         protected void onPostExecute(File result) {
             super.onPostExecute(result);
             if (result != null && callback != null) {
-                callback.sendImage(result, isOrig);
+                callback.sendImage(result, isOrig, imageListSize);
             }
         }
     }

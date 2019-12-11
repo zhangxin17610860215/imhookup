@@ -7,10 +7,27 @@
     android:id="@+id/mRl"
     tools:ignore="MissingDefaultResource">
 
+    <TextView
+        android:id="@+id/tv_BurnAfterReading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/dimen_15"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:text="阅后即焚(查看2秒后焚毁)"
+        android:textSize="@dimen/text_size_15"
+        android:textColor="@color/black"
+        android:drawableLeft="@mipmap/unselected_logo"
+        android:drawablePadding="@dimen/dp_10"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/img_album_detail_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/tv_BurnAfterReading"/>
 
 </RelativeLayout>

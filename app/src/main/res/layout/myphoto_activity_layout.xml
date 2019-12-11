@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/activity_grey_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:orientation="horizontal"
+        android:background="@color/white">
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/back_icon"
+            android:paddingLeft="@dimen/dimen_15"
+            android:paddingRight="@dimen/dimen_15"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="我的相册"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:layout_centerInParent="true"/>
+        <TextView
+            android:id="@+id/tv_UpPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="上传照片"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/text_theme_color"
+            android:paddingRight="@dimen/dimen_15"
+            android:paddingLeft="@dimen/dimen_15"
+            android:gravity="center"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请勿上传非法裸露低俗的照片,严重者将封号"
+        android:textSize="@dimen/text_size_12"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:layout_marginTop="@dimen/dp_10"/>
+
+</LinearLayout>

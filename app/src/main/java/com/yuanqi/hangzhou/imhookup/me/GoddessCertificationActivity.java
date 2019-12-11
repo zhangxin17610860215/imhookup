@@ -127,7 +127,7 @@ public class GoddessCertificationActivity extends BaseActivity {
     private void sendImageAfterSelfImagePicker(final Intent data) {
         SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
             @Override
-            public void sendImage(File file, boolean isOrig) {
+            public void sendImage(File file, boolean isOrig, int imgListSize) {
                 Glide.with(mActivity).load(file.getPath()).into(imgUpPhotos);
                 imgUpPhotos.setClickable(false);
                 tvSubmission.setClickable(true);

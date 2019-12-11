@@ -229,10 +229,38 @@
                     android:paddingTop="@dimen/dimen_12"
                     android:paddingBottom="@dimen/dimen_12"/>
             </RelativeLayout>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/mRecyclerView"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/mRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+                <LinearLayout
+                    android:id="@+id/ll_noData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="上传我的第一张照片"
+                        android:textSize="@dimen/text_size_18"
+                        android:textColor="@color/color_gray_666666"
+                        android:gravity="center"
+                        android:paddingTop="@dimen/dimen_30"
+                        android:paddingBottom="@dimen/dp_10"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="有照片才能吸引女士哦"
+                        android:textColor="@color/color_999999"
+                        android:textSize="@dimen/text_size_10"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen_30"/>
+                </LinearLayout>
+            </RelativeLayout>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

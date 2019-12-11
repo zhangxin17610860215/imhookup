@@ -252,6 +252,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_70"
                     android:background="@color/white"
+                    android:numeric="integer"
                     android:hint="请填写"
                     android:textSize="@dimen/text_size_15"
                     android:textColor="@color/black"

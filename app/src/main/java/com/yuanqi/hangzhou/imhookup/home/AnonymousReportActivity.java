@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.business.session.constant.RequestCode;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
@@ -60,6 +61,7 @@ public class AnonymousReportActivity extends BaseActivity {
     private EasyRVAdapter mAdapter;
     private List<String> list = new ArrayList<>();
     private int selectorNumber = 5;
+    private int sendImageNum = 0;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, AnonymousReportActivity.class);
@@ -95,14 +97,13 @@ public class AnonymousReportActivity extends BaseActivity {
                 if (null == list || list.size() == 0) {
                     return;
                 }
-                HeadImageView imageView = viewHolder.getView(R.id.img_dynamic);
+                RoundedImageView imageView = viewHolder.getView(R.id.img_dynamic);
                 ImageView imgDeletePictures = viewHolder.getView(R.id.img_deletePictures);
 
                 if (StringUtil.isNotEmpty(list.get(position)) && list.get(position).equals("add")){
                     imageView.setImageResource(R.mipmap.add_img_icon);
                     imgDeletePictures.setVisibility(View.GONE);
                 }else {
-                    imageView.setIsRect(true);
                     Glide.with(mActivity).load(list.get(position)).into(imageView);
                     imgDeletePictures.setVisibility(View.VISIBLE);
                 }
@@ -173,15 +174,19 @@ public class AnonymousReportActivity extends BaseActivity {
      * 发送图片
      */
     private void sendImageAfterSelfImagePicker(final Intent data) {
+        sendImageNum = 0;
         SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
 
             @Override
-            public void sendImage(File file, boolean isOrig) {
+            public void sendImage(File file, boolean isOrig, int imageListSize) {
+                sendImageNum++;
                 list.add(list.size() - 1,file.getPath());
                 if (list.size() > 5){
                     list.remove(list.size() -1);
                 }
-                mAdapter.notifyDataSetChanged();
+                if (sendImageNum == imageListSize){
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

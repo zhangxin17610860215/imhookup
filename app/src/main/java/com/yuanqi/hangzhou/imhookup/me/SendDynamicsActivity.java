@@ -54,6 +54,7 @@ public class SendDynamicsActivity extends BaseActivity {
     private List<String> list = new ArrayList<>();
     private boolean noCommentNotice = false;            //禁止评论
     private boolean hideNotice = false;                 //隐藏
+    private int sendImageNum = 0;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SendDynamicsActivity.class);
@@ -140,15 +141,19 @@ public class SendDynamicsActivity extends BaseActivity {
      * 发送图片
      */
     private void sendImageAfterSelfImagePicker(final Intent data) {
+        sendImageNum = 0;
         SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
 
             @Override
-            public void sendImage(File file, boolean isOrig) {
+            public void sendImage(File file, boolean isOrig, int imgListSize) {
+                sendImageNum++;
                 list.add(list.size() - 1,file.getPath());
                 if (list.size() > 9){
                     list.remove(list.size() -1);
                 }
-                mAdapter.notifyDataSetChanged();
+                if (sendImageNum == imgListSize){
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

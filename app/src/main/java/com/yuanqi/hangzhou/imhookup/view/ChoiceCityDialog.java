@@ -54,10 +54,6 @@ public class ChoiceCityDialog extends BottomPopupView implements View.OnClickLis
     private ArrayList<CityBean> cityBeanList;
     private List<CityBean.ChildBeanX> childList = new ArrayList<>();
     private int posA = -1;
-    /**
-     * 首次进入
-     * */
-//    private boolean firstTimeIn = true;
 
     /**
      * 存放选择后的选项文字

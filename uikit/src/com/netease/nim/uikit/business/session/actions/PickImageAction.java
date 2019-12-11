@@ -73,7 +73,7 @@ public abstract class PickImageAction extends BaseAction {
         SendImageHelper.sendImageAfterSelfImagePicker(getActivity(), data, new SendImageHelper.Callback() {
 
             @Override
-            public void sendImage(File file, boolean isOrig) {
+            public void sendImage(File file, boolean isOrig, int imgListSize) {
                 onPicked(file);
 
             }

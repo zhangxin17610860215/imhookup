@@ -1,38 +1,47 @@
 package com.yuanqi.hangzhou.imhookup.me;
 
-import android.Manifest;
 import android.app.Activity;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.umeng.socialize.ShareAction;
-import com.umeng.socialize.UMShareListener;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.media.UMWeb;
-import com.umeng.socialize.shareboard.SnsPlatform;
-import com.umeng.socialize.utils.ShareBoardlistener;
+import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.business.session.helper.SendImageHelper;
+import com.netease.nim.uikit.common.ToastHelper;
+import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
+import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
+import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
+import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseFragment;
+import com.yuanqi.hangzhou.imhookup.bean.PhotoBean;
 import com.yuanqi.hangzhou.imhookup.login.VipCoreActivity;
 import com.yuanqi.hangzhou.imhookup.requestutils.api.ApiUrl;
 import com.yuanqi.hangzhou.imhookup.utils.EventBusUtils;
 import com.yuanqi.hangzhou.imhookup.utils.UMShareUtil;
 import com.yuanqi.hangzhou.imhookup.utils.pay.MyALipayUtils;
 import com.yuanqi.hangzhou.imhookup.wxapi.WXUtil;
+import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
+import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +49,6 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.yuanqi.hangzhou.imhookup.MyApplication.ALIPAY_APPID;
-import static com.yuanqi.hangzhou.imhookup.main.MainActivity.REQUEST_PERMISSION;
 
 /**
  * 我
@@ -64,8 +72,15 @@ public class MeFragment extends BaseFragment {
     TextView tvBurnDownNum;
     @BindView(R.id.tv_wallet)
     TextView tvWallet;
+    @BindView(R.id.ll_noData)
+    LinearLayout llNoData;
 
     private Activity mActivity;
+    private List<PhotoBean> burnAfterReadingList = new ArrayList<>();
+    private List<PhotoBean> list = new ArrayList<>();
+    private List<PhotoBean> photoList = new ArrayList<>();
+    private EasyRVAdapter mAdapter;
+    private int sendImageNum = 0;
 
     public MeFragment() {
 
@@ -104,11 +119,60 @@ public class MeFragment extends BaseFragment {
     }
 
     private void initView() {
-
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity,4));
     }
 
     private void initData() {
+        if (list.size() <= 0){
+            llNoData.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }else {
+            llNoData.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            photoList.clear();
+            for (int i = 0; list.size() > 8 ? i < 8 : i < list.size(); i ++){
+                photoList.add(list.get(i));
+            }
+        }
+        mAdapter = new EasyRVAdapter(mActivity,photoList,R.layout.item_mephoto_layout) {
+            @Override
+            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
+                PhotoBean photoBean = photoList.get(position);
+                RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
+                RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
+                TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
+                Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                tvMengceng.setVisibility(position == 7 ? View.VISIBLE : View.GONE);
+                tvMengceng.setText("+" + (list.size() - 8));
+                rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+
+                tvMengceng.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //进入我的相册
+                        Intent intent = new Intent();
+                        intent.setClass(mActivity, MyPhotoActivity.class);
+                        intent.putExtra("photoList", (Serializable) list);
+                        startActivityForResult(intent, 20);
+                    }
+                });
+                imgHead.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //查看删除该照片
+                        Intent intent = new Intent();
+                        intent.setClass(mActivity, LookPhotoActivity.class);
+                        intent.putExtra("position", position);
+                        intent.putExtra("photoList", (Serializable) list);
+                        intent.putExtra("accId",NimUIKit.getAccount());
+                        intent.putExtra("type","2");
+                        startActivityForResult(intent, 10);
+                    }
+                });
+            }
+        };
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -149,6 +213,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_myAlbum:
                 //我的相册
+                showSelector(R.string.input_panel_photo, 100, true, 9);
                 break;
             case R.id.tv_evaluate:
                 //我的评价
@@ -205,6 +270,83 @@ public class MeFragment extends BaseFragment {
                 //客服帮助
                 break;
         }
+    }
+
+    /**
+     * 打开图片选择器
+     */
+    private void showSelector(int titleId, int requestCode, boolean multiSelect, int number) {
+        ImagePickerOption option = DefaultImagePickerOption.getInstance().setShowCamera(true).setPickType(
+                ImagePickerOption.PickType.Image).setMultiMode(multiSelect).setSelectMax(number);
+        option.setSaveRectangle(true);
+//        ImagePickerLauncher.selectImage(mActivity, requestCode, option, titleId);
+        ImagePicker.getInstance().setOption(option);
+        Intent intent = new Intent(mActivity, ImageGridActivity.class);
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 100:
+                onPickImageActivityResult(requestCode, data);
+                break;
+            case 10:
+            case 20:
+                list = (List<PhotoBean>) data.getSerializableExtra("photoList");
+                if (list.size() <= 0){
+                    llNoData.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
+                }else {
+                    llNoData.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    photoList.clear();
+                    for (int i = 0; list.size() > 8 ? i < 8 : i < list.size(); i ++){
+                        photoList.add(list.get(i));
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
+                break;
+        }
+    }
+
+    /**
+     * 图片选取回调
+     */
+    private void onPickImageActivityResult(int requestCode, Intent data) {
+        if (data == null) {
+            ToastHelper.showToastLong(mActivity, R.string.picker_image_error);
+            return;
+        }
+        sendImageAfterSelfImagePicker(data);
+    }
+
+    /**
+     * 发送图片
+     */
+    private void sendImageAfterSelfImagePicker(final Intent data) {
+        sendImageNum = 0;
+        SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
+
+            @Override
+            public void sendImage(File file, boolean isOrig, int imgListSize) {
+                sendImageNum++;
+                PhotoBean photoBean = new PhotoBean();
+                photoBean.setBurnAfterReading(false);
+                photoBean.setPhotoUrl(file.getPath());
+                list.add(photoBean);
+
+                if (sendImageNum == imgListSize){
+                    Intent intent = new Intent();
+                    intent.setClass(mActivity, LookPhotoActivity.class);
+                    intent.putExtra("position", 0);
+                    intent.putExtra("photoList", (Serializable) list);
+                    intent.putExtra("accId",NimUIKit.getAccount());
+                    intent.putExtra("type","1");
+                    startActivityForResult(intent, 10);
+                }
+            }
+        });
     }
 
     @Override

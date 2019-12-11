@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/my_item_height_62"
-    android:layout_height="@dimen/my_item_height_62">
+    android:layout_height="@dimen/my_item_height_62"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.netease.nim.uikit.common.ui.imageview.HeadImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/img_dynamic"
         android:layout_width="@dimen/my_item_height_62"
         android:layout_height="@dimen/my_item_height_62"
         android:src="@mipmap/zhanwei_logo"
-        android:layout_margin="@dimen/dimen_5"/>
+        android:layout_margin="@dimen/dimen_5"
+        android:scaleType="fitXY"
+        app:riv_corner_radius="@dimen/dp_size_5"/>
 
     <ImageView
         android:id="@+id/img_deletePictures"
