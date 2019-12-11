@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.yuanqi.hangzhou.imhookup"
+    package="com.yqbj.yhgy"
     android:installLocation="auto">
 
     <uses-sdk tools:overrideLibrary="com.huawei.android.hms.base,com.huawei.android.hms.push" />
@@ -62,13 +62,13 @@
     <!-- SDK 权限申明, 第三方 APP 接入时，请将 com.netease.nim.demo 替换为自己的包名 -->
     <!-- 和下面的 uses-permission 一起加入到你的 AndroidManifest 文件中。 -->
     <permission
-        android:name="com.yuanqi.hangzhou.imhookup.permission.RECEIVE_MSG"
+        android:name="com.yqbj.yhgy.permission.RECEIVE_MSG"
         android:protectionLevel="signature"/>
     <!-- 接收 SDK 消息广播权限， 第三方 APP 接入时，请将 com.netease.nim.demo 替换为自己的包名 -->
-    <uses-permission android:name="com.yuanqi.hangzhou.imhookup.permission.RECEIVE_MSG"/>
+    <uses-permission android:name="com.yuanqi.yhgy.permission.RECEIVE_MSG"/>
 
     <application
-        android:name="com.yuanqi.hangzhou.imhookup.MyApplication"
+        android:name="com.yqbj.yhgy.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:roundIcon="@mipmap/icon"
@@ -80,13 +80,13 @@
 
         <!-- map -->
         <activity
-            android:name="com.yuanqi.hangzhou.imhookup.main.LocationAmapActivity"
+            android:name="com.yqbj.yhgy.main.LocationAmapActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="地图定位"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme" />
         <activity
-            android:name="com.yuanqi.hangzhou.imhookup.main.NavigationAmapActivity"
+            android:name="com.yqbj.yhgy.main.NavigationAmapActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="导航"
             android:screenOrientation="portrait"
@@ -101,7 +101,7 @@
             android:value="true" />
 
         <activity
-            android:name="com.yuanqi.hangzhou.imhookup.SplashActivity"
+            android:name="com.yqbj.yhgy.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/WelcomeEntranceActionBarTheme">
             <intent-filter>
@@ -120,13 +120,13 @@
             android:name="UMENG_CHANNEL"
             android:value="guanfang" />
         <activity
-            android:name=".wxapi.WXEntryActivity"
+            android:name="com.yqbj.yhgy.wxapi.WXEntryActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden" />
         <activity
-            android:name=".wxapi.WXPayEntryActivity"
+            android:name="com.yqbj.yhgy.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -177,152 +177,152 @@
         <!-- android:authorities="{包名}.ipc.provider", 请将com.netease.nim.demo替换为自己的包名 -->
         <provider
             android:name="com.netease.nimlib.ipc.NIMContentProvider"
-            android:authorities="com.yuanqi.hangzhou.imhookup.ipc.provider"
+            android:authorities="com.yqbj.yhgy.ipc.provider"
             android:exported="false"
             android:process=":core" />
         <!--云信End-->
 
         <activity
-            android:name=".main.MainActivity"
+            android:name="com.yqbj.yhgy.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.GetReadyLoginActivity"
+            android:name="com.yqbj.yhgy.login.GetReadyLoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.RegisterActivity"
+            android:name="com.yqbj.yhgy.login.RegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.LoginActivity"
+            android:name="com.yqbj.yhgy.login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.ForgetPasswordActivity"
+            android:name="com.yqbj.yhgy.login.ForgetPasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.BindPhoneActivity"
+            android:name="com.yqbj.yhgy.login.BindPhoneActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.WelcomActivity"
+            android:name="com.yqbj.yhgy.login.WelcomActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".login.VipCoreActivity"
+            android:name="com.yqbj.yhgy.login.VipCoreActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.GenderSelectionAct"
+            android:name="com.yqbj.yhgy.me.GenderSelectionAct"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.PerfectDataActivity"
+            android:name="com.yqbj.yhgy.me.PerfectDataActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".home.DetailsActivity"
+            android:name="com.yqbj.yhgy.home.DetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".home.AnonymousReportActivity"
+            android:name="com.yqbj.yhgy.home.AnonymousReportActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".home.DynamicActivity"
+            android:name="com.yqbj.yhgy.home.DynamicActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".home.SearchActivity"
+            android:name="com.yqbj.yhgy.home.SearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".message.MessageSettingActivity"
+            android:name="com.yqbj.yhgy.message.MessageSettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".message.CashRedPackageActivity"
+            android:name="com.yqbj.yhgy.message.CashRedPackageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/RedTheme"/>
         <activity
-            android:name=".message.CurrencyRedPackageActivity"
+            android:name="com.yqbj.yhgy.message.CurrencyRedPackageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CurrencyTheme"/>
         <activity
-            android:name=".message.CurrencyOthersCashRPDetailsActivity"
+            android:name="com.yqbj.yhgy.message.CurrencyOthersCashRPDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CurrencyTheme"/>
         <activity
-            android:name=".message.CurrencyRedPackageDetailsActivity"
+            android:name="com.yqbj.yhgy.message.CurrencyRedPackageDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CurrencyTheme"/>
         <activity
-            android:name=".message.CashRedPackageDetailsActivity"
+            android:name="com.yqbj.yhgy.message.CashRedPackageDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/RedTheme"/>
         <activity
-            android:name=".message.OthersCashRPDetailsActivity"
+            android:name="com.yqbj.yhgy.message.OthersCashRPDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/RedTheme"/>
         <!-- 下载文件 -->
         <activity
-            android:name=".main.FileDownloadActivity"
+            android:name="com.yqbj.yhgy.main.FileDownloadActivity"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme" />
         <activity
-            android:name=".main.WatchSnapChatPictureActivity"
+            android:name="com.yqbj.yhgy.main.WatchSnapChatPictureActivity"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme" />
         <activity
-            android:name=".me.SettingsActivity"
+            android:name="com.yqbj.yhgy.me.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.WalletActivity"
+            android:name="com.yqbj.yhgy.me.WalletActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.BlacklistActivity"
+            android:name="com.yqbj.yhgy.me.BlacklistActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.AuthenticationActivity"
+            android:name="com.yqbj.yhgy.me.AuthenticationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.LookPhotoActivity"
+            android:name="com.yqbj.yhgy.me.LookPhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.MyPhotoActivity"
+            android:name="com.yqbj.yhgy.me.MyPhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.GoddessCertificationActivity"
+            android:name="com.yqbj.yhgy.me.GoddessCertificationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.RealPersonCertificationActivity"
+            android:name="com.yqbj.yhgy.me.RealPersonCertificationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.MyLikeActivity"
+            android:name="com.yqbj.yhgy.me.MyLikeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.MyDynamicsActivity"
+            android:name="com.yqbj.yhgy.me.MyDynamicsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".me.SendDynamicsActivity"
+            android:name="com.yqbj.yhgy.me.SendDynamicsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
-            android:name=".main.SeePictureActivity"
+            android:name="com.yqbj.yhgy.main.SeePictureActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
     </application>
