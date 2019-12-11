@@ -328,7 +328,6 @@ public class MeFragment extends BaseFragment {
     private void sendImageAfterSelfImagePicker(final Intent data) {
         sendImageNum = 0;
         SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
-
             @Override
             public void sendImage(File file, boolean isOrig, int imgListSize) {
                 sendImageNum++;
