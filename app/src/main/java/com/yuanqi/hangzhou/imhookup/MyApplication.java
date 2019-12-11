@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -22,6 +23,8 @@ import com.netease.nim.uikit.api.UIKitOptions;
 import com.netease.nim.uikit.business.contact.core.query.PinYin;
 import com.netease.nim.uikit.business.team.helper.TeamHelper;
 import com.netease.nim.uikit.business.uinfo.UserInfoHelper;
+import com.netease.nim.uikit.common.util.CityBean;
+import com.netease.nim.uikit.common.util.GetJsonDataUtil;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.mixpush.NIMPushClient;
@@ -45,8 +48,11 @@ import com.yuanqi.hangzhou.imhookup.utils.Preferences;
 import com.yuanqi.hangzhou.imhookup.utils.UserPreferences;
 import com.yuanqi.hangzhou.imhookup.utils.cookieUtil.PersistentCookieStore;
 
+import org.json.JSONArray;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -111,6 +117,9 @@ public class MyApplication extends Application {
         initUMeng();
         initNIM();
         EventBusUtils.init();
+        //初始化城市/职业数据
+        initCityData();
+        initOccupationData();
     }
 
     private void initNIM() {
@@ -321,6 +330,55 @@ public class MyApplication extends Application {
         // 设置app图片/音频/日志等缓存目录
         options.appCacheDir = NimSDKOptionConfig.getAppCacheDir(this) + "/app";
         return options;
+    }
+
+    /**
+     * 读取城市json数据
+     * */
+    private void initCityData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initCityJsonData();
+            }
+        }).start();
+    }
+
+    /**
+     * 读取职业json数据
+     * */
+    private void initOccupationData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initOccupationJsonData();
+            }
+        }).start();
+    }
+
+    private void initCityJsonData() {
+        String JsonData = new GetJsonDataUtil().getJson(this, "citys.json");//获取assets目录下的json文件数据
+        Constants.CITYBEANLIST = parseData(JsonData);//用Gson 转成实体
+    }
+
+    private void initOccupationJsonData() {
+        String JsonData = new GetJsonDataUtil().getJson(this, "occupation.json");//获取assets目录下的json文件数据
+        Constants.OCCUPATIONBEANLIST = parseData(JsonData);//用Gson 转成实体
+    }
+
+    public ArrayList<CityBean> parseData(String result) {//Gson 解析
+        ArrayList<CityBean> detail = new ArrayList<>();
+        try {
+            JSONArray data = new JSONArray(result);
+            Gson gson = new Gson();
+            for (int i = 0; i < data.length(); i++) {
+                CityBean entity = gson.fromJson(data.optJSONObject(i).toString(), CityBean.class);
+                detail.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return detail;
     }
 }
 

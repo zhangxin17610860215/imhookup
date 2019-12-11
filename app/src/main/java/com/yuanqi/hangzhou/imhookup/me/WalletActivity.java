@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.common.ui.imageview.HeadImageView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -130,10 +132,11 @@ public class WalletActivity extends BaseActivity {
         mAdapter = new EasyRVAdapter(mActivity, list, R.layout.wallet_list_item_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
-                HeadImageView imgHeader = viewHolder.getView(R.id.img_header);
+                RoundedImageView imgHeader = viewHolder.getView(R.id.img_header);
                 TextView tvNumber = viewHolder.getView(R.id.tv_number);
                 TextView tvTitle = viewHolder.getView(R.id.tv_title);
                 TextView tvTime = viewHolder.getView(R.id.tv_time);
+                Glide.with(mActivity).load(list.get(position)).error(R.mipmap.default_home_head).into(imgHeader);
                 if (type == 1){
                     tvNumber.setText("-" + list.get(position) + "现金");
                     tvNumber.setTextColor(getResources().getColor(R.color.redpackageColor));

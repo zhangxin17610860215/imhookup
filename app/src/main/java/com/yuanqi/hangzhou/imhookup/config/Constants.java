@@ -1,7 +1,10 @@
 package com.yuanqi.hangzhou.imhookup.config;
 
+import com.netease.nim.uikit.common.util.CityBean;
 import com.yuanqi.hangzhou.imhookup.MyApplication;
 import com.yuanqi.hangzhou.imhookup.utils.AppUtils;
+
+import java.util.ArrayList;
 
 public class Constants {
 
@@ -36,9 +39,19 @@ public class Constants {
     }
 
     /**
+     * 城市数据
+     * */
+    public static ArrayList<CityBean> CITYBEANLIST = new ArrayList<>();
+
+    /**
+     * 职业数据
+     * */
+    public static ArrayList<CityBean> OCCUPATIONBEANLIST = new ArrayList<>();
+
+    /**
      * 期望对象  数据源
      * */
-    public static final String[] expectList = new String[]{"看脸","有趣","土豪","关爱我","看感觉","无所谓"};
+    public static final String[] EXPECTLIST = new String[]{"看脸","有趣","土豪","关爱我","看感觉","无所谓"};
 
     /**
      * 错误码

@@ -79,7 +79,7 @@ public class MiddleListDialog extends CenterPopupView implements View.OnClickLis
             case 1:
                 tvTitle.setText("期望对象");
                 rlTag.setVisibility(VISIBLE);
-                for (String expect : Constants.expectList){
+                for (String expect : Constants.EXPECTLIST){
                     list.add(expect);
                 }
                 break;

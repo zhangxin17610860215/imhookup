@@ -6,16 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePickerLauncher;
@@ -23,7 +18,6 @@ import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerO
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.ui.imageview.HeadImageView;
 import com.netease.nim.uikit.common.util.CityBean;
-import com.netease.nim.uikit.common.util.GetJsonDataUtil;
 import com.yuanqi.hangzhou.imhookup.R;
 import com.yuanqi.hangzhou.imhookup.base.BaseActivity;
 import com.yuanqi.hangzhou.imhookup.main.MainActivity;
@@ -32,8 +26,6 @@ import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 import com.yuanqi.hangzhou.imhookup.view.ChoiceCityDialog;
 import com.yuanqi.hangzhou.imhookup.view.CustomDatePicker;
 import com.yuanqi.hangzhou.imhookup.view.MiddleListDialog;
-
-import org.json.JSONArray;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -45,6 +37,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.yuanqi.hangzhou.imhookup.config.Constants.CITYBEANLIST;
+import static com.yuanqi.hangzhou.imhookup.config.Constants.OCCUPATIONBEANLIST;
 
 /**
  * 完善资料页面
@@ -75,20 +70,14 @@ public class PerfectDataActivity extends BaseActivity {
     EditText etIntroduce;
     @BindView(R.id.tv_isShow)
     TextView tvIsShow;
+
     private Activity activity;
-    private CityBean cityBean = new CityBean();
-    private CityBean occupationBean = new CityBean();
-    private List<CityBean.ChildBeanX> city = new ArrayList<>();
-    private List<CityBean.ChildBeanX> occupation = new ArrayList<>();
     private List<CityBean> options1Text = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Text = new ArrayList<>();
     private ArrayList<ArrayList<String>> options2Value = new ArrayList<>();
     private List<CityBean> occupation1Text = new ArrayList<>();
     private ArrayList<ArrayList<String>> occupation2Text = new ArrayList<>();
     private ArrayList<ArrayList<String>> occupation2Value = new ArrayList<>();
-    private ArrayList<CityBean> beanList = new ArrayList<>();
-    private ArrayList<CityBean> cityBeanList = new ArrayList<>();
-    private ArrayList<CityBean> occupationBeanList = new ArrayList<>();
     /**
      * 已选过的城市
      * */
@@ -100,12 +89,6 @@ public class PerfectDataActivity extends BaseActivity {
      * */
     private List<String> selOccupationValueList = new ArrayList<>();
     private List<String> selOccupationTextList = new ArrayList<>();
-
-    /**
-     * 已选过的城市/职业
-     * */
-    private List<String> selValueList = new ArrayList<>();
-    private List<String> selTextList = new ArrayList<>();
 
     /**
      * 是否隐藏社交账号   默认关闭(不隐藏)
@@ -184,20 +167,14 @@ public class PerfectDataActivity extends BaseActivity {
     }
 
     private void initCityJsonData() {
-        /**
-         * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
-         * 关键逻辑在于循环体
-         * */
-        String JsonData = new GetJsonDataUtil().getJson(this, "province.json");//获取assets目录下的json文件数据
-        Log.e("TAG","CityJsonData>>>>>>>>" + JsonData);
-        cityBeanList = parseData(JsonData);//用Gson 转成实体
-
-        for (int i = 0; i < cityBeanList.size(); i ++ ){
-            cityBean = cityBeanList.get(i);
+        CityBean cityBean;
+        List<CityBean.ChildBeanX> city;
+        for (int i = 0; i < CITYBEANLIST.size(); i ++ ){
+            cityBean = CITYBEANLIST.get(i);
             ArrayList<String> cityStringList = new ArrayList<>();
             ArrayList<String> cityStringValue = new ArrayList<>();
             for (int j = 0; j < cityBean.getChild().size(); j ++){
-                city = cityBeanList.get(i).getChild();
+                city = CITYBEANLIST.get(i).getChild();
                 cityStringList.add(city.get(j).getText());
                 cityStringValue.add(city.get(j).getValue());
             }
@@ -209,20 +186,14 @@ public class PerfectDataActivity extends BaseActivity {
     }
 
     private void initOccupationJsonData() {
-        /**
-         * 注意：assets 目录下的Json文件仅供参考，实际使用可自行替换文件
-         * 关键逻辑在于循环体
-         * */
-        String JsonData = new GetJsonDataUtil().getJson(this, "occupation.json");//获取assets目录下的json文件数据
-        Log.e("TAG","OccupationJsonData>>>>>>>>" + JsonData);
-        occupationBeanList = parseData(JsonData);//用Gson 转成实体
-
-        for (int i = 0; i < occupationBeanList.size(); i ++ ){
-            occupationBean = occupationBeanList.get(i);
+        CityBean occupationBean;
+        List<CityBean.ChildBeanX> occupation;
+        for (int i = 0; i < OCCUPATIONBEANLIST.size(); i ++ ){
+            occupationBean = OCCUPATIONBEANLIST.get(i);
             ArrayList<String> occupationStringList = new ArrayList<>();
             ArrayList<String> occupationStringValue = new ArrayList<>();
             for (int j = 0; j < occupationBean.getChild().size(); j ++){
-                occupation = occupationBeanList.get(i).getChild();
+                occupation = OCCUPATIONBEANLIST.get(i).getChild();
                 occupationStringList.add(occupation.get(j).getText());
                 occupationStringValue.add(occupation.get(j).getValue());
             }
@@ -231,21 +202,6 @@ public class PerfectDataActivity extends BaseActivity {
             occupation2Text.add(occupationStringList);
             occupation2Value.add(occupationStringValue);
         }
-    }
-
-    public ArrayList<CityBean> parseData(String result) {//Gson 解析
-        ArrayList<CityBean> detail = new ArrayList<>();
-        try {
-            JSONArray data = new JSONArray(result);
-            Gson gson = new Gson();
-            for (int i = 0; i < data.length(); i++) {
-                CityBean entity = gson.fromJson(data.optJSONObject(i).toString(), CityBean.class);
-                detail.add(entity);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return detail;
     }
 
     @OnClick({R.id.img_upHead, R.id.tv_selecteCity, R.id.tv_Birthday, R.id.tv_Occupation, R.id.tv_Expect, R.id.tv_height, R.id.tv_weight, R.id.tv_isShow, R.id.tv_Submission})
@@ -257,8 +213,8 @@ public class PerfectDataActivity extends BaseActivity {
                 break;
             case R.id.tv_selecteCity:
                 //选择城市
-                if (options1Text.size() >= 0 && options2Text.size() >= 0){
-                    initPopupWindow(cityBeanList,selCityValueList,selCityTextList,1,4);
+                if (options1Text.size() > 0 && options2Text.size() > 0){
+                    initPopupWindow(CITYBEANLIST,selCityValueList,selCityTextList,1,4);
                 }
                 break;
             case R.id.tv_Birthday:
@@ -267,8 +223,8 @@ public class PerfectDataActivity extends BaseActivity {
                 break;
             case R.id.tv_Occupation:
                 //选择职业
-                if (occupation1Text.size() >= 0 &&occupation2Text.size() >= 0){
-                    initPopupWindow(occupationBeanList,selOccupationValueList,selOccupationTextList,2,1);
+                if (occupation1Text.size() > 0 &&occupation2Text.size() > 0){
+                    initPopupWindow(OCCUPATIONBEANLIST,selOccupationValueList,selOccupationTextList,2,1);
                 }
                 break;
             case R.id.tv_Expect:

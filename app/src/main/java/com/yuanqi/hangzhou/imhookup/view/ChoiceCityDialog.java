@@ -1,30 +1,22 @@
 package com.yuanqi.hangzhou.imhookup.view;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.util.CityBean;
 import com.yuanqi.hangzhou.imhookup.R;
-import com.yuanqi.hangzhou.imhookup.utils.StringUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 底部弹窗(选择城市/职业)
@@ -114,12 +106,6 @@ public class ChoiceCityDialog extends BottomPopupView implements View.OnClickLis
             protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
                 TextView tv_text = viewHolder.getView(R.id.tv_text);
                 tv_text.setText(cityBeanList.get(position).getText());
-//                if (firstTimeIn){
-//                    tv_text.setBackgroundResource(R.color.white);
-//                    tv_text.setTextColor(Color.BLACK);
-//                }else {
-//
-//                }
                 if (posA == position){
                     tv_text.setBackgroundResource(R.color.text_theme_color);
                     tv_text.setTextColor(Color.WHITE);
@@ -142,7 +128,6 @@ public class ChoiceCityDialog extends BottomPopupView implements View.OnClickLis
         mAdapterA.setOnItemClickListener(new EasyRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, Object item) {
-//                firstTimeIn = false;
                 mAdapterA.notifyDataSetChanged();
                 if (null != childList || childList.size() > 0){
                     childList.clear();
