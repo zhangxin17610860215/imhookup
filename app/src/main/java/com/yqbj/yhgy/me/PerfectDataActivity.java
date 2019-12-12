@@ -313,7 +313,7 @@ public class PerfectDataActivity extends BaseActivity {
 
     }
 
-    private void initPopupWindow(ArrayList<CityBean> beanList, List<String> selValueList, List<String> selTextList, int type, int optionNumber) {
+    private void initPopupWindow(ArrayList<CityBean> beanList, List<String> selValueList, List<String> selTextList, final int type, int optionNumber) {
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
         int height = metric.heightPixels;   // 屏幕高度（像素）

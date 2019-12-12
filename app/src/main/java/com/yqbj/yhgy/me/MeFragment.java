@@ -136,7 +136,7 @@ public class MeFragment extends BaseFragment {
         }
         mAdapter = new EasyRVAdapter(mActivity,photoList,R.layout.item_mephoto_layout) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
                 PhotoBean photoBean = photoList.get(position);
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
@@ -190,6 +190,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.img_header:
                 //头像
+                WXUtil.weiChatPay(mActivity);
                 break;
             case R.id.tv_addVIP:
                 //立即加入
@@ -205,7 +206,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_PrivacySetting:
                 //隐私与连麦设置
-                WXUtil.weiChatPay(mActivity);
+                PrivacySettingActivity.start(mActivity);
                 break;
             case R.id.tv_dynamic:
                 //我的动态

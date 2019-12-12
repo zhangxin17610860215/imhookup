@@ -64,8 +64,8 @@ public class ChoiceCityDialog extends BottomPopupView implements View.OnClickLis
         this.optionNumber = optionNumber;
         this.listener = listener;
         this.cityBeanList = cityBeanList;
-        this.selectedValueList = null == selectedValueList ? new ArrayList<>() : selectedValueList;
-        this.selectedTextList = null == selectedTextList ? new ArrayList<>() : selectedTextList;
+        this.selectedValueList = null == selectedValueList ? new ArrayList<String>() : selectedValueList;
+        this.selectedTextList = null == selectedTextList ? new ArrayList<String>() : selectedTextList;
     }
 
     @Override
@@ -147,8 +147,8 @@ public class ChoiceCityDialog extends BottomPopupView implements View.OnClickLis
         }
         mAdapterB = new EasyRVAdapter(mActivity,childList,R.layout.choicecity_item_layout) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
-                TextView tv_text = viewHolder.getView(R.id.tv_text);
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
+                final TextView tv_text = viewHolder.getView(R.id.tv_text);
                 tv_text.setText(childList.get(position).getText());
                 tv_text.setTextColor(getResources().getColor(R.color.black));
                 if (selectedValueList.size() > 0){

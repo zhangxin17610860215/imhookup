@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/nim_toobar_layout"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="隐私设置"
+        android:textSize="@dimen/text_size_30"
+        android:textColor="@color/black"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:paddingBottom="@dimen/dp_10"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/activity_grey_bg"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingTop="@dimen/dimen_15"
+                android:paddingBottom="@dimen/dp_10"
+                android:text="个人详情"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/tv_public"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="公开(推荐)"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/selected_logo" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/activity_grey_bg"/>
+            <TextView
+                android:id="@+id/tv_Album"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="相册付费查看"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/unselected_logo" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/activity_grey_bg"/>
+            <TextView
+                android:id="@+id/tv_Verification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="查看前需通过我验证"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/unselected_logo" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/activity_grey_bg"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingTop="@dimen/dimen_15"
+                android:paddingBottom="@dimen/dp_10"
+                android:text="隐身"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/tv_ListHide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="在公园列表隐藏我"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/isshow_close" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/activity_grey_bg"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingTop="@dimen/dimen_15"
+                android:paddingBottom="@dimen/dp_10"
+                android:text="隐藏距离和在线时间"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/tv_HideDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="对他人隐藏我的距离"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/isshow_close" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/activity_grey_bg"/>
+            <TextView
+                android:id="@+id/tv_HideTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="对他人隐藏我的在线时间"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/isshow_close" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/activity_grey_bg"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingTop="@dimen/dimen_15"
+                android:paddingBottom="@dimen/dp_10"
+                android:text="社交账号"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/tv_HideAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="对他人隐藏我的社交账号"
+                android:textSize="@dimen/text_size_15"
+                android:textColor="@color/black"
+                android:paddingLeft="@dimen/dimen_15"
+                android:paddingRight="@dimen/dimen_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:gravity="center_vertical"
+                android:drawableRight="@mipmap/isshow_close" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_30"
+                android:background="@color/white"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

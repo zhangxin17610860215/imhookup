@@ -91,7 +91,7 @@ public class AnonymousReportActivity extends BaseActivity {
         list.add("add");
         mAdapter = new EasyRVAdapter(mActivity,list,R.layout.dynamic_grid_item_layout) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
                 if (null == list || list.size() == 0) {
                     return;
                 }

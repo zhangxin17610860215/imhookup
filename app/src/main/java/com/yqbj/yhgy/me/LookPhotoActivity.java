@@ -150,10 +150,10 @@ public class LookPhotoActivity extends BaseActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            PhotoBean photoBean = mData.get(position);
+            final PhotoBean photoBean = mData.get(position);
             View view = View.inflate(mContext, R.layout.album_detail_item_layout,null);
             ImageView img = view.findViewById(R.id.img_album_detail_item);
-            TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
+            final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
             tvBurnAfterReading.setVisibility(NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE);
             Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
             tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);

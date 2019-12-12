@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/fillet">
+        android:background="@drawable/white_bg_shape">
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"

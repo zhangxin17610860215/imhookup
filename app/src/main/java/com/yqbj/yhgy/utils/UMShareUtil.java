@@ -16,9 +16,9 @@ public class UMShareUtil {
     /**
      * 分享文本内容
      * */
-    public static void shareText(Activity mActivity, String url, String title, int imageId, String content, ShareListener listener){
+    public static void shareText(final Activity mActivity, String url, String title, int imageId, String content, final ShareListener listener){
 
-        UMShareListener umShareListener = new UMShareListener() {
+        final UMShareListener umShareListener = new UMShareListener() {
             @Override
             public void onStart(SHARE_MEDIA platform) {
                 // 分享开始的回调

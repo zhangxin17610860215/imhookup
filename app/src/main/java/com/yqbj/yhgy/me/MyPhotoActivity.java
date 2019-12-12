@@ -74,7 +74,7 @@ public class MyPhotoActivity extends BaseActivity {
     private void initData() {
         mAdapter = new EasyRVAdapter(mActivity,photoList,R.layout.item_mephoto_layout) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
                 PhotoBean photoBean = photoList.get(position);
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);

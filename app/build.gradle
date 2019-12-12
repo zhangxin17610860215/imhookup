@@ -12,24 +12,53 @@ android {
 
         multiDexEnabled true
 
-        manifestPlaceholders = [
-                qqappid      : "QQAPPID",
-//                JPUSH_PKGNAME: applicationId,
-//                JPUSH_APPKEY : "86abe9d4f4c45d1064169832", //JPush上注册的包名对应的appkey（*换成你的*）
-//                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
-        ]
         ndk {
             //设置支持的SO库架构
             abiFilters "armeabi-v7a", "x86","arm64-v8a","x86_64"
         }
     }
+    signingConfigs {
+//        debug { storeFile file("debug.keystore") }
+        debug {
+            storeFile file('yhgy.jks')
+            storePassword '123123'
+            keyAlias 'yhgy'
+            keyPassword '123123'
+        }
+        release {
+            storeFile file('yhgy.jks')
+            storePassword '123123'
+            keyAlias 'yhgy'
+            keyPassword '123123'
+        }
+    }
     buildTypes {
         release {
+            buildConfigField "boolean", "LOG_DEBUG", "false" //不显示log
+            shrinkResources false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled false
+            proguardFile('proguard.cfg')
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [AMAP_KEY: "0b36584d3edf672c0cdc255d715d8756",
+                                    UMENG_APPKEY_VALUE:"5d1efa034ca357832f0002e2",
+                                    NIM_KEY:"53c935d9e16b6d8c1a09799d4fba2fdb",
+                                    HUAWEI_PUSH_APIKEY:"100832525",
+                                    FABRIC_APIKEY:"81cb4cfaf2520ddc3209dc02bd22bb7aaca58663",
+                                    qqappid:"QQAPPID"]
+            ext.enableCrashlytics = true
         }
         debug {
             minifyEnabled false
+            signingConfig signingConfigs.debug
+            manifestPlaceholders = [AMAP_KEY: "0b36584d3edf672c0cdc255d715d8756",
+                                    UMENG_APPKEY_VALUE:"5d1efa034ca357832f0002e2",
+                                    NIM_KEY:"53c935d9e16b6d8c1a09799d4fba2fdb",
+                                    HUAWEI_PUSH_APIKEY:"100832525",
+                                    FABRIC_APIKEY:"81cb4cfaf2520ddc3209dc02bd22bb7aaca58663",
+                                    qqappid:"QQAPPID"]
+            ext.enableCrashlytics = false
         }
     }
 
@@ -53,6 +82,26 @@ android {
         additionalParameters += '--minimal-main-dex'
     }
 
+    flavorDimensions "rc"
+
+    /*配置渠道*/
+    productFlavors {
+        yingyongbao {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "yingyongbao"]
+        }
+        wandoujia {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "wandoujia"]
+        }
+        xiaomi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+        fir {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "fir"]
+        }
+        pugongying{
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "pugongying"]
+        }
+    }
 }
 
 dependencies {

@@ -104,8 +104,8 @@ public class MiddleListDialog extends CenterPopupView implements View.OnClickLis
     private void loadData() {
         mAdapter = new EasyRVAdapter(context,list,R.layout.item_middlelist_layout) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
-                TextView textView = viewHolder.getView(R.id.tv_text);
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
+                final TextView textView = viewHolder.getView(R.id.tv_text);
                 textView.setText(list.get(position));
                 textView.setTextColor(getResources().getColor(R.color.black));
                 textView.setOnClickListener(new View.OnClickListener() {

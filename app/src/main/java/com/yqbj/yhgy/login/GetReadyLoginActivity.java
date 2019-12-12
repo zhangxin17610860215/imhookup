@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -112,6 +113,33 @@ public class GetReadyLoginActivity extends BaseActivity {
                 Log.e("TAG", "onCancel " + "授权取消");
             }
         });
+    }
+
+    /**
+     * 系统的"返回键"按下的时间戳。用来实现连点2次退出应用
+     */
+    private static long BACK_PRESS_TIME = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (BACK_PRESS_TIME + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+        } else {
+            toast("再按一次退出快速交友");
+        }
+        BACK_PRESS_TIME = System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        try {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                BACK_PRESS_TIME = 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.dispatchTouchEvent(event);
     }
 
 }

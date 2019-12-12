@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import com.netease.nim.uikit.common.ui.dialog.DialogMaker;
 import com.netease.nim.uikit.common.ui.drop.DropCover;
 import com.netease.nim.uikit.common.ui.drop.DropFake;
 import com.netease.nim.uikit.common.ui.drop.DropManager;
+import com.netease.nim.uikit.support.permission.MPermission;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.RequestCallback;
@@ -89,8 +91,6 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
     private Activity activity;
 
     private static final String EXTRA_APP_QUIT = "APP_QUIT";
-    // 获取Android系统权限用到的id
-    public static final int REQUEST_PERMISSION = 123;
     private int mTabTextColorSelecdted;
     private int mTabTextColorNormal;
     private int currentPos = 0;
@@ -124,8 +124,7 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
         ButterKnife.bind(this);
         activity = this;
         initStatusBars();
-        //检查权限
-        checkPermission();
+
         observerSyncDataComplete();
         initView();
         initModuleComFn();
@@ -162,48 +161,6 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
             //如果不支持设置深色风格 为了兼容总不能让状态栏白白的看不清, 于是设置一个状态栏颜色为半透明,
             //这样半透明+白=灰, 状态栏的文字能看得清
             StatusBarsUtil.setStatusBarColor(this, 0x55000000);
-        }
-    }
-
-    private void checkPermission() {
-        PackageManager pkgManager = getPackageManager();
-        // 读写 sd card 权限非常重要, android6.0默认禁止的, 建议初始化之前就弹窗让用户赋予该权限
-        boolean sdCardWritePermission =
-                pkgManager.checkPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-
-        // read phone state用于获取 imei 设备信息
-        boolean phoneSatePermission =
-                pkgManager.checkPermission(android.Manifest.permission.READ_PHONE_STATE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-
-        // 获取摄像机用于获取摄像机 设备信息  CAMERA
-        boolean cameraSatePermission =
-                pkgManager.checkPermission(android.Manifest.permission.CAMERA, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-
-        if (Build.VERSION.SDK_INT >= 23 && !sdCardWritePermission || !phoneSatePermission || !cameraSatePermission) {
-            requestPermission();
-        }
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                },
-                REQUEST_PERMISSION);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION) {
-
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -330,7 +287,7 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
         setRedPoint(unread_number_message, item);
     }
 
-    private void setRedPoint(DropFake redPointView, ReminderItem item) {
+    private void setRedPoint(final DropFake redPointView, final ReminderItem item) {
         if (redPointView != null) {
             redPointView.setTouchListener(new DropFake.ITouchListener() {
                 @Override

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.core.CenterPopupView;
 import com.yqbj.yhgy.R;
+import com.yqbj.yhgy.utils.StringUtil;
 
 /**
  * 中间弹窗
@@ -50,8 +51,10 @@ public class MiddleDialog extends CenterPopupView implements View.OnClickListene
         tvConfirm = findViewById(R.id.tv_confirm);
         tvContent = findViewById(R.id.tv_content);
         tvTitle = findViewById(R.id.tv_title);
-        tvTitle.setText(title);
-        tvContent.setText(content);
+        tvContent.setVisibility(StringUtil.isEmpty(content) ? GONE : VISIBLE);
+        tvTitle.setVisibility(StringUtil.isEmpty(title) ? GONE : VISIBLE);
+        tvTitle.setText(StringUtil.isEmpty(title) ? "" : title);
+        tvContent.setText(StringUtil.isEmpty(content) ? "" : content);
 
         imgClose.setOnClickListener(this);
         tvConfirm.setOnClickListener(this);

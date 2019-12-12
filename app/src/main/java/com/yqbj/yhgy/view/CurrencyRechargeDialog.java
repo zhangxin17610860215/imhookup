@@ -61,7 +61,7 @@ public class CurrencyRechargeDialog extends BottomPopupView {
 
         mAdapter = new EasyRVAdapter(mActivity,list,R.layout.item_currencyrecharge_layout) {
             @Override
-            protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
                 TextView tv_number = viewHolder.getView(R.id.tv_number);
                 TextView tv_money = viewHolder.getView(R.id.tv_money);
                 tv_money.setText("¥  " + list.get(position));
