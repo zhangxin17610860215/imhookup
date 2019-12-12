@@ -28,7 +28,7 @@ public class ModifyPasswordActivity extends BaseActivity {
     private Activity mActivity;
 
     public static void start(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
+        Intent intent = new Intent(context, ModifyPasswordActivity.class);
         context.startActivity(intent);
     }
 

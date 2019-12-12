@@ -209,6 +209,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
+            android:name="com.yqbj.yhgy.login.ModifyPasswordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
             android:name="com.yqbj.yhgy.login.ForgetPasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>

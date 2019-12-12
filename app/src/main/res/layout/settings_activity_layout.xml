@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="消息设置"
+        android:text="设置"
         android:textSize="@dimen/text_size_30"
         android:textColor="@color/black"
         android:layout_marginLeft="@dimen/dimen_15"/>
@@ -27,13 +27,15 @@
         android:layout_marginTop="@dimen/dimen_15"
         android:layout_marginLeft="@dimen/dimen_15"
         android:layout_marginRight="@dimen/dimen_15"
-        android:drawableRight="@mipmap/right_jiantou_logo"/>
+        android:drawableRight="@mipmap/right_jiantou_logo"
+        android:visibility="gone"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/activity_grey_bg"
         android:layout_marginLeft="@dimen/dimen_15"
-        android:layout_marginRight="@dimen/dimen_15"/>
+        android:layout_marginRight="@dimen/dimen_15"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/rl_Phone"
