@@ -69,8 +69,9 @@ public class MyApplication extends Application {
 
     private static MyApplication instance;
     public static OkHttpClient okHttpClient;
-    public static final String WXAPP_ID = "wx4bdf018c8750d2b2";     //微信支付AppID
-    public static final String ALIPAY_APPID = "wx4bdf018c8750d2b2"; //支付宝支付AppID
+    public static final String WXAPP_ID = "wx6d250ee2be9c13f0";         //微信AppID
+    public static final String WXAPP_SECRET = "2d1b01929551062b1df15eb1dc587fc2";     //微信Secret
+    public static final String ALIPAY_APPID = "wx4bdf018c8750d2b2";     //支付宝支付AppID
 
     public static synchronized MyApplication getInstance() {
         return instance;
@@ -154,7 +155,7 @@ public class MyApplication extends Application {
 
     private void initUMeng() {
         UMConfigure.init(instance, UMConfigure.DEVICE_TYPE_PHONE, "");
-        PlatformConfig.setWeixin("wxdc1e388c3822c80b", "3baf1193c85774b3fd9d18447d76cab0");
+        PlatformConfig.setWeixin(WXAPP_ID, WXAPP_SECRET);
         //豆瓣RENREN平台目前只能在服务器端配置
         PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad","http://sns.whalecloud.com");
         PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");

@@ -64,13 +64,12 @@ public class GetReadyLoginActivity extends BaseActivity {
                 break;
             case R.id.tv_weixin:
                 //微信登录
-//                authorization(SHARE_MEDIA.WEIXIN);
-                DemoCache.setAccount("456456");
-                MainActivity.start(activity);
+                authorization(SHARE_MEDIA.WEIXIN);
                 break;
             case R.id.tv_qq:
                 //QQ登录
-                authorization(SHARE_MEDIA.QQ);
+                DemoCache.setAccount("456456");
+                MainActivity.start(activity);
                 break;
         }
     }

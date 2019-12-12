@@ -41,9 +41,9 @@ android {
             proguardFile('proguard.cfg')
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            manifestPlaceholders = [AMAP_KEY: "0b36584d3edf672c0cdc255d715d8756",
-                                    UMENG_APPKEY_VALUE:"5d1efa034ca357832f0002e2",
-                                    NIM_KEY:"53c935d9e16b6d8c1a09799d4fba2fdb",
+            manifestPlaceholders = [AMAP_KEY: "6c5fc5a2c255b374a6042363daf06a7a",
+                                    UMENG_APPKEY_VALUE:"5df205530cafb2294c000ae2",
+                                    NIM_KEY:"b0a5761604f37adc801f021ddf42ad89",
                                     HUAWEI_PUSH_APIKEY:"100832525",
                                     FABRIC_APIKEY:"81cb4cfaf2520ddc3209dc02bd22bb7aaca58663",
                                     qqappid:"QQAPPID"]
@@ -52,9 +52,9 @@ android {
         debug {
             minifyEnabled false
             signingConfig signingConfigs.debug
-            manifestPlaceholders = [AMAP_KEY: "0b36584d3edf672c0cdc255d715d8756",
-                                    UMENG_APPKEY_VALUE:"5d1efa034ca357832f0002e2",
-                                    NIM_KEY:"53c935d9e16b6d8c1a09799d4fba2fdb",
+            manifestPlaceholders = [AMAP_KEY: "6c5fc5a2c255b374a6042363daf06a7a",
+                                    UMENG_APPKEY_VALUE:"5df205530cafb2294c000ae2",
+                                    NIM_KEY:"b0a5761604f37adc801f021ddf42ad89",
                                     HUAWEI_PUSH_APIKEY:"100832525",
                                     FABRIC_APIKEY:"81cb4cfaf2520ddc3209dc02bd22bb7aaca58663",
                                     qqappid:"QQAPPID"]
