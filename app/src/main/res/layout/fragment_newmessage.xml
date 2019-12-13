@@ -25,7 +25,8 @@
             android:src="@mipmap/message_setting_logo"
             android:layout_alignParentRight="true"
             android:paddingTop="@dimen/dimen_10"
-            android:paddingLeft="@dimen/dimen_10"/>
+            android:paddingLeft="@dimen/dimen_10"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </LinearLayout>

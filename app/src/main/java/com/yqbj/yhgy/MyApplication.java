@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.alibaba.security.rp.RPSDK;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -115,12 +116,18 @@ public class MyApplication extends Application {
         super.onCreate();
         instance = this;
         initOkgo();
+        initRPSDK();
         initUMeng();
         initNIM();
         EventBusUtils.init();
         //初始化城市/职业数据
         initCityData();
         initOccupationData();
+    }
+
+    private void initRPSDK() {
+        // 初始化实人认证 SDK
+        RPSDK.initialize(instance);
     }
 
     private void initNIM() {

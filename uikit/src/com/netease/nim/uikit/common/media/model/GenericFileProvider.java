@@ -1,6 +1,6 @@
 package com.netease.nim.uikit.common.media.model;
 
-import androidx.core.content.FileProvider;
+import android.support.v4.content.FileProvider;
 
 /**
  * Created by winnie on 2017/7/26.

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.security.rp.RPSDK;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -56,7 +57,8 @@ public class GetReadyLoginActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_login:
                 //登录
-                LoginActivity.start(activity);
+//                LoginActivity.start(activity);
+                authentication();
                 break;
             case R.id.tv_register:
                 //手机号注册
@@ -72,6 +74,26 @@ public class GetReadyLoginActivity extends BaseActivity {
                 MainActivity.start(activity);
                 break;
         }
+    }
+
+    private void authentication() {
+        RPSDK.startVerifyByNative("verifyToken", activity, new RPSDK.RPCompletedListener() {
+            @Override
+            public void onAuditResult(RPSDK.AUDIT audit, String code) {
+//                Toast.makeText(activity, audit + "", Toast.LENGTH_SHORT).show();
+
+                if (audit == RPSDK.AUDIT.AUDIT_PASS) {
+                    // 认证通过。建议接入方调用实人认证服务端接口DescribeVerifyResult来获取最终的认证状态，并以此为准进行业务上的判断和处理
+                    // do something
+                } else if(audit == RPSDK.AUDIT.AUDIT_FAIL) {
+                    // 认证不通过。建议接入方调用实人认证服务端接口DescribeVerifyResult来获取最终的认证状态，并以此为准进行业务上的判断和处理
+                    // do something
+                } else if(audit == RPSDK.AUDIT.AUDIT_NOT) {
+                    // 未认证，具体原因可通过code来区分（code取值参见下方表格），通常是用户主动退出或者姓名身份证号实名校验不匹配等原因，导致未完成认证流程
+                    // do something
+                }
+            }
+        });
     }
 
     //授权

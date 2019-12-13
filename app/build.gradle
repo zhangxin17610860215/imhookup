@@ -63,6 +63,9 @@ android {
     }
 
     repositories {
+        flatDir {
+            dirs '../libs'
+        }
         maven {
             url "https://jitpack.io"
         }
@@ -102,6 +105,11 @@ android {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "pugongying"]
         }
     }
+}
+
+configurations {
+    compile.exclude group: 'androidx.core', module: 'core' //重点
+    //all*.exclude group:''androidx.core', module: 'core'  这样也行
 }
 
 dependencies {
@@ -193,4 +201,11 @@ dependencies {
 
     //支付宝支付
     compile (name: 'alipaySdk-15.6.8-20191021122514', ext: 'aar')
+
+    //阿里云活体人脸
+    implementation fileTree(dir: '../libs', include: ['*.jar'])
+    implementation (name:'rpsdk-3.3.0.0', ext:'aar')
+    implementation (name:'oss-android-sdk-2.9.2', ext:'aar')
+    implementation (name:'SecurityGuardSDK-external-preInstall-5.4.184', ext:'aar')
+    implementation (name:'SecurityBodySDK-external-preInstall-5.4.108', ext:'aar')
 }
