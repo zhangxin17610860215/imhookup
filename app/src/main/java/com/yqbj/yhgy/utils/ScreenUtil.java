@@ -70,19 +70,19 @@ public class ScreenUtil {
 
     public static int getDisplayWidth() {
         if (screenWidth == 0) {
-            GetInfo(NimUIKit.getContext());
+            getInfo(NimUIKit.getContext());
         }
         return screenWidth;
     }
 
     public static int getDisplayHeight() {
         if (screenHeight == 0) {
-            GetInfo(NimUIKit.getContext());
+            getInfo(NimUIKit.getContext());
         }
         return screenHeight;
     }
 
-    public static void GetInfo(Context context) {
+    public static void getInfo(Context context) {
         if (null == context) {
             return;
         }

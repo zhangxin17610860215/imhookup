@@ -2,6 +2,7 @@ package com.netease.nim.uikit.common.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.netease.nim.uikit.R;
@@ -9,7 +10,7 @@ import com.netease.nim.uikit.R;
 /**
  */
 
-public class RatioImage extends androidx.appcompat.widget.AppCompatImageView {
+public class RatioImage extends AppCompatImageView {
 
     private float ratioWidth;
 

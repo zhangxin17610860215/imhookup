@@ -29,7 +29,6 @@ import butterknife.OnClick;
 
 /**
  * 会员中心页面
- * TODO   暂不确定是不是固定布局    会员套餐是否是列表
  */
 public class VipCoreActivity extends BaseActivity {
 
