@@ -117,15 +117,20 @@ public class LookPhotoActivity extends BaseActivity {
                     //删除
                     new XPopup.Builder(mActivity)
                             .dismissOnTouchOutside(false)
-                            .asCustom(new MiddleDialog(mActivity, "提示", "确定要删除这张吗?", new View.OnClickListener() {
+                            .asCustom(new MiddleDialog(mActivity, "提示", "确定要删除这张吗?", new MiddleDialog.Listener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onConfirmClickListener() {
                                     photoList.remove(mViewPager.getCurrentItem());
                                     pagerAdapter.notifyDataSetChanged();
                                     tvTitle.setText(mViewPager.getCurrentItem() + 1 + "/" + photoList.size());
                                     if (photoList.size() <= 0){
                                         onFinish();
                                     }
+                                }
+
+                                @Override
+                                public void onCloseClickListener() {
+
                                 }
                             }))
                             .show();

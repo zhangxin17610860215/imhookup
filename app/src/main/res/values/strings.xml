@@ -16,4 +16,6 @@
     <string name="input_panel_audio_call">语音通话</string>
     <string name="input_panel_video_call">视频通话</string>
     <string name="app_text_settag">setTag</string>
+    <string name="album_pay_dialog_content">非认证女士需要付费解锁才能查看你的相册，费用由你定；认证女士可以消耗一次查看机会解锁你的相册。</string>
+    <string name="verification_dialog_content">所有女士都必须发照片让你验证身份后才能浏览你的主页，确定吗？</string>
 </resources>

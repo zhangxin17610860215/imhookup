@@ -79,10 +79,15 @@ public class SettingsActivity extends BaseActivity {
                 //手机号码
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new MiddleDialog(mActivity, "", "你想修改绑定的手机号吗?", new View.OnClickListener() {
+                        .asCustom(new MiddleDialog(mActivity, "", "你想修改绑定的手机号吗?", new MiddleDialog.Listener() {
                             @Override
-                            public void onClick(View v) {
+                            public void onConfirmClickListener() {
                                 BindPhoneActivity.start(mActivity);
+                            }
+
+                            @Override
+                            public void onCloseClickListener() {
+
                             }
                         }))
                         .show();

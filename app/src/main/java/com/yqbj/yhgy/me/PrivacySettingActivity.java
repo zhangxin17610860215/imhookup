@@ -8,8 +8,11 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
+import com.lxj.xpopup.XPopup;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.view.MiddleDialog;
+import com.yqbj.yhgy.view.SettingSeeMoneyDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,47 +76,134 @@ public class PrivacySettingActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_public:
                 //公开
-                publicSwitch = !publicSwitch;
-                switchSetting(tvPublic,publicSwitch,1);
+                if (!publicSwitch){
+                    personalDetailsSwitchSetting(1);
+                }
                 break;
             case R.id.tv_Album:
                 //相册付费
-                albumSwitch = !albumSwitch;
-                switchSetting(tvAlbum,albumSwitch,1);
+                if (!albumSwitch){
+                    personalDetailsSwitchSetting(2);
+                }
                 break;
             case R.id.tv_Verification:
                 //查看前需通过我的验证
-                verificationSwitch = !verificationSwitch;
-                switchSetting(tvVerification,verificationSwitch,1);
+                if (!verificationSwitch){
+                    personalDetailsSwitchSetting(3);
+                }
                 break;
             case R.id.tv_ListHide:
                 //在公园列表隐藏我
                 listHideSwitch = !listHideSwitch;
-                switchSetting(tvListHide,listHideSwitch,2);
+                switchSetting(tvListHide,listHideSwitch,4);
                 break;
             case R.id.tv_HideDistance:
                 //对他人隐藏我的距离
                 hideDistanceSwitch = !hideDistanceSwitch;
-                switchSetting(tvHideDistance,hideDistanceSwitch,2);
+                switchSetting(tvHideDistance,hideDistanceSwitch,5);
                 break;
             case R.id.tv_HideTime:
                 //对他人隐藏我的在线时间
                 hideTimeSwitch = !hideTimeSwitch;
-                switchSetting(tvHideTime,hideTimeSwitch,2);
+                switchSetting(tvHideTime,hideTimeSwitch,6);
                 break;
             case R.id.tv_HideAccount:
                 //对他人隐藏我的社交账号
                 hideAccountSwitch = !hideAccountSwitch;
-                switchSetting(tvHideAccount,hideAccountSwitch,2);
+                switchSetting(tvHideAccount,hideAccountSwitch,7);
                 break;
         }
     }
 
     /**
-     * 开关设置
+     * 个人详情开关设置
+     * */
+    private void personalDetailsSwitchSetting(int switchType) {
+        switch (switchType){
+            case 1:
+                publicSwitch = true;
+                albumSwitch = false;
+                verificationSwitch = false;
+                tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                tvVerification.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                break;
+            case 2:
+                new XPopup.Builder(mActivity)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new MiddleDialog(mActivity, "", getString(R.string.album_pay_dialog_content), new MiddleDialog.Listener() {
+                            @Override
+                            public void onConfirmClickListener() {
+                                new XPopup.Builder(mActivity)
+                                        .dismissOnTouchOutside(false)
+                                        .asCustom(new SettingSeeMoneyDialog(mActivity, new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                publicSwitch = false;
+                                                albumSwitch = true;
+                                                verificationSwitch = false;
+                                                tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                                                tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                                                tvVerification.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                                            }
+                                        })).show();
+                            }
+
+                            @Override
+                            public void onCloseClickListener() {
+
+                            }
+                        }))
+                        .show();
+                break;
+            case 3:
+                new XPopup.Builder(mActivity)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new MiddleDialog(mActivity, "", getString(R.string.verification_dialog_content), new MiddleDialog.Listener() {
+                            @Override
+                            public void onConfirmClickListener() {
+                                publicSwitch = false;
+                                albumSwitch = false;
+                                verificationSwitch = true;
+                                tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                                tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                                tvVerification.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                            }
+
+                            @Override
+                            public void onCloseClickListener() {
+
+                            }
+                        }))
+                        .show();
+                break;
+        }
+    }
+
+    /**
+     * 其他开关设置
      * */
     private void switchSetting(TextView textView, boolean isSwitchType, int switchType) {
-        textView.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(switchType == 1 ? isSwitchType ? R.mipmap.selected_logo : R.mipmap.unselected_logo : isSwitchType ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+        switch (switchType){
+            case 4:
+                //在公园列表隐藏我
+                textView.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(isSwitchType ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+                break;
+            case 5:
+                //对他人隐藏我的距离
+                textView.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(isSwitchType ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+                break;
+            case 6:
+                //对他人隐藏我的在线时间
+                textView.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(isSwitchType ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+                break;
+            case 7:
+                //对他人隐藏我的社交账号
+                textView.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(isSwitchType ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+                break;
+            default:
+                break;
+        }
     }
 
 

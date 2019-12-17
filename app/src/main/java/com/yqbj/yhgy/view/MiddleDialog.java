@@ -23,14 +23,18 @@ public class MiddleDialog extends CenterPopupView implements View.OnClickListene
     private Context context;
     private String content = "";
     private String title = "";
-    private OnClickListener onClickListener;
+    public interface Listener{
+        void onConfirmClickListener();
+        void onCloseClickListener();
+    }
+    private Listener listener;
 
-    public MiddleDialog(@NonNull Context context, String title, String content, OnClickListener onClickListener) {
+    public MiddleDialog(@NonNull Context context, String title, String content, Listener listener) {
         super(context);
         this.context = context;
         this.title = title;
         this.content = content;
-        this.onClickListener = onClickListener;
+        this.listener = listener;
     }
 
     @Override
@@ -69,11 +73,12 @@ public class MiddleDialog extends CenterPopupView implements View.OnClickListene
         switch (view.getId()) {
             case R.id.tv_confirm:
                 //确定
-                onClickListener.onClick(view);
+                listener.onConfirmClickListener();
                 dismiss();
                 break;
             case R.id.img_close:
                 //关闭
+                listener.onCloseClickListener();
                 dismiss();
                 break;
         }
