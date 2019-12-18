@@ -11,10 +11,8 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.netease.nim.uikit.support.permission.BaseMPermission;
 import com.netease.nim.uikit.support.permission.MPermission;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.login.GetReadyLoginActivity;
