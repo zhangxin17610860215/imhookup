@@ -1,8 +1,8 @@
 package com.netease.nim.uikit.common.ui.recyclerview.adapter;
 
 import android.graphics.Canvas;
-import androidx.annotation.NonNull;
-import androidx.core.view.MotionEventCompat;
+import android.support.annotation.NonNull;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MotionEvent;

@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
@@ -16,8 +17,6 @@ import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.common.util.media.ImageUtil;
 
 import java.io.File;
-
-import androidx.appcompat.widget.AppCompatImageView;
 
 public class MsgThumbImageView extends AppCompatImageView {
 

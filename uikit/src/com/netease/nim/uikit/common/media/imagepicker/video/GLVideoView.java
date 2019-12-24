@@ -3,7 +3,7 @@ package com.netease.nim.uikit.common.media.imagepicker.video;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;

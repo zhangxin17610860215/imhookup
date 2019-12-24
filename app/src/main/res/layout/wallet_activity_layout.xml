@@ -95,7 +95,7 @@
                 android:paddingBottom="@dimen/dp_10"/>
         </LinearLayout>
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        <com.yqbj.yhgy.view.MyRefreshLayout
             android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -341,6 +341,6 @@
                 </LinearLayout>
             </RelativeLayout>
 
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        </com.yqbj.yhgy.view.MyRefreshLayout>
     </LinearLayout>
 </RelativeLayout>

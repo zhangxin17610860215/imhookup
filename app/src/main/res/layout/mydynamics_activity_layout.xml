@@ -27,7 +27,7 @@
             android:paddingRight="@dimen/dimen_15"/>
     </RelativeLayout>
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+    <com.yqbj.yhgy.view.MyRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -37,7 +37,6 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dimen_15"
             android:layout_marginRight="@dimen/dimen_15"/>
-
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    </com.yqbj.yhgy.view.MyRefreshLayout>
 
 </LinearLayout>

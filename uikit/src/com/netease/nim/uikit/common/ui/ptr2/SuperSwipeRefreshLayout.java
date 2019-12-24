@@ -13,9 +13,9 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
-import androidx.core.view.MotionEventCompat;
-import androidx.core.view.ViewCompat;
 
+import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;

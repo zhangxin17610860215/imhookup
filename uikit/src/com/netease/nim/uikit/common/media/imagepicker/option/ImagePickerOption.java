@@ -1,7 +1,7 @@
 package com.netease.nim.uikit.common.media.imagepicker.option;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.common.media.imagepicker.Constants;

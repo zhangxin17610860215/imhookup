@@ -1,9 +1,9 @@
 package com.netease.nim.uikit.common.adapter;
 
-import androidx.lifecycle.GenericLifecycleObserver;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.GenericLifecycleObserver;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 

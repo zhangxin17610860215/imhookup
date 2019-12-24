@@ -14,15 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
-import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.view.MorePopupView;
+import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -41,7 +39,7 @@ public class MyDynamicsActivity extends BaseActivity {
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
     @BindView(R.id.refresh_layout)
-    SmartRefreshLayout refreshLayout;
+    MyRefreshLayout refreshLayout;
 
     private Activity mActivity;
     private EasyRVAdapter mAdapter;
@@ -68,7 +66,6 @@ public class MyDynamicsActivity extends BaseActivity {
     private void initView() {
         setToolbar(mActivity, 0, "");
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
-        refreshLayout.setRefreshHeader(new ClassicsHeader(mActivity));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -76,7 +73,6 @@ public class MyDynamicsActivity extends BaseActivity {
             }
         });
 
-        refreshLayout.setRefreshFooter(new ClassicsFooter(mActivity));
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {

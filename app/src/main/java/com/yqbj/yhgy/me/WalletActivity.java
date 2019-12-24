@@ -15,10 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
-import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
@@ -27,6 +24,7 @@ import com.yqbj.yhgy.home.DetailsActivity;
 import com.yqbj.yhgy.view.BindAliPayDialog;
 import com.yqbj.yhgy.view.CurrencyRechargeDialog;
 import com.yqbj.yhgy.view.CurrencyWithdrawalDialog;
+import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -73,7 +71,7 @@ public class WalletActivity extends BaseActivity {
     @BindView(R.id.ll_currency)
     LinearLayout llCurrency;
     @BindView(R.id.refresh_layout)
-    SmartRefreshLayout refreshLayout;
+    MyRefreshLayout refreshLayout;
 
     private Activity mActivity;
     private String alpayAccount = "";
@@ -102,7 +100,6 @@ public class WalletActivity extends BaseActivity {
         toggleSearchType();
         rvCash.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
         rvCurrency.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
-        refreshLayout.setRefreshHeader(new ClassicsHeader(mActivity));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -110,7 +107,6 @@ public class WalletActivity extends BaseActivity {
             }
         });
 
-        refreshLayout.setRefreshFooter(new ClassicsFooter(mActivity));
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {

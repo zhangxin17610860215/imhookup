@@ -2,8 +2,8 @@ package com.netease.nim.uikit.common.media.imagepicker.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
 
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;

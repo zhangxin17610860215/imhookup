@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item
+        android:drawable="@mipmap/ic_load_question_1"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_2"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_3"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_4"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_5"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_6"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_7"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_8"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_9"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_10"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_11"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_12"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_13"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_14"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_15"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_16"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_17"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_18"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_19"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_20"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_21"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_22"
+        android:duration="80" />
+    <item
+        android:drawable="@mipmap/ic_load_question_23"
+        android:duration="80" />
+</animation-list>

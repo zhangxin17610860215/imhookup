@@ -1,7 +1,7 @@
 package com.netease.nim.uikit.business.session.viewholder.robot;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;

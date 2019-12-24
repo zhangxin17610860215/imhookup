@@ -17,10 +17,10 @@ package com.netease.nim.uikit.common.ui.recyclerview.adapter;
 
 import android.animation.Animator;
 import android.content.Context;
-import androidx.annotation.IntDef;
-import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
 
+import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;

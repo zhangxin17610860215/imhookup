@@ -1,6 +1,6 @@
 package com.netease.nim.uikit.common.ui.recyclerview.adapter;
 
-import androidx.annotation.LayoutRes;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.ViewGroup;

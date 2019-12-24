@@ -48,6 +48,7 @@ import com.yqbj.yhgy.utils.NimDemoLocationProvider;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.UserPreferences;
 import com.yqbj.yhgy.utils.cookieUtil.PersistentCookieStore;
+import com.yqbj.yhgy.view.MyRefreshLayout;
 
 import org.json.JSONArray;
 
@@ -115,6 +116,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        MyRefreshLayout.init();
         initOkgo();
         initRPSDK();
         initUMeng();

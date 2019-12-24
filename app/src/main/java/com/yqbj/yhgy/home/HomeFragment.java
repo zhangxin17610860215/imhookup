@@ -13,15 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
-import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
 import com.yqbj.yhgy.view.MorePopupView;
+import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -54,7 +52,7 @@ public class HomeFragment extends BaseFragment {
     @BindView(R.id.home_mRecyclerView)
     RecyclerView mRecyclerView;
     @BindView(R.id.refresh_layout)
-    SmartRefreshLayout refreshLayout;
+    MyRefreshLayout refreshLayout;
 
     private EasyRVAdapter mAdapter;
     private List<String> list = new ArrayList<>();
@@ -103,19 +101,19 @@ public class HomeFragment extends BaseFragment {
     private void initView() {
         toggleSearchType();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
-        refreshLayout.setRefreshHeader(new ClassicsHeader(mActivity));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 //下拉刷新
+                refreshLayout.finishRefresh(3000); // 模拟请求数据, 3秒后结束
             }
         });
 
-        refreshLayout.setRefreshFooter(new ClassicsFooter(mActivity));
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 //上拉加载更多
+                refreshLayout.finishLoadMore(3000);
             }
         });
     }
