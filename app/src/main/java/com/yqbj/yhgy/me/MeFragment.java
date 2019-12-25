@@ -2,6 +2,8 @@ package com.yqbj.yhgy.me;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,6 +32,7 @@ import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.login.VipCoreActivity;
 import com.yqbj.yhgy.requestutils.api.ApiUrl;
 import com.yqbj.yhgy.utils.EventBusUtils;
+import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.utils.UMShareUtil;
 import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.wxapi.WXUtil;
@@ -142,7 +145,16 @@ public class MeFragment extends BaseFragment {
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
-                Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                if (photoBean.isBurnAfterReading()){
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                }else {
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                }
+
                 tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
                 tvMengceng.setText("+" + (list.size() - 8));
                 rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);

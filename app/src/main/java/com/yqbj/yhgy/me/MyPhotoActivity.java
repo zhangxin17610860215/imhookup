@@ -3,6 +3,8 @@ package com.yqbj.yhgy.me;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +24,7 @@ import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.utils.ImageFilter;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -79,7 +82,15 @@ public class MyPhotoActivity extends BaseActivity {
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
 
-                Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                if (photoBean.isBurnAfterReading()){
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                }else {
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                }
 
                 rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
 

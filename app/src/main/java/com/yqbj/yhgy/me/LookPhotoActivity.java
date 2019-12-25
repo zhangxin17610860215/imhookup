@@ -3,6 +3,8 @@ package com.yqbj.yhgy.me;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -18,6 +20,7 @@ import com.netease.nim.uikit.api.NimUIKit;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.view.MiddleDialog;
 
 import java.io.Serializable;
@@ -160,7 +163,15 @@ public class LookPhotoActivity extends BaseActivity {
             ImageView img = view.findViewById(R.id.img_album_detail_item);
             final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
             tvBurnAfterReading.setVisibility(NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE);
-            Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+            if (photoBean.isBurnAfterReading()){
+                //拿到初始图
+                Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                //处理得到模糊效果的图
+                Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                Glide.with(mContext).load(blurBitmap).into(img);
+            }else {
+                Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+            }
             tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
             tvBurnAfterReading.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,6 +182,15 @@ public class LookPhotoActivity extends BaseActivity {
                     }else {
                         photoBean.setBurnAfterReading(true);
                         tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
+                    }
+                    if (photoBean.isBurnAfterReading()){
+                        //拿到初始图
+                        Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                        //处理得到模糊效果的图
+                        Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                        Glide.with(mContext).load(blurBitmap).into(img);
+                    }else {
+                        Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
                     }
                 }
             });
