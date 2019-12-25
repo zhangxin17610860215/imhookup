@@ -48,19 +48,21 @@ public class LookPhotoActivity extends BaseActivity {
     private MyPagerAdapter pagerAdapter;
     private int position;
     private String accId = "";
+    private boolean isShowButton;       //是否显示底部阅后即焚和红包相册按钮
     /**
      * type == 1   右上角显示    确定
      * type == 2   右上角显示    删除
      * */
     private String type = "";
 
-    public static void start(Context context, int position, List<PhotoBean> photoList, String accId, String type) {
+    public static void start(Context context, int position, List<PhotoBean> photoList, String accId, String type, boolean isShowButton) {
         Intent intent = new Intent();
         intent.setClass(context, LookPhotoActivity.class);
         intent.putExtra("position", position);
         intent.putExtra("photoList", (Serializable) photoList);
         intent.putExtra("accId", accId);
         intent.putExtra("type", type);
+        intent.putExtra("isShowButton", isShowButton);
         ((Activity) context).startActivityForResult(intent, 10);
     }
 
@@ -78,6 +80,7 @@ public class LookPhotoActivity extends BaseActivity {
         position = getIntent().getIntExtra("position",0);
         photoList = (List<PhotoBean>) getIntent().getSerializableExtra("photoList");
         accId = getIntent().getStringExtra("accId");
+        isShowButton = getIntent().getBooleanExtra("isShowButton",false);
         type = getIntent().getStringExtra("type");
         pagerAdapter = new MyPagerAdapter(mActivity,photoList);
         mViewPager.setAdapter(pagerAdapter);
@@ -99,7 +102,7 @@ public class LookPhotoActivity extends BaseActivity {
 
             }
         });
-        tvDelete.setVisibility(NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE);
+        tvDelete.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
         if (type.equals("1")){
             tvDelete.setText("确定");
         }else if (type.equals("2")){
@@ -162,7 +165,9 @@ public class LookPhotoActivity extends BaseActivity {
             View view = View.inflate(mContext, R.layout.album_detail_item_layout,null);
             ImageView img = view.findViewById(R.id.img_album_detail_item);
             final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
-            tvBurnAfterReading.setVisibility(NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE);
+            final TextView tvRedEnvelopePhotos = view.findViewById(R.id.tv_RedEnvelopePhotos);
+            tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
+            tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
             if (photoBean.isBurnAfterReading()){
                 //拿到初始图
                 Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
@@ -173,6 +178,8 @@ public class LookPhotoActivity extends BaseActivity {
                 Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
             }
             tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
+            tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isRedEnvelopePhotos() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
+
             tvBurnAfterReading.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -183,14 +190,17 @@ public class LookPhotoActivity extends BaseActivity {
                         photoBean.setBurnAfterReading(true);
                         tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
                     }
-                    if (photoBean.isBurnAfterReading()){
-                        //拿到初始图
-                        Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                        //处理得到模糊效果的图
-                        Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                        Glide.with(mContext).load(blurBitmap).into(img);
+                }
+            });
+            tvRedEnvelopePhotos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (photoBean.isRedEnvelopePhotos()){
+                        photoBean.setRedEnvelopePhotos(false);
+                        tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
                     }else {
-                        Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+                        photoBean.setRedEnvelopePhotos(true);
+                        tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
                     }
                 }
             });

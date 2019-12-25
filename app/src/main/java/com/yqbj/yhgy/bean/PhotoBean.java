@@ -5,6 +5,24 @@ import java.io.Serializable;
 public class PhotoBean implements Serializable {
     private String photoUrl;
     private boolean burnAfterReading;
+    private boolean redEnvelopePhotos;
+    private boolean burnedDown;
+
+    public boolean isRedEnvelopePhotos() {
+        return redEnvelopePhotos;
+    }
+
+    public void setRedEnvelopePhotos(boolean redEnvelopePhotos) {
+        this.redEnvelopePhotos = redEnvelopePhotos;
+    }
+
+    public boolean isBurnedDown() {
+        return burnedDown;
+    }
+
+    public void setBurnedDown(boolean burnedDown) {
+        this.burnedDown = burnedDown;
+    }
 
     public String getPhotoUrl() {
         return photoUrl;

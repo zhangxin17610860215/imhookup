@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -81,6 +82,8 @@ public class MyPhotoActivity extends BaseActivity {
                 PhotoBean photoBean = photoList.get(position);
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
+                RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
+                TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
 
                 if (photoBean.isBurnAfterReading()){
                     //拿到初始图
@@ -92,7 +95,26 @@ public class MyPhotoActivity extends BaseActivity {
                     Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
                 }
 
+                if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
+                    //阅后即焚的红包照片
+                    tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                }else if (photoBean.isRedEnvelopePhotos()){
+                    //只是红包照片
+                    tvRedEnvelopePhotos.setText("红包照片");
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                }
+
                 rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+                rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
 
                 imgHead.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -104,6 +126,7 @@ public class MyPhotoActivity extends BaseActivity {
                         intent.putExtra("photoList", (Serializable) photoList);
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
+                        intent.putExtra("isShowButton",true);
                         mActivity.startActivityForResult(intent, 10);
                     }
                 });
@@ -188,6 +211,7 @@ public class MyPhotoActivity extends BaseActivity {
                     intent.putExtra("photoList", (Serializable) photoList);
                     intent.putExtra("accId",NimUIKit.getAccount());
                     intent.putExtra("type","1");
+                    intent.putExtra("isShowButton",true);
                     startActivityForResult(intent, 10);
                 }
             }

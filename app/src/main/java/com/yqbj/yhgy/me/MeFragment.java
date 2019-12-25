@@ -143,6 +143,8 @@ public class MeFragment extends BaseFragment {
                 PhotoBean photoBean = photoList.get(position);
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
+                RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
+                TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
                 if (photoBean.isBurnAfterReading()){
@@ -155,9 +157,28 @@ public class MeFragment extends BaseFragment {
                     Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
                 }
 
+                if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
+                    //阅后即焚的红包照片
+                    tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                }else if (photoBean.isRedEnvelopePhotos()){
+                    //只是红包照片
+                    tvRedEnvelopePhotos.setText("红包照片");
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                }
+
                 tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
                 tvMengceng.setText("+" + (list.size() - 8));
                 rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+                rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
 
                 tvMengceng.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -179,6 +200,7 @@ public class MeFragment extends BaseFragment {
                         intent.putExtra("photoList", (Serializable) list);
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
+                        intent.putExtra("isShowButton",true);
                         startActivityForResult(intent, 10);
                     }
                 });
@@ -355,6 +377,7 @@ public class MeFragment extends BaseFragment {
                     intent.putExtra("photoList", (Serializable) list);
                     intent.putExtra("accId",NimUIKit.getAccount());
                     intent.putExtra("type","1");
+                    intent.putExtra("isShowButton",true);
                     startActivityForResult(intent, 10);
                 }
             }
