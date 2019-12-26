@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.github.chrisbanes.photoview.OnPhotoTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
-import com.github.chrisbanes.photoview.PhotoViewAttacher;
-
+import com.lxj.xpopup.photoview.OnPhotoTapListener;
+import com.lxj.xpopup.photoview.PhotoView;
 import com.netease.nim.uikit.R;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
 import com.netease.nim.uikit.common.media.imagepicker.loader.GlideImageLoader;
