@@ -94,7 +94,7 @@ public class MyPhotoActivity extends BaseActivity {
                     if (photoBean.isBurnedDown()){
                         rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
                         tvBurnedDown.setText("已焚毁");
-                        tvBurnedDown.setBackgroundColor(getResources().getColor(R.color.burneddown_color));
+                        tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
                     }else {
                         rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
                         tvBurnedDown.setText("阅后即焚");
@@ -115,7 +115,7 @@ public class MyPhotoActivity extends BaseActivity {
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundColor(getResources().getColor(R.color.burneddown_color));
+                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
                     }else {
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
                         tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
@@ -131,7 +131,7 @@ public class MyPhotoActivity extends BaseActivity {
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundColor(getResources().getColor(R.color.burneddown_color));
+                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
                     }else {
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
                         tvRedEnvelopePhotos.setText("红包照片");
