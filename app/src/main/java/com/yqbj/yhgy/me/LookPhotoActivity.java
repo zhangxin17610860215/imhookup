@@ -57,7 +57,7 @@ public class LookPhotoActivity extends BaseActivity {
     private MyPagerAdapter pagerAdapter;
     private int position;
     private String accId = "";
-    private boolean isShowButton;       //是否显示底部阅后即焚和红包相册按钮
+    private boolean isShowButton;       //是否显示底部阅后即焚和红包相册按钮(相当于是否是本人进来此页面)
     /**
      * type == 1   右上角显示    确定
      * type == 2   右上角显示    删除
@@ -192,13 +192,13 @@ public class LookPhotoActivity extends BaseActivity {
             final TextView tvRedEnvelopePhotos = view.findViewById(R.id.tv_RedEnvelopePhotos);
             tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
             tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
-            rl_redenvelopephotos_View.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+            rl_redenvelopephotos_View.setVisibility(!isShowButton && photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+            //拿到初始图
+            Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+            //处理得到模糊效果的图
+            Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
             if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
-                //拿到初始图
-                Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                //处理得到模糊效果的图
-                Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                Glide.with(mContext).load(blurBitmap).into(img);
+                Glide.with(mContext).load(isShowButton ? photoBean.getPhotoUrl() : blurBitmap).into(img);
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
                     //红包照片而且已付过费
                     Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
@@ -210,14 +210,10 @@ public class LookPhotoActivity extends BaseActivity {
             if (photoBean.isBurnedDown()){
                 if (photoBean.isBurnAfterReading() && photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
                     //阅后即焚而且是红包照片而且已付过费而且没有被焚毁
-                    //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                    //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mContext).load(blurBitmap).into(img);
+                    Glide.with(mContext).load(isShowButton ? photoBean.getPhotoUrl() : blurBitmap).into(img);
                     rl_redenvelopephotos_View.setVisibility(View.GONE);
                 }
-                ll_burnedDown.setVisibility(View.VISIBLE);
+                ll_burnedDown.setVisibility(!isShowButton ? View.VISIBLE : View.GONE);
                 tv_goVIP.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -190,16 +190,10 @@ public class MeFragment extends BaseFragment {
                     Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                     //处理得到模糊效果的图
                     Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
-                    if (photoBean.isBurnedDown()){
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
-                        tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
+                    Glide.with(mActivity).load(photoBean.isRedEnvelopePhotosPaid() ? photoBean.getPhotoUrl() : blurBitmap).into(imgHead);
+                    rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                    tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
+                    tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
                 }
 
                 tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
