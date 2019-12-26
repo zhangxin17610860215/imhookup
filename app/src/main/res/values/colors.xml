@@ -30,4 +30,5 @@
     <color name="divider">#E5E5E5</color>
     <color name="text_grey_color">#808080</color>
     <color name="help_color">#ff999999</color>
+    <color name="burneddown_color">#B1B1B1</color>
 </resources>

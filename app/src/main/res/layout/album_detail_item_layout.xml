@@ -43,4 +43,46 @@
         android:layout_centerInParent="true"
         android:layout_above="@+id/tv_BurnAfterReading"/>
 
+    <LinearLayout
+        android:id="@+id/ll_burnedDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/fenhui_logo"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="照片已焚毁"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/color_gray_666666"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/tv_addTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(会员可延长查看时间达6秒)"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/color_999999"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/tv_goVIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circular_bt_shape_bg"
+            android:text="马上升级会员"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_20"/>
+    </LinearLayout>
+
 </RelativeLayout>

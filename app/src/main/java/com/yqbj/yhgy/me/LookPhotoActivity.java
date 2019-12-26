@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,12 +23,15 @@ import com.netease.nim.uikit.api.NimUIKit;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.login.VipCoreActivity;
 import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.view.MiddleDialog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +60,14 @@ public class LookPhotoActivity extends BaseActivity {
      * type == 2   右上角显示    删除
      * */
     private String type = "";
+
+    private View view;
+    private PhotoBean bean;
+    private LinearLayout llBurnedDown;
+    private TextView tvGoVIP;
+    private ImageView imgHeader;
+    private Handler readyHandler = new Handler();
+    private Handler endHandler = new Handler();
 
     public static void start(Context context, int position, List<PhotoBean> photoList, String accId, String type, boolean isShowButton) {
         Intent intent = new Intent();
@@ -162,13 +176,17 @@ public class LookPhotoActivity extends BaseActivity {
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
             final PhotoBean photoBean = mData.get(position);
-            View view = View.inflate(mContext, R.layout.album_detail_item_layout,null);
+            view = View.inflate(mContext, R.layout.album_detail_item_layout,null);
             ImageView img = view.findViewById(R.id.img_album_detail_item);
+            LinearLayout ll_burnedDown = view.findViewById(R.id.ll_burnedDown);
+            TextView tv_addTime = view.findViewById(R.id.tv_addTime);
+            TextView tv_goVIP = view.findViewById(R.id.tv_goVIP);
+
             final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
             final TextView tvRedEnvelopePhotos = view.findViewById(R.id.tv_RedEnvelopePhotos);
             tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
             tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
-            if (photoBean.isBurnAfterReading()){
+            if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
                 //拿到初始图
                 Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                 //处理得到模糊效果的图
@@ -176,6 +194,15 @@ public class LookPhotoActivity extends BaseActivity {
                 Glide.with(mContext).load(blurBitmap).into(img);
             }else {
                 Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+            }
+            if (photoBean.isBurnedDown()){
+                ll_burnedDown.setVisibility(View.VISIBLE);
+                tv_goVIP.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        VipCoreActivity.start(mActivity);
+                    }
+                });
             }
             tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
             tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isRedEnvelopePhotos() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
@@ -212,6 +239,25 @@ public class LookPhotoActivity extends BaseActivity {
                     }
                 }
             });
+            img.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (!isShowButton && photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
+                        if (photoBean.isBurnedDown()){
+                            return false;
+                        }
+                        imgHeader = img;
+                        llBurnedDown = ll_burnedDown;
+                        tvGoVIP = tv_goVIP;
+                        bean = photoBean;
+                        showProgress(false);
+                        readyHandler.postDelayed(readyShow, 2000);
+                        return true;
+                    }else {
+                        return false;
+                    }
+                }
+            });
 
             container.addView(view);
             return view;
@@ -245,5 +291,40 @@ public class LookPhotoActivity extends BaseActivity {
         intent.putExtra("photoList", (Serializable) photoList);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    Runnable readyShow = new Runnable() {
+        @Override
+        public void run() {
+            bean.setBurnedDown(true);
+            dismissProgress();
+            Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+            endHandler.postDelayed(endShow, 2000);
+        }
+    };
+
+    Runnable endShow = new Runnable() {
+        @Override
+        public void run() {
+            //拿到初始图
+            Bitmap bmp= BitmapFactory.decodeFile(bean.getPhotoUrl());
+            //处理得到模糊效果的图
+            Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+            Glide.with(mActivity).load(blurBitmap).into(imgHeader);
+            llBurnedDown.setVisibility(View.VISIBLE);
+            tvGoVIP.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    VipCoreActivity.start(mActivity);
+                }
+            });
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        readyHandler.removeCallbacks(readyShow);
+        endHandler.removeCallbacks(endShow);
     }
 }

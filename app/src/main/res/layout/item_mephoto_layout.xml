@@ -22,7 +22,8 @@
         android:background="@mipmap/burnafterreading_bg_logo"
         android:visibility="gone">
         <TextView
-            android:layout_width="@dimen/dp_size_62"
+            android:id="@+id/tv_BurnedDown"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:layout_alignParentBottom="true"
@@ -30,7 +31,9 @@
             android:text="阅后即焚"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_10"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/dp_size_1"
+            android:layout_marginRight="@dimen/dp_size_1"/>
     </RelativeLayout>
 
     <TextView
@@ -54,7 +57,7 @@
         android:visibility="gone">
         <TextView
             android:id="@+id/tv_RedEnvelopePhotos"
-            android:layout_width="@dimen/dp_size_62"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:layout_alignParentBottom="true"
@@ -64,7 +67,9 @@
             android:textSize="@dimen/text_size_8"
             android:gravity="center"
             android:paddingLeft="@dimen/dimen_5"
-            android:paddingRight="@dimen/dimen_5"/>
+            android:paddingRight="@dimen/dimen_5"
+            android:layout_marginLeft="@dimen/dp_size_1"
+            android:layout_marginRight="@dimen/dp_size_1"/>
     </RelativeLayout>
 
 </RelativeLayout>

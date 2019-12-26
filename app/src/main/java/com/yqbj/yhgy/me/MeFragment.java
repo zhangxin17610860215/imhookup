@@ -143,6 +143,8 @@ public class MeFragment extends BaseFragment {
                 PhotoBean photoBean = photoList.get(position);
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
+                TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
+
                 RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
@@ -153,26 +155,51 @@ public class MeFragment extends BaseFragment {
                     //处理得到模糊效果的图
                     Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
                     Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    if (photoBean.isBurnedDown()){
+                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
+                        tvBurnedDown.setText("已焚毁");
+                        tvBurnedDown.setBackgroundColor(getResources().getColor(R.color.burneddown_color));
+                    }else {
+                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
+                        tvBurnedDown.setText("阅后即焚");
+                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                    }
                 }else {
                     Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
                 }
 
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
                     //阅后即焚的红包照片
-                    tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
                     //拿到初始图
                     Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                     //处理得到模糊效果的图
                     Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
                     Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    if (photoBean.isBurnedDown()){
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                        tvRedEnvelopePhotos.setText("已焚毁");
+                        tvRedEnvelopePhotos.setBackgroundColor(getResources().getColor(R.color.burneddown_color));
+                    }else {
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                        tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
+                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                    }
                 }else if (photoBean.isRedEnvelopePhotos()){
                     //只是红包照片
-                    tvRedEnvelopePhotos.setText("红包照片");
                     //拿到初始图
                     Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                     //处理得到模糊效果的图
                     Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
                     Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    if (photoBean.isBurnedDown()){
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                        tvRedEnvelopePhotos.setText("已焚毁");
+                        tvRedEnvelopePhotos.setBackgroundColor(getResources().getColor(R.color.burneddown_color));
+                    }else {
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                        tvRedEnvelopePhotos.setText("红包照片");
+                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                    }
                 }
 
                 tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
@@ -200,7 +227,7 @@ public class MeFragment extends BaseFragment {
                         intent.putExtra("photoList", (Serializable) list);
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
-                        intent.putExtra("isShowButton",true);
+                        intent.putExtra("isShowButton",false);
                         startActivityForResult(intent, 10);
                     }
                 });
