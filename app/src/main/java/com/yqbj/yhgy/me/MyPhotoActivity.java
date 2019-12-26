@@ -106,7 +106,6 @@ public class MyPhotoActivity extends BaseActivity {
 
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
                     //阅后即焚的红包照片
-                    tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
                     //拿到初始图
                     Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                     //处理得到模糊效果的图
@@ -118,8 +117,8 @@ public class MyPhotoActivity extends BaseActivity {
                         tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
                     }else {
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText("阅后即焚的红包照片");
-                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
+                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
                     }
                 }else if (photoBean.isRedEnvelopePhotos()){
                     //只是红包照片
@@ -134,8 +133,8 @@ public class MyPhotoActivity extends BaseActivity {
                         tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
                     }else {
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText("红包照片");
-                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
+                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
                     }
                 }
 

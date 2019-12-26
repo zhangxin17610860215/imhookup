@@ -85,4 +85,48 @@
             android:layout_marginTop="@dimen/dimen_20"/>
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_redenvelopephotos_View"
+        android:layout_width="wrap_content"
+        android:layout_height="325dp"
+        android:background="@mipmap/redenvelopephotos_bg"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_sendRedPackage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sendredpackage_shape_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dimen_15"
+            android:text="发红包"
+            android:textSize="@dimen/text_size_18"
+            android:textColor="#A3353A"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/tv_sendRedPackage"
+            android:layout_marginBottom="@dimen/dimen_30"
+            android:text="3.00 元"
+            android:textColor="#FFDA40"
+            android:textSize="@dimen/text_size_25"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/tv_money"
+            android:text="发红包看照片"
+            android:textColor="#FFDA40"
+            android:textSize="@dimen/text_size_18"
+            android:layout_marginBottom="@dimen/dp_10"/>
+
+    </RelativeLayout>
+
 </RelativeLayout>

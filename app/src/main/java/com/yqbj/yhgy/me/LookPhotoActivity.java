@@ -15,17 +15,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.login.VipCoreActivity;
 import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.view.MiddleDialog;
+import com.yqbj.yhgy.view.PaySelect;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,6 +69,7 @@ public class LookPhotoActivity extends BaseActivity {
     private LinearLayout llBurnedDown;
     private TextView tvGoVIP;
     private ImageView imgHeader;
+    private RelativeLayout rlRedenvelopephotosView;
     private Handler readyHandler = new Handler();
     private Handler endHandler = new Handler();
 
@@ -179,23 +183,40 @@ public class LookPhotoActivity extends BaseActivity {
             view = View.inflate(mContext, R.layout.album_detail_item_layout,null);
             ImageView img = view.findViewById(R.id.img_album_detail_item);
             LinearLayout ll_burnedDown = view.findViewById(R.id.ll_burnedDown);
+            RelativeLayout rl_redenvelopephotos_View = view.findViewById(R.id.rl_redenvelopephotos_View);
             TextView tv_addTime = view.findViewById(R.id.tv_addTime);
             TextView tv_goVIP = view.findViewById(R.id.tv_goVIP);
+            TextView tv_sendRedPackage = view.findViewById(R.id.tv_sendRedPackage);
 
             final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
             final TextView tvRedEnvelopePhotos = view.findViewById(R.id.tv_RedEnvelopePhotos);
             tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
             tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
+            rl_redenvelopephotos_View.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
             if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
                 //拿到初始图
                 Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                 //处理得到模糊效果的图
                 Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
                 Glide.with(mContext).load(blurBitmap).into(img);
+                if (photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
+                    //红包照片而且已付过费
+                    Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+                    rl_redenvelopephotos_View.setVisibility(View.GONE);
+                }
             }else {
                 Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
             }
             if (photoBean.isBurnedDown()){
+                if (photoBean.isBurnAfterReading() && photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
+                    //阅后即焚而且是红包照片而且已付过费而且没有被焚毁
+                    //拿到初始图
+                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
+                    //处理得到模糊效果的图
+                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+                    Glide.with(mContext).load(blurBitmap).into(img);
+                    rl_redenvelopephotos_View.setVisibility(View.GONE);
+                }
                 ll_burnedDown.setVisibility(View.VISIBLE);
                 tv_goVIP.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -206,6 +227,18 @@ public class LookPhotoActivity extends BaseActivity {
             }
             tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
             tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isRedEnvelopePhotos() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
+
+            tv_sendRedPackage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imgHeader = img;
+                    rlRedenvelopephotosView = rl_redenvelopephotos_View;
+                    llBurnedDown = ll_burnedDown;
+                    tvGoVIP = tv_goVIP;
+                    bean = photoBean;
+                    showPayMode(view,"3.00");
+                }
+            });
 
             tvBurnAfterReading.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -242,7 +275,7 @@ public class LookPhotoActivity extends BaseActivity {
             img.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    if (!isShowButton && photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
+                    if (!isShowButton && photoBean.isBurnAfterReading()){
                         if (photoBean.isBurnedDown()){
                             return false;
                         }
@@ -281,6 +314,57 @@ public class LookPhotoActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 显示支付方式弹窗
+     * */
+    private void showPayMode(View v, String amount) {
+        final PaySelect paySelect = new PaySelect(mActivity,amount,"红包照片",amount,1);
+        new XPopup.Builder(mActivity)
+                .atView(v)
+                .asCustom(paySelect)
+                .show();
+        paySelect.setOnClickListenerOnSure(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //立即支付
+                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
+                int payType = 1;
+                switch (type) {
+                    case ALI:
+                        //支付宝支付
+                        payType = 3;
+                        break;
+                    case WCHAT:
+                        //微信支付
+                        payType = 2;
+                        break;
+                    case WALLET:
+                        //钱包支付
+                        payType = 1;
+                        break;
+                }
+                if (!NoDoubleClickUtils.isDoubleClick(2000)){
+//                    getRedPageId(amount,payType);
+                    toast(payType == 3 ? "支付宝支付" : "微信支付");
+                    bean.setRedEnvelopePhotosPaid(true);
+                    paySelect.dismiss();
+                    if (!isShowButton && bean.isBurnAfterReading()){
+                        if (bean.isBurnedDown()){
+                            return;
+                        }
+                        rlRedenvelopephotosView.setVisibility(View.GONE);
+                        showProgress(false);
+                        readyHandler.postDelayed(readyShow, 2000);
+
+                    }else if (!isShowButton && !bean.isBurnAfterReading()){
+                        rlRedenvelopephotosView.setVisibility(View.GONE);
+                        Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         onFinish();
@@ -296,10 +380,14 @@ public class LookPhotoActivity extends BaseActivity {
     Runnable readyShow = new Runnable() {
         @Override
         public void run() {
-            bean.setBurnedDown(true);
             dismissProgress();
-            Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
-            endHandler.postDelayed(endShow, 2000);
+            if (bean.isRedEnvelopePhotos() && !bean.isRedEnvelopePhotosPaid()){
+                toast("图片不存在");
+            }else {
+                bean.setBurnedDown(true);
+                Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+                endHandler.postDelayed(endShow, 2000);
+            }
         }
     };
 

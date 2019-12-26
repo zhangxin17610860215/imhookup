@@ -7,6 +7,15 @@ public class PhotoBean implements Serializable {
     private boolean burnAfterReading;
     private boolean redEnvelopePhotos;
     private boolean burnedDown;
+    private boolean redEnvelopePhotosPaid;
+
+    public boolean isRedEnvelopePhotosPaid() {
+        return redEnvelopePhotosPaid;
+    }
+
+    public void setRedEnvelopePhotosPaid(boolean redEnvelopePhotosPaid) {
+        this.redEnvelopePhotosPaid = redEnvelopePhotosPaid;
+    }
 
     public boolean isRedEnvelopePhotos() {
         return redEnvelopePhotos;
