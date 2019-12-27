@@ -129,4 +129,23 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_watermark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="约会公园"
+        android:textSize="@dimen/text_size_15"
+        android:textColor="@color/white"
+        android:background="#30666666"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingLeft="@dimen/dimen_20"
+        android:paddingRight="@dimen/dimen_20"
+        android:drawableLeft="@mipmap/white_logo"
+        android:drawablePadding="@dimen/dimen_10"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+
 </RelativeLayout>

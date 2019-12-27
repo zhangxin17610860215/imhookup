@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -33,8 +32,6 @@ import com.yqbj.yhgy.view.PaySelect;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +65,7 @@ public class LookPhotoActivity extends BaseActivity {
     private PhotoBean bean;
     private LinearLayout llBurnedDown;
     private TextView tvGoVIP;
+    private TextView tvWatermark;
     private ImageView imgHeader;
     private RelativeLayout rlRedenvelopephotosView;
     private Handler readyHandler = new Handler();
@@ -187,7 +185,7 @@ public class LookPhotoActivity extends BaseActivity {
             TextView tv_addTime = view.findViewById(R.id.tv_addTime);
             TextView tv_goVIP = view.findViewById(R.id.tv_goVIP);
             TextView tv_sendRedPackage = view.findViewById(R.id.tv_sendRedPackage);
-
+            TextView tv_Watermark = view.findViewById(R.id.tv_watermark);
             final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
             final TextView tvRedEnvelopePhotos = view.findViewById(R.id.tv_RedEnvelopePhotos);
             tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
@@ -199,18 +197,22 @@ public class LookPhotoActivity extends BaseActivity {
             Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
             if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
                 Glide.with(mContext).load(isShowButton ? photoBean.getPhotoUrl() : blurBitmap).into(img);
+                tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
                     //红包照片而且已付过费
                     Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+                    tv_Watermark.setVisibility(View.VISIBLE);
                     rl_redenvelopephotos_View.setVisibility(View.GONE);
                 }
             }else {
                 Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+                tv_Watermark.setVisibility(View.VISIBLE);
             }
             if (photoBean.isBurnedDown()){
                 if (photoBean.isBurnAfterReading() && photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
                     //阅后即焚而且是红包照片而且已付过费而且没有被焚毁
                     Glide.with(mContext).load(isShowButton ? photoBean.getPhotoUrl() : blurBitmap).into(img);
+                    tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
                     rl_redenvelopephotos_View.setVisibility(View.GONE);
                 }
                 ll_burnedDown.setVisibility(!isShowButton ? View.VISIBLE : View.GONE);
@@ -231,6 +233,7 @@ public class LookPhotoActivity extends BaseActivity {
                     rlRedenvelopephotosView = rl_redenvelopephotos_View;
                     llBurnedDown = ll_burnedDown;
                     tvGoVIP = tv_goVIP;
+                    tvWatermark = tv_Watermark;
                     bean = photoBean;
                     showPayMode(view,"3.00");
                 }
@@ -278,6 +281,7 @@ public class LookPhotoActivity extends BaseActivity {
                         imgHeader = img;
                         llBurnedDown = ll_burnedDown;
                         tvGoVIP = tv_goVIP;
+                        tvWatermark = tv_Watermark;
                         bean = photoBean;
                         showProgress(false);
                         readyHandler.postDelayed(readyShow, 2000);
@@ -355,6 +359,7 @@ public class LookPhotoActivity extends BaseActivity {
                     }else if (!isShowButton && !bean.isBurnAfterReading()){
                         rlRedenvelopephotosView.setVisibility(View.GONE);
                         Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+                        tvWatermark.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -382,6 +387,7 @@ public class LookPhotoActivity extends BaseActivity {
             }else {
                 bean.setBurnedDown(true);
                 Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+                tvWatermark.setVisibility(View.VISIBLE);
                 endHandler.postDelayed(endShow, 2000);
             }
         }
@@ -395,6 +401,7 @@ public class LookPhotoActivity extends BaseActivity {
             //处理得到模糊效果的图
             Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
             Glide.with(mActivity).load(blurBitmap).into(imgHeader);
+            tvWatermark.setVisibility(View.GONE);
             llBurnedDown.setVisibility(View.VISIBLE);
             tvGoVIP.setOnClickListener(new View.OnClickListener() {
                 @Override
