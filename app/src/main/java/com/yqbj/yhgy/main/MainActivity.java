@@ -433,7 +433,7 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
         if (BACK_PRESS_TIME + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
-            toast("再按一次退出快速交友");
+            toast("再按一次退出约会公园");
         }
         BACK_PRESS_TIME = System.currentTimeMillis();
     }

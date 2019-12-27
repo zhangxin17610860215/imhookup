@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">快速交友</string>
+    <string name="app_name">约会公园</string>
     <string name="nim_status_bar_multi_messages_incoming">%1$d位联系人有新消息</string>
     <string name="nim_status_bar_ticker_text">%1$s有新消息</string>
     <string name="nim_status_bar_image_message">%1$s发来一条图片消息</string>
