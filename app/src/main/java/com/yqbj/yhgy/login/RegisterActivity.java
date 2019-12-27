@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.me.AgreementActivity;
 import com.yqbj.yhgy.me.GenderSelectionAct;
 import com.yqbj.yhgy.utils.StringUtil;
 
@@ -124,6 +125,7 @@ public class RegisterActivity extends BaseActivity {
                 break;
             case R.id.tv_Agreement:
                 //用户协议
+                AgreementActivity.start(activity,"2");
                 break;
             case R.id.img_weixin:
                 //微信

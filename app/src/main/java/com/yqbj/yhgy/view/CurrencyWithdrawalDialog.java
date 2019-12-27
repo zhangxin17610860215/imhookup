@@ -22,7 +22,7 @@ public class CurrencyWithdrawalDialog extends CenterPopupView implements View.On
     private TextView tvTitle;
 
     private Context context;
-    private String content = "你有%1$s枚约会币可兑换成人民币%2$s元,兑换后剩余%3$s枚面具币。确定申请兑换吗?";
+    private String content = "你有%1$s枚约会币可兑换成人民币%2$s元,兑换后剩余%3$s枚约会币。确定申请兑换吗?";
     private String buttonText = "确认";
 
     /**

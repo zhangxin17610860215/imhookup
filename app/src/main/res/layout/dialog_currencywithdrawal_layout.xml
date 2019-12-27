@@ -22,7 +22,7 @@
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="你有枚约会币可兑换成人民币元,兑换后剩余枚面具币。确定申请兑换吗?"
+            android:text="你有枚约会币可兑换成人民币元,兑换后剩余枚约会币。确定申请兑换吗?"
             android:textSize="@dimen/text_size_15"
             android:textColor="@color/color_gray_666666"
             android:gravity="center"

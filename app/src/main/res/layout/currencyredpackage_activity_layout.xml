@@ -118,7 +118,7 @@
             android:id="@+id/tv_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="如果对方24小时没有领取红包,面具币将退回到你的钱包"
+            android:text="如果对方24小时没有领取红包,约会币将退回到你的钱包"
             android:textSize="@dimen/sp_12"
             android:textColor="@color/color_999999"
             android:layout_marginTop="@dimen/dimen_20"

@@ -38,7 +38,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="面具公园仅向拥有邀请码的男士提供服务"
+                    android:text="约会公园仅向拥有邀请码的男士提供服务"
                     android:textSize="@dimen/text_size_12"
                     android:textColor="@color/color_gray_999999"
                     android:layout_gravity="center_horizontal"
