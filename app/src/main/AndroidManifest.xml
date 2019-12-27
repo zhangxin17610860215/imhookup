@@ -300,6 +300,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>
         <activity
+            android:name="com.yqbj.yhgy.me.AgreementActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme"/>
+        <activity
             android:name="com.yqbj.yhgy.me.WalletActivity"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme"/>

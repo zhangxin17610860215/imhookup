@@ -69,7 +69,7 @@ public class SettingsActivity extends BaseActivity {
         getSDKDirCacheSize();
     }
 
-    @OnClick({R.id.tv_MessageNotification, R.id.rl_Phone, R.id.tv_SetPassword, R.id.tv_Agreement, R.id.rl_ClearCache, R.id.tv_Logout})
+    @OnClick({R.id.tv_MessageNotification, R.id.rl_Phone, R.id.tv_SetPassword, R.id.tv_Standard, R.id.tv_Privacy, R.id.tv_Agreement, R.id.rl_ClearCache, R.id.tv_Logout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_MessageNotification:
@@ -96,8 +96,17 @@ public class SettingsActivity extends BaseActivity {
                 //修改密码
                 ModifyPasswordActivity.start(mActivity);
                 break;
+            case R.id.tv_Standard:
+                //平台使用规范
+                AgreementActivity.start(mActivity,"1");
+                break;
             case R.id.tv_Agreement:
                 //用户使用协议
+                AgreementActivity.start(mActivity,"2");
+                break;
+            case R.id.tv_Privacy:
+                //用户隐私政策
+                AgreementActivity.start(mActivity,"3");
                 break;
             case R.id.rl_ClearCache:
                 //清理缓存

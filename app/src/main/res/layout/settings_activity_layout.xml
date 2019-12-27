@@ -91,10 +91,50 @@
         android:layout_marginRight="@dimen/dimen_15"/>
 
     <TextView
+        android:id="@+id/tv_Standard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="平台使用规范"
+        android:textSize="@dimen/text_size_15"
+        android:textColor="@color/black"
+        android:paddingTop="@dimen/dimen_12"
+        android:paddingBottom="@dimen/dimen_12"
+        android:layout_marginTop="@dimen/dimen_15"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:layout_marginRight="@dimen/dimen_15"
+        android:drawableRight="@mipmap/right_jiantou_logo"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/activity_grey_bg"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:layout_marginRight="@dimen/dimen_15"/>
+
+    <TextView
         android:id="@+id/tv_Agreement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="用户使用协议"
+        android:textSize="@dimen/text_size_15"
+        android:textColor="@color/black"
+        android:paddingTop="@dimen/dimen_12"
+        android:paddingBottom="@dimen/dimen_12"
+        android:layout_marginTop="@dimen/dimen_15"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:layout_marginRight="@dimen/dimen_15"
+        android:drawableRight="@mipmap/right_jiantou_logo"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/activity_grey_bg"
+        android:layout_marginLeft="@dimen/dimen_15"
+        android:layout_marginRight="@dimen/dimen_15"/>
+
+    <TextView
+        android:id="@+id/tv_Privacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="用户隐私政策"
         android:textSize="@dimen/text_size_15"
         android:textColor="@color/black"
         android:paddingTop="@dimen/dimen_12"
