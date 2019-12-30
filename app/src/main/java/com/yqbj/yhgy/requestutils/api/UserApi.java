@@ -19,15 +19,25 @@ public class UserApi {
     private final static String TAG = "UserApi";
 
     /**
-     * 获取群升级价格列表
+     * 注册
      * */
-    public static void getTeamAllocationPrice(String tid, Object object, final RequestCallback callback){
+    public static void signup(String signupType,String mobile,String smsCode,
+                              String password,String gender,String wxtoken,
+                              String openid,String uuid,
+                              Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        map.put("tid",tid);
-        RequestHelp.postRequest(ApiUrl.USER_LOGIN, object, map, new StringCallback() {
+        map.put("signupType",signupType);
+        map.put("mobile",mobile);
+        map.put("smsCode",smsCode);
+        map.put("password",password);
+        map.put("gender",gender);
+        map.put("wxtoken",wxtoken);
+        map.put("openid",openid);
+        map.put("uuid",uuid);
+        RequestHelp.postRequest(ApiUrl.USER_SIGNUP, object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
-                LogUtil.e(TAG, "getTeamAllocationPrice--------->onSuccess" + response.body());
+                LogUtil.e(TAG, "signup--------->onSuccess" + response.body());
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
                     if (bean.getStatusCode() == Constants.SUCCESS_CODE){
@@ -46,7 +56,7 @@ public class UserApi {
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                LogUtil.e(TAG, "getTeamAllocationPrice--------->onError" + response.body());
+                LogUtil.e(TAG, "signup--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
 
             }

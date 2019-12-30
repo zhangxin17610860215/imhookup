@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.netease.nim.uikit.impl.cache.ConfigConstants;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.constant.AttachStatusEnum;
@@ -19,6 +20,9 @@ import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.action.SnapChatAttachment;
 import com.yqbj.yhgy.main.WatchSnapChatPictureActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by zhoujianghua on 2015/8/7.
  */
@@ -29,6 +33,8 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
     protected View progressCover;
     private TextView progressLabel;
     private boolean isLongClick = false;
+    private Map<String, Object> localExtension = new HashMap<>();
+    private boolean ownWhetherSee;
 
     public MsgViewHolderSnapChat(BaseMultiItemFetchLoadAdapter adapter) {
         super(adapter);
@@ -49,6 +55,9 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
 
     @Override
     protected void bindContentView() {
+
+        getLocalExtension();
+
         contentContainer.setOnTouchListener(onTouchListener);
 
         layoutByDirection();
@@ -57,7 +66,8 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
     }
 
     private void refreshStatus() {
-        thumbnailImageView.setBackgroundResource(isReceivedMessage() ? R.drawable.message_view_holder_left_snapchat : R.drawable.message_view_holder_right_snapchat);
+
+        thumbnailImageView.setBackgroundResource(isReceivedMessage() ? !ownWhetherSee ? R.drawable.message_view_holder_left_snapchat : R.drawable.message_view_holder_left_snapchat_no : !ownWhetherSee ? R.drawable.message_view_holder_right_snapchat : R.drawable.message_view_holder_right_snapchat_no);
 
         if (message.getStatus() == MsgStatusEnum.sending || message.getAttachStatus() == AttachStatusEnum.transferring) {
             progressCover.setVisibility(View.VISIBLE);
@@ -87,6 +97,7 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
                     v.getParent().requestDisallowInterceptTouchEvent(false);
 
                     WatchSnapChatPictureActivity.destroy();
+                    thumbnailImageView.setBackgroundResource(isReceivedMessage() ? !ownWhetherSee ? R.drawable.message_view_holder_left_snapchat : R.drawable.message_view_holder_left_snapchat_no : !ownWhetherSee ? R.drawable.message_view_holder_right_snapchat : R.drawable.message_view_holder_right_snapchat_no);
 
                     // 删除这条消息，当然你也可以将其标记为已读，同时删除附件内容，然后不让再查看
                     if (isLongClick && message.getAttachStatus() == AttachStatusEnum.transferred) {
@@ -107,22 +118,41 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
 
     @Override
     protected boolean onItemLongClick() {
-        if (message.getStatus() == MsgStatusEnum.success) {
+        if (message.getStatus() == MsgStatusEnum.success && !ownWhetherSee) {
             WatchSnapChatPictureActivity.start(context, message);
             isLongClick = true;
+            setLocalExtension();
             return true;
         }
         return false;
     }
 
+    /**
+     * 设置本地字段
+     * */
+    private void setLocalExtension() {
+        localExtension.put(ConfigConstants.MESSAGE_ATTRIBUTE.ownWhetherSee,ownWhetherSee);
+        message.setLocalExtension(localExtension);
+    }
+
+    /**
+     * 获取本地字段
+     * */
+    private void getLocalExtension() {
+        localExtension = message.getRemoteExtension();
+        if (null != localExtension && !localExtension.isEmpty() && localExtension.size() > 0){
+            ownWhetherSee = (boolean) localExtension.get(ConfigConstants.MESSAGE_ATTRIBUTE.ownWhetherSee);
+        }
+    }
+
     @Override
     protected int leftBackground() {
-        return 0;
+        return R.drawable.message_view_holder_left_snapchat;
     }
 
     @Override
     protected int rightBackground() {
-        return 0;
+        return R.drawable.message_view_holder_right_snapchat;
     }
 
     private void layoutByDirection() {
