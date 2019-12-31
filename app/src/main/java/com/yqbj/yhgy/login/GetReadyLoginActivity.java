@@ -57,8 +57,8 @@ public class GetReadyLoginActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_login:
                 //登录
-//                LoginActivity.start(activity);
-                authentication();
+                LoginActivity.start(activity);
+//                authentication();
                 break;
             case R.id.tv_register:
                 //手机号注册

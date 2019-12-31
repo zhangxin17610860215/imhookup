@@ -30,12 +30,27 @@ public class Constants {
     /**
      * 用户相关的属性
      */
-    public class USER_TYPE {
-        public static final String APITOKEN = "apiToken";               // 应用服务端接口令牌
-        public static final String USERTOKEN = "userToken";             // 用户Token
-        public static final String YUNXINTOKEN = "yunxinToken";         // 云信Token
-        public static final String ACCID = "accid";                     // 云信account
-        public static final String KEY = "key";                         // 签名时使用的key
+    public static class USER_ATTRIBUTE {
+        public static final String SP_USERACCOUNT = "account";           // 用户的account(手机号)
+        public static final String SP_USERACCID = "accid";               // 用户的accid
+        public static final String SP_NAME = "nikename";                 // 用户姓名
+        public static final String SP_YUNXINTOKEN = "yunxinToken";       // 云信Token
+        public static final String SP_USERTOKEN = "userToken";           // 用户Token
+        public static final String SP_WXUUID = "wxUuid";                 // 微信uuid
+        public static final String SP_OPENID = "wxOpenId";               // 微信openid
+        public static final String SP_WXTOKEN = "wxToken";               // 微信wxtoken
+        public static final String SP_WXHEADIMG = "wxHeadImg";           // 微信头像
+        public static final String SP_WXNAME = "wxName";                 // 微信昵称
+        public static final String SP_GENDER = "gender";                 // 用户性别
+        public static String WXUUID = "";                       // 微信uuid
+        public static String OPENID = "";                       // 微信openid
+        public static String WXTOKEN = "";                      // 微信wxtoken
+        public static String WXHEADIMG = "";                    // 微信头像
+        public static String WXNAME = "";                       // 微信昵称
+        public static String PHONE = "";                        // 用户手机号
+        public static String VFCODE = "";                       // 用户手机验证码
+        public static String PSW = "";                          // 用户密码
+        public static String GENDER = "";                       // 用户性别
     }
 
     /**

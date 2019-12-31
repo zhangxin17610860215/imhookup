@@ -18,9 +18,12 @@ import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerO
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.ui.imageview.HeadImageView;
 import com.netease.nim.uikit.common.util.CityBean;
+import com.netease.nim.uikit.common.util.SPUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.main.MainActivity;
+import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.StatusBarsUtil;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.view.ChoiceCityDialog;
@@ -116,6 +119,14 @@ public class PerfectDataActivity extends BaseActivity {
     }
 
     private void initData() {
+
+        imgUpHead.setIsRect(true);
+        String wxHeadImage = SPUtils.getInstance(DemoCache.getAccount()).getString(Constants.USER_ATTRIBUTE.SP_WXHEADIMG);
+        String wxName = SPUtils.getInstance(DemoCache.getAccount()).getString(Constants.USER_ATTRIBUTE.SP_WXNAME);
+        Glide.with(activity).load(wxHeadImage).into(imgUpHead);
+        if (StringUtil.isNotEmpty(wxName)){
+            etName.setText(wxName);
+        }
         //默认选中城市
         selCityValueList.clear();
         selCityValueList.add("140800");
@@ -384,7 +395,6 @@ public class PerfectDataActivity extends BaseActivity {
 
             @Override
             public void sendImage(File file, boolean isOrig, int imgListSize) {
-                imgUpHead.setIsRect(true);
                 Glide.with(activity).load(file.getPath()).into(imgUpHead);
             }
         });

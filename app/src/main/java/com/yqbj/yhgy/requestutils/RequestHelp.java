@@ -12,7 +12,9 @@ import com.yqbj.yhgy.MyApplication;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.utils.CrypticUtil;
 import com.yqbj.yhgy.utils.LogUtil;
+import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.TimeUtils;
 
 import java.io.File;
 import java.util.Comparator;
@@ -181,41 +183,11 @@ public class RequestHelp {
 
 
     private static Map<String, String> appendCommonParam(String url, Map<String, String> map) {
-        //进行Key=value的格式排版得到需要加密的字符串
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : getSortedMapByKey(map).entrySet()) {
-            if (null == entry.getValue() || entry.getValue().equals("")) // 如果是null，则跳过
-                continue;
-
-            sb.append(entry.getKey())
-                    .append("=")
-                    .append(String.valueOf(entry.getValue()))
-                    .append("&");
-        }
-        String key = "";
-        try {
-            key = CrypticUtil.RSADecrypt(SPUtils.getInstance().getString(Constants.USER_TYPE.KEY));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (StringUtil.isNotEmpty(sb.toString())) {
-            sb.delete(sb.length() - 1, sb.length());
-            sb.append("&").append("key").append("=").append(key);
-        } else {
-            sb.append("key").append("=").append(key);
-        }
-        String md5Str = CrypticUtil.md5(sb.toString());
         map.clear();
-        map.put("Sign", md5Str.toUpperCase());
-        map.put("AppId", "xialiao_v1");
+        map.put("AppId", "sd_v1");
+        map.put("System", "Android");
         map.put("VersionNo", StringUtil.getAppVersionName(MyApplication.getInstance()));
-//        if (url.equals(ApiUrl.USER_LOGIN) || url.equals(ApiUrl.USER_SIGNUP) || url.equals(ApiUrl.USER_PHONE_LOGIN_CODE) || url.equals(ApiUrl.USER_PHONE_LOGIN)) {
-//            //登录注册接口用APITOKEN
-//            map.put("Token", SPUtils.getInstance().getString(Constants.USER_TYPE.APITOKEN));
-//        } else {
-//            //否则使用USERTOKEN
-//            map.put("Token", SPUtils.getInstance().getString(Constants.USER_TYPE.USERTOKEN));
-//        }
+        map.put("CurTime", TimeUtils.getCurrentTime());
         return map;
     }
 

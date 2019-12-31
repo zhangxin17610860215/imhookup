@@ -18,10 +18,12 @@ public class CautionDialog extends CenterPopupView implements View.OnClickListen
     private Context context;
     private TextView tvDetermine;
     private ImageView imgClose;
+    private OnClickListener listener;
 
-    public CautionDialog(@NonNull Context context) {
+    public CautionDialog(@NonNull Context context,OnClickListener listener) {
         super(context);
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -52,8 +54,8 @@ public class CautionDialog extends CenterPopupView implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_Determine:
-                //跳转完善资料
-                PerfectDataActivity.start(context);
+                //注册
+                listener.onClick(v);
                 dismiss();
                 break;
             case R.id.img_close:

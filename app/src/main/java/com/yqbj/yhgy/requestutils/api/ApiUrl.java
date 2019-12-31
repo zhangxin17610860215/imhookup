@@ -12,6 +12,7 @@ public class ApiUrl {
     public static String BASE_URL_HEAD = "http://";
     public static String BASE_URL = "192.168.1.112:7075";
 
-    public static String USER_LOGIN = BASE_URL_HEAD + BASE_URL + "/interactive/user/login";
-    public static String USER_SIGNUP = BASE_URL_HEAD + BASE_URL + "/domain/user/signup";
+    public static String USER_LOGIN = BASE_URL_HEAD + BASE_URL + "/user/login";
+    public static String USER_SIGNUP = BASE_URL_HEAD + BASE_URL + "/user/signup";
+    public static String USER_GETVFCODE = BASE_URL_HEAD + BASE_URL + "/mobile/send/code";
 }

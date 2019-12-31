@@ -33,7 +33,7 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
     protected View progressCover;
     private TextView progressLabel;
     private boolean isLongClick = false;
-    private Map<String, Object> localExtension = new HashMap<>();
+    private Map<String, Object> localExtension;
     private boolean ownWhetherSee;
 
     public MsgViewHolderSnapChat(BaseMultiItemFetchLoadAdapter adapter) {
@@ -121,6 +121,7 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
         if (message.getStatus() == MsgStatusEnum.success && !ownWhetherSee) {
             WatchSnapChatPictureActivity.start(context, message);
             isLongClick = true;
+            ownWhetherSee = true;
             setLocalExtension();
             return true;
         }
@@ -142,6 +143,8 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
         localExtension = message.getRemoteExtension();
         if (null != localExtension && !localExtension.isEmpty() && localExtension.size() > 0){
             ownWhetherSee = (boolean) localExtension.get(ConfigConstants.MESSAGE_ATTRIBUTE.ownWhetherSee);
+        }else {
+            localExtension = new HashMap<>();
         }
     }
 

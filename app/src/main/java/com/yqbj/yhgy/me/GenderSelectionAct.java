@@ -10,8 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
+import com.netease.nim.uikit.common.util.SPUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.UserBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.view.CautionDialog;
 
 import butterknife.BindView;
@@ -69,12 +75,53 @@ public class GenderSelectionAct extends BaseActivity {
                 break;
             case R.id.tv_Determine:
                 //确定
+                Constants.USER_ATTRIBUTE.GENDER = gender == 1 ? "1" : "2";
                 new XPopup.Builder(activity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new CautionDialog(activity))
+                        .asCustom(new CautionDialog(activity, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //注册
+                                signup("2");
+                            }
+                        }))
                         .show();
                 break;
         }
+    }
+
+    /**
+     * 注册
+     * */
+    private void signup(String signupType) {
+        showProgress(false);
+        UserApi.signup(signupType, Constants.USER_ATTRIBUTE.PHONE, Constants.USER_ATTRIBUTE.VFCODE,
+                Constants.USER_ATTRIBUTE.PSW, Constants.USER_ATTRIBUTE.GENDER,
+                Constants.USER_ATTRIBUTE.WXTOKEN, Constants.USER_ATTRIBUTE.OPENID, Constants.USER_ATTRIBUTE.WXUUID,
+                activity, new RequestCallback() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        dismissProgress();
+                        UserBean userBean = (UserBean) object;
+                        DemoCache.setAccount(userBean.getInfo().getAccid());
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_USERACCOUNT,userBean.getInfo().getAccount());
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_USERACCID,userBean.getInfo().getAccid());
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_NAME,userBean.getInfo().getNikename());
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_YUNXINTOKEN,userBean.getInfo().getYunxinToken());
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_USERTOKEN,userBean.getInfo().getUserToken());
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_WXTOKEN,Constants.USER_ATTRIBUTE.WXTOKEN);
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_WXUUID,Constants.USER_ATTRIBUTE.WXUUID);
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_OPENID,Constants.USER_ATTRIBUTE.OPENID);
+                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_GENDER,Constants.USER_ATTRIBUTE.GENDER);
+                        //跳转完善资料
+                        PerfectDataActivity.start(activity);
+                    }
+
+                    @Override
+                    public void onFailed(String errMessage) {
+                        dismissProgress();
+                    }
+                });
     }
 
     private void changeOptions() {

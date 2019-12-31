@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import butterknife.BindView;
@@ -99,6 +100,24 @@ public class BindPhoneActivity extends BaseActivity {
                 }
                 break;
             case R.id.tv_bindPhone:
+                phone = etPhone.getText().toString().trim();
+                vfCode = etVerCode.getText().toString().trim();
+                psw = etPsw.getText().toString().trim();
+                if (StringUtil.isEmpty(phone)){
+                    toast("请输入手机号");
+                    return;
+                }
+                if (StringUtil.isEmpty(vfCode)){
+                    toast("请输入验证码");
+                    return;
+                }
+                if (StringUtil.isEmpty(psw)){
+                    toast("请输入密码");
+                    return;
+                }
+                Constants.USER_ATTRIBUTE.PHONE = phone;
+                Constants.USER_ATTRIBUTE.VFCODE = vfCode;
+                Constants.USER_ATTRIBUTE.PSW = psw;
                 WelcomActivity.start(activity);
                 break;
         }
