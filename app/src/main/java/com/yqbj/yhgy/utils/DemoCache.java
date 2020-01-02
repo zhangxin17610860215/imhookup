@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.netease.nim.avchatkit.AVChatKit;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.common.util.SPUtils;
 import com.netease.nimlib.sdk.StatusBarNotificationConfig;
 
 /**
@@ -13,12 +14,12 @@ public class DemoCache {
 
     private static Context context;
 
-    private static String account;
+    private static String account = "";
 
     private static StatusBarNotificationConfig notificationConfig;
 
     public static void clear() {
-        account = null;
+        account = "";
     }
 
     public static String getAccount() {

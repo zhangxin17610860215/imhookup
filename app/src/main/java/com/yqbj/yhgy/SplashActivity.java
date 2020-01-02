@@ -13,9 +13,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
+import com.netease.nim.uikit.api.NimUIKit;
 import com.netease.nim.uikit.support.permission.MPermission;
+import com.netease.nimlib.sdk.AbortableFuture;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.StatusBarNotificationConfig;
+import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.login.GetReadyLoginActivity;
+import com.yqbj.yhgy.main.MainActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.UserPreferences;
 import com.yqbj.yhgy.view.EasyAlertDialogHelper;
 
 import java.util.List;
@@ -26,6 +39,7 @@ import java.util.List;
 public class SplashActivity extends BaseActivity {
 
     private Activity activity;
+    private AbortableFuture<LoginInfo> loginRequest;
     private Handler handler = new Handler();
     private static final String[] BASIC_PERMISSIONS = new String[]{
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -52,6 +66,7 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             //检查权限
             //获取被拒绝但没有勾选不再询问的权限（可以继续申请，会继续弹框）
@@ -85,8 +100,13 @@ public class SplashActivity extends BaseActivity {
     Runnable readyShow = new Runnable() {
         @Override
         public void run() {
-            GetReadyLoginActivity.start(activity);
-            finish();
+            //是否是登陆状态
+            if (StringUtil.isEmpty(Preferences.getUserAccId()) || StringUtil.isEmpty(Preferences.getYunxinToken())){
+                GetReadyLoginActivity.start(activity);
+                finish();
+            }else {
+                login();
+            }
         }
     };
 
@@ -160,4 +180,75 @@ public class SplashActivity extends BaseActivity {
         }
         return super.dispatchTouchEvent(event);
     }
+
+    private void login() {
+        String loginType = Preferences.getLoginType();
+        String wxToken = Preferences.getWxToken();
+        String openId = Preferences.getWxOpenid();
+        String uuId = Preferences.getWxUuid();
+        String phone = Preferences.getAccount();
+        String psw = Preferences.getPassword();
+        UserApi.login(loginType, phone,psw, wxToken, openId, uuId, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                if (code == Constants.SUCCESS_CODE){
+                    yunXinLogin();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void yunXinLogin() {
+        // 云信只提供消息通道，并不包含用户资料逻辑。开发者需要在管理后台或通过服务器接口将用户帐号和token同步到云信服务器。
+        // 在这里直接使用同步到云信服务器的帐号和token登录。
+        // 如果开发者直接使用这个demo，只更改appkey，然后就登入自己的账户体系的话，需要传入同步到云信服务器的token，而不是用户密码。
+        final String account = Preferences.getUserAccId();
+        final String token = Preferences.getYunxinToken();
+        loginRequest = NimUIKit.login(new LoginInfo(account, token), new com.netease.nimlib.sdk.RequestCallback<LoginInfo>() {
+            @Override
+            public void onSuccess(LoginInfo param) {
+                onLoginDone();
+                DemoCache.setAccount(account);
+                // 初始化消息提醒配置
+                initNotificationConfig();
+                // 进入主界面
+                MainActivity.start(activity);
+            }
+
+            @Override
+            public void onFailed(int code) {
+                onLoginDone();
+            }
+
+            @Override
+            public void onException(Throwable exception) {
+                onLoginDone();
+            }
+        });
+    }
+
+    private void onLoginDone() {
+        loginRequest = null;
+    }
+
+    private void initNotificationConfig() {
+        // 初始化消息提醒
+        NIMClient.toggleNotification(UserPreferences.getNotificationToggle());
+        // 加载状态栏配置
+        StatusBarNotificationConfig statusBarNotificationConfig = UserPreferences.getStatusConfig();
+        if (statusBarNotificationConfig == null) {
+            statusBarNotificationConfig = DemoCache.getNotificationConfig();
+            UserPreferences.setStatusConfig(statusBarNotificationConfig);
+        }
+        // 更新配置
+        NIMClient.updateStatusBarNotificationConfig(statusBarNotificationConfig);
+    }
+
 }

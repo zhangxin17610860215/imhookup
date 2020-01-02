@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.me.GenderSelectionAct;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import butterknife.BindView;
@@ -118,7 +119,7 @@ public class BindPhoneActivity extends BaseActivity {
                 Constants.USER_ATTRIBUTE.PHONE = phone;
                 Constants.USER_ATTRIBUTE.VFCODE = vfCode;
                 Constants.USER_ATTRIBUTE.PSW = psw;
-                WelcomActivity.start(activity);
+                GenderSelectionAct.start(activity);
                 break;
         }
     }

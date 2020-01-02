@@ -1,5 +1,6 @@
 package com.yqbj.yhgy.requestutils.api;
 
+import com.alibaba.fastjson.JSON;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.yqbj.yhgy.bean.UserBean;
@@ -7,8 +8,10 @@ import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.BaseBean;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.RequestHelp;
+import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.GsonHelper;
 import com.yqbj.yhgy.utils.LogUtil;
+import com.yqbj.yhgy.utils.Preferences;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,20 +35,31 @@ public class UserApi {
         map.put("smsCode",smsCode);
         map.put("password",password);
         map.put("gender",gender);
-        map.put("wxtoken",wxtoken);
-        map.put("openid",openid);
-        map.put("uuid",uuid);
+        if (signupType.equals("2")){
+            map.put("wxtoken",wxtoken);
+            map.put("openid",openid);
+            map.put("uuid",uuid);
+        }
         RequestHelp.postRequest(ApiUrl.USER_SIGNUP, object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "signup--------->onSuccess" + response.body());
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
-                    if (bean.getStatusCode() == Constants.SUCCESS_CODE){
-                        UserBean userBean = GsonHelper.getSingleton().fromJson(bean.getData(), UserBean.class);
-                        callback.onSuccess(userBean);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
+                        userBean.setLoginType(signupType);
+                        userBean.setPassword(password);
+                        userBean.setWxToken(Constants.USER_ATTRIBUTE.WXTOKEN);
+                        userBean.setWxOpenid(Constants.USER_ATTRIBUTE.OPENID);
+                        userBean.setWxUuid(Constants.USER_ATTRIBUTE.WXUUID);
+                        userBean.setHeadImag(Constants.USER_ATTRIBUTE.WXHEADIMG);
+                        DemoCache.setAccount(userBean.getAccid());
+                        Preferences.saveUserData(userBean);
+                        callback.onSuccess(bean.getCode(),userBean);
                     } else {
-                        callback.onFailed(bean.getMessage());
+                        callback.onFailed(bean.getMsg());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -76,11 +90,11 @@ public class UserApi {
                 LogUtil.e(TAG, "getVfCode--------->onSuccess" + response.body());
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
-                    if (bean.getStatusCode() == Constants.SUCCESS_CODE){
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
 //                        TeamAllocationPriceBean priceBean = GsonHelper.getSingleton().fromJson(bean.getData(), TeamAllocationPriceBean.class);
 //                        callback.onSuccess(bean.getStatusCode(),priceBean);
                     } else {
-                        callback.onFailed(bean.getMessage());
+                        callback.onFailed(bean.getMsg());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -105,22 +119,34 @@ public class UserApi {
                               Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("loginType",loginType);
-        map.put("account",account);
-        map.put("password",password);
-        map.put("wxtoken",wxtoken);
-        map.put("openid",openid);
-        map.put("uuid",uuid);
+        if (loginType.equals("1")){
+            map.put("account",account);
+            map.put("password",password);
+        }else if (loginType.equals("2")){
+            map.put("wxtoken",wxtoken);
+            map.put("openid",openid);
+            map.put("uuid",uuid);
+        }
         RequestHelp.postRequest(ApiUrl.USER_LOGIN, object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "login--------->onSuccess" + response.body());
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
-                    if (bean.getStatusCode() == Constants.SUCCESS_CODE){
-//                        TeamAllocationPriceBean priceBean = GsonHelper.getSingleton().fromJson(bean.getData(), TeamAllocationPriceBean.class);
-//                        callback.onSuccess(bean.getStatusCode(),priceBean);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
+                        userBean.setLoginType(loginType);
+                        userBean.setPassword(password);
+                        userBean.setWxToken(Constants.USER_ATTRIBUTE.WXTOKEN);
+                        userBean.setWxOpenid(Constants.USER_ATTRIBUTE.OPENID);
+                        userBean.setWxUuid(Constants.USER_ATTRIBUTE.WXUUID);
+                        userBean.setHeadImag(Constants.USER_ATTRIBUTE.WXHEADIMG);
+                        DemoCache.setAccount(userBean.getAccid());
+                        Preferences.saveUserData(userBean);
+                        callback.onSuccess(bean.getCode(),userBean);
                     } else {
-                        callback.onFailed(bean.getMessage());
+                        callback.onFailed(bean.getMsg());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -133,6 +159,14 @@ public class UserApi {
                 super.onError(response);
                 LogUtil.e(TAG, "login--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+//                UserBean userBean = new UserBean();
+//                userBean.setAccid("144742596");
+//                userBean.setYunxinToken("9d97434a1413dd685584ffe49d412465");
+//                userBean.setAccount("17610860215");
+//                userBean.setUserToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJcdUQ4M0RcdURFMDIgXHVEODNEXHVERTFBIFx1RDgzRFx1REUwQyB4Z3YiLCJuYW1lIjoiXHVEODNEXHVERTAyIFx1RDgzRFx1REUxQSBcdUQ4M0RcdURFMEMgeGd2IiwibW9iaWxlIjoiMTc2MTA4NjAyMTUiLCJpc3MiOiJzZC1sb2dpbi1zZXJ2ZXIiLCJhY2NpZCI6IjE0NDc0MjU5NiIsImV4cCI6MTU3NzgwMDM2MiwiaWF0IjoxNTc3NzkzMTYyfQ.ZeA9C4YpqLrk7wcrsFGHE4kufulsX7ibWM5DtKbN7Wsrq1CD0Ru2_MYHjQ0E-wvFJdrO3c-Qi7D9GboYu7WVyA");
+//                userBean.setLoginType("1");
+//                Preferences.saveUserData(userBean);
+//                DemoCache.setAccount(userBean.getAccid());
             }
         });
     }

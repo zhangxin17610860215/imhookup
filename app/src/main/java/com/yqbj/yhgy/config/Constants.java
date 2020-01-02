@@ -11,6 +11,8 @@ public class Constants {
     //用于项目中有用到APP英文名称
     public static final String APP_NAME = "YueHui";
 
+    public static final String APPSECRET = "jhk779c4pu93t68c";
+
     //第三方分享登录是用到的code值
     public static final int SHARE_REQUESTCODE = 2001;
 
@@ -31,17 +33,7 @@ public class Constants {
      * 用户相关的属性
      */
     public static class USER_ATTRIBUTE {
-        public static final String SP_USERACCOUNT = "account";           // 用户的account(手机号)
-        public static final String SP_USERACCID = "accid";               // 用户的accid
-        public static final String SP_NAME = "nikename";                 // 用户姓名
-        public static final String SP_YUNXINTOKEN = "yunxinToken";       // 云信Token
-        public static final String SP_USERTOKEN = "userToken";           // 用户Token
-        public static final String SP_WXUUID = "wxUuid";                 // 微信uuid
-        public static final String SP_OPENID = "wxOpenId";               // 微信openid
-        public static final String SP_WXTOKEN = "wxToken";               // 微信wxtoken
-        public static final String SP_WXHEADIMG = "wxHeadImg";           // 微信头像
-        public static final String SP_WXNAME = "wxName";                 // 微信昵称
-        public static final String SP_GENDER = "gender";                 // 用户性别
+        public static String SIGNUPTYPE = "";                   // 注册类型
         public static String WXUUID = "";                       // 微信uuid
         public static String OPENID = "";                       // 微信openid
         public static String WXTOKEN = "";                      // 微信wxtoken

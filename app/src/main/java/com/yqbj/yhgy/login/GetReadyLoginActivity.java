@@ -70,7 +70,6 @@ public class GetReadyLoginActivity extends BaseActivity {
                 break;
             case R.id.tv_qq:
                 //QQ登录
-                DemoCache.setAccount("456456");
                 MainActivity.start(activity);
                 break;
         }

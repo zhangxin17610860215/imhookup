@@ -98,6 +98,7 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.netease.nim.uikit.common.util.log.LogUtil;
 import com.umeng.socialize.UMShareAPI;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.utils.AppManager;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.view.DialogUtils;
 import com.yqbj.yhgy.view.LoadingDialog;
@@ -85,6 +87,12 @@ public class BaseActivity extends UI {
 
     public interface onToolBarRightTextListener{
         void onRight(View view);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AppManager.getAppManager().addActivity(this);
     }
 
     @Override

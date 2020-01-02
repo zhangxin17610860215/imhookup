@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.lxj.xpopup.XPopup;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.view.VerifyingOKDialog;
 
 import butterknife.BindView;
@@ -61,6 +62,9 @@ public class WelcomActivity extends BaseActivity {
                 break;
             case R.id.tv_getInvitationCode:
                 //查收邀请码
+                Intent intent = new Intent(activity, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
             case R.id.tv_Opening:
                 //马上开通

@@ -1,4 +1,5 @@
 package com.yqbj.yhgy.requestutils.api;
+import com.yqbj.yhgy.utils.Preferences;
 
 public class ApiUrl {
 
@@ -10,9 +11,11 @@ public class ApiUrl {
 
 
     public static String BASE_URL_HEAD = "http://";
-    public static String BASE_URL = "192.168.1.112:7075";
+    public static String BASE_URL = "192.168.1.194:7075";
+    public static String SERVERDOMAIN = Preferences.getServerDomain();
 
     public static String USER_LOGIN = BASE_URL_HEAD + BASE_URL + "/user/login";
     public static String USER_SIGNUP = BASE_URL_HEAD + BASE_URL + "/user/signup";
     public static String USER_GETVFCODE = BASE_URL_HEAD + BASE_URL + "/mobile/send/code";
+    public static String USER_RESETPWD = BASE_URL_HEAD + BASE_URL + "/user/reset/pwd";
 }

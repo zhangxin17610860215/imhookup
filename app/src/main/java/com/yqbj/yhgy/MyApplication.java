@@ -134,12 +134,12 @@ public class MyApplication extends Application {
 
     private void initNIM() {
         // SDK初始化（启动后台服务，若已经存在用户登录信息， SDK 将完成自动登录）
-        DemoCache.setContext(this);
-        NIMClient.init(instance, loginInfo(), NimSDKOptionConfig.getSDKOptions(this));
+        DemoCache.setContext(instance);
+        NIMClient.init(instance, loginInfo(), NimSDKOptionConfig.getSDKOptions(instance));
         // crash handler
-        AppCrashHandler.getInstance(this);
+        AppCrashHandler.getInstance(instance);
 
-        if (NIMUtil.isMainProcess(this)) {
+        if (NIMUtil.isMainProcess(instance)) {
 
             // 注册自定义推送消息处理，这个是可选项
             NIMPushClient.registerMixPushMessageHandler(new DemoMixPushMessageHandler());
@@ -147,7 +147,7 @@ public class MyApplication extends Application {
             // 初始化红包模块，在初始化UIKit模块之前执行
 //            NIMRedPacketClient.init(this);
             // init pinyin
-            PinYin.init(this);
+            PinYin.init(instance);
             PinYin.validate();
             // 初始化UIKit模块
             initUIKit();
@@ -176,7 +176,7 @@ public class MyApplication extends Application {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         //log相关
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor("okgo");
-        if (!Constants.DEBUG) {
+        if (Constants.DEBUG) {
             loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BASIC);        //log打印级别，决定了log显示的详细程度
         } else {
             loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.NONE);
@@ -209,7 +209,7 @@ public class MyApplication extends Application {
         builder.sslSocketFactory(sslParams1.sSLSocketFactory, sslParams1.trustManager);
 
         // 其他统一的配置
-        OkGo.getInstance().init(this)                           //必须调用初始化
+        OkGo.getInstance().init(instance)                           //必须调用初始化
                 .setOkHttpClient(builder.build())               //建议设置OkHttpClient，不设置会使用默认的
                 .setCacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)//全局统一缓存模式，默认不使用缓存，可以不传
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)   //全局统一缓存时间，默认永不过期，可以不传
@@ -263,8 +263,8 @@ public class MyApplication extends Application {
 
     // 如果已经存在用户登录信息，返回LoginInfo，否则返回null即可
     private LoginInfo loginInfo() {
-        String account = Preferences.getUserAccount();
-        String token = Preferences.getUserToken();
+        String account = Preferences.getUserAccId();
+        String token = Preferences.getYunxinToken();
 
         if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(token)) {
             DemoCache.setAccount(account.toLowerCase());
@@ -276,7 +276,7 @@ public class MyApplication extends Application {
 
     private void initUIKit() {
         // 初始化
-        NimUIKit.init(this, buildUIKitOptions());
+        NimUIKit.init(instance, buildUIKitOptions());
 
         // 设置地理位置提供者。如果需要发送地理位置消息，该参数必须提供。如果不需要，可以忽略。
         NimUIKit.setLocationProvider(new NimDemoLocationProvider());
@@ -338,7 +338,7 @@ public class MyApplication extends Application {
     private UIKitOptions buildUIKitOptions() {
         UIKitOptions options = new UIKitOptions();
         // 设置app图片/音频/日志等缓存目录
-        options.appCacheDir = NimSDKOptionConfig.getAppCacheDir(this) + "/app";
+        options.appCacheDir = NimSDKOptionConfig.getAppCacheDir(instance) + "/app";
         return options;
     }
 
@@ -367,12 +367,12 @@ public class MyApplication extends Application {
     }
 
     private void initCityJsonData() {
-        String JsonData = new GetJsonDataUtil().getJson(this, "citys.json");//获取assets目录下的json文件数据
+        String JsonData = new GetJsonDataUtil().getJson(instance, "citys.json");//获取assets目录下的json文件数据
         Constants.CITYBEANLIST = parseData(JsonData);//用Gson 转成实体
     }
 
     private void initOccupationJsonData() {
-        String JsonData = new GetJsonDataUtil().getJson(this, "occupation.json");//获取assets目录下的json文件数据
+        String JsonData = new GetJsonDataUtil().getJson(instance, "occupation.json");//获取assets目录下的json文件数据
         Constants.OCCUPATIONBEANLIST = parseData(JsonData);//用Gson 转成实体
     }
 

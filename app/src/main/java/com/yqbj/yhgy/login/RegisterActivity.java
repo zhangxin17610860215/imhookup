@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.netease.nim.uikit.common.util.SPUtils;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -53,10 +50,6 @@ public class RegisterActivity extends BaseActivity {
     private String phone = "";
     private String vfCode = "";
     private String psw = "";
-    private String gender = "";
-    private String wxtoken = "";
-    private String openid = "";
-    private String uuid = "";
 
     public static void start(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
@@ -137,8 +130,11 @@ public class RegisterActivity extends BaseActivity {
                     toast("请输入密码");
                     return;
                 }
-                gender = "1";
-                signup("1");
+                Constants.USER_ATTRIBUTE.PHONE = phone;
+                Constants.USER_ATTRIBUTE.VFCODE = vfCode;
+                Constants.USER_ATTRIBUTE.PSW = psw;
+                Constants.USER_ATTRIBUTE.SIGNUPTYPE = "1";
+                GenderSelectionAct.start(activity);
                 break;
             case R.id.tv_Agreement:
                 //用户协议
@@ -161,7 +157,7 @@ public class RegisterActivity extends BaseActivity {
         showProgress(false);
         UserApi.getVfCode("2", phone, activity, new RequestCallback() {
             @Override
-            public void onSuccess(Object object) {
+            public void onSuccess(int code, Object object) {
                 dismissProgress();
             }
 
@@ -170,26 +166,6 @@ public class RegisterActivity extends BaseActivity {
                 dismissProgress();
             }
         });
-    }
-
-    /**
-     * 注册
-     * */
-    private void signup(String signupType) {
-        showProgress(false);
-        UserApi.signup(signupType, phone, vfCode, psw, gender, wxtoken, openid, uuid,
-                activity, new RequestCallback() {
-                    @Override
-                    public void onSuccess(Object object) {
-                        dismissProgress();
-                        GenderSelectionAct.start(activity);
-                    }
-
-                    @Override
-                    public void onFailed(String errMessage) {
-                        dismissProgress();
-                    }
-                });
     }
 
     /**
@@ -210,7 +186,7 @@ public class RegisterActivity extends BaseActivity {
                 Constants.USER_ATTRIBUTE.WXTOKEN = map.get("access_token");
                 Constants.USER_ATTRIBUTE.WXNAME = map.get("name");
                 Constants.USER_ATTRIBUTE.WXHEADIMG = map.get("iconurl");
-
+                Constants.USER_ATTRIBUTE.SIGNUPTYPE = "2";
                 //拿到信息去绑定手机号
                 BindPhoneActivity.start(activity);
 //                signup("2");

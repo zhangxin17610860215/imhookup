@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.api.NimUIKit;
-import com.netease.nim.uikit.common.util.SPUtils;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.auth.AuthService;
@@ -19,10 +18,13 @@ import com.netease.nimlib.sdk.misc.MiscService;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.SplashActivity;
 import com.yqbj.yhgy.base.BaseActivity;
-import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.login.BindPhoneActivity;
 import com.yqbj.yhgy.login.ModifyPasswordActivity;
+import com.yqbj.yhgy.main.MainActivity;
+import com.yqbj.yhgy.utils.AppManager;
 import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.view.EasyAlertDialogHelper;
 import com.yqbj.yhgy.view.MiddleDialog;
 
@@ -165,11 +167,11 @@ public class SettingsActivity extends BaseActivity {
      * 注销
      */
     private void logout() {
-        SplashActivity.start(mActivity,null);
-//        SPUtils.getInstance(Constants.ALIPAY_USERINFO.FILENAME).clear();
+        Preferences.saveUserData(new UserBean());
         NimUIKit.logout();
         NIMClient.getService(AuthService.class).logout();
-        finish();
+        SplashActivity.start(mActivity,null);
+        AppManager.getAppManager().finishActivity(MainActivity.class);
     }
 
 }

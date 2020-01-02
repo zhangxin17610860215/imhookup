@@ -10,14 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
-import com.netease.nim.uikit.common.util.SPUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
-import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
-import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.view.CautionDialog;
 
 import butterknife.BindView;
@@ -82,7 +79,7 @@ public class GenderSelectionAct extends BaseActivity {
                             @Override
                             public void onClick(View view) {
                                 //注册
-                                signup("2");
+                                signup(Constants.USER_ATTRIBUTE.SIGNUPTYPE);
                             }
                         }))
                         .show();
@@ -100,26 +97,20 @@ public class GenderSelectionAct extends BaseActivity {
                 Constants.USER_ATTRIBUTE.WXTOKEN, Constants.USER_ATTRIBUTE.OPENID, Constants.USER_ATTRIBUTE.WXUUID,
                 activity, new RequestCallback() {
                     @Override
-                    public void onSuccess(Object object) {
+                    public void onSuccess(int code, Object object) {
                         dismissProgress();
-                        UserBean userBean = (UserBean) object;
-                        DemoCache.setAccount(userBean.getInfo().getAccid());
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_USERACCOUNT,userBean.getInfo().getAccount());
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_USERACCID,userBean.getInfo().getAccid());
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_NAME,userBean.getInfo().getNikename());
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_YUNXINTOKEN,userBean.getInfo().getYunxinToken());
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_USERTOKEN,userBean.getInfo().getUserToken());
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_WXTOKEN,Constants.USER_ATTRIBUTE.WXTOKEN);
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_WXUUID,Constants.USER_ATTRIBUTE.WXUUID);
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_OPENID,Constants.USER_ATTRIBUTE.OPENID);
-                        SPUtils.getInstance(userBean.getInfo().getAccid()).put(Constants.USER_ATTRIBUTE.SP_GENDER,Constants.USER_ATTRIBUTE.GENDER);
-                        //跳转完善资料
-                        PerfectDataActivity.start(activity);
+                        if (code == Constants.SUCCESS_CODE){
+                            //跳转完善资料
+                            PerfectDataActivity.start(activity);
+                        }else {
+                            toast((String) object);
+                        }
                     }
 
                     @Override
                     public void onFailed(String errMessage) {
                         dismissProgress();
+                        toast(errMessage);
                     }
                 });
     }

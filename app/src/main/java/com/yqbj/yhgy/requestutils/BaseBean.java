@@ -1,38 +1,40 @@
 package com.yqbj.yhgy.requestutils;
 
+import java.util.Map;
+
 public class BaseBean {
 
     /**
-     * statusCode : 200
-     * message : success
-     * data : {"apiToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJUb2tlblR5cGVcIjpcInRva2VuX2FwaVwifSIsIlRva2VuVHlwZSI6InRva2VuX2FwaSIsImlzcyI6ImltX3NlcnZlciIsImV4cCI6MTU1NDcyMDg4MiwiaWF0IjoxNTU0NzIwODIyLCJqdGkiOiJ4aWFsaWFvX3YxIn0.DG-Hh7xKdINFy0SXDYvnNtR-xGA9MF2thXhkMXCRJVk","domain":"139.196.106.67","key":"GMR11fH3t3x84lmvai8BPNBMFqm+sFtRBXS9IqM7j6aYnBSfSN3gvTfCVW3AgiDktcAnkWi6Qj6CdqIZjpO1ggHzbLWTQt1j+HtvCXrv5e9W8wzSg87WDOpv7pSOFQMx/er3txzIDJD564fLSd3vP19blnRpVMJNYlAhxV0Am9g="}
+     * code : 200
+     * msg : 操作成功
+     * data : {"info":{"accid":"985857181","account":"13453993655","nikename":"13453993655","yunxinToken":"d04942616672b14fb21f99835c18b020","userToken":"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMzQ1Mzk5MzY1NSIsIm5hbWUiOiIxMzQ1Mzk5MzY1NSIsIm1vYmlsZSI6IjEzNDUzOTkzNjU1IiwiaXNzIjoic2QtbG9naW4tc2VydmVyIiwiYWNjaWQiOiI5ODU4NTcxODEiLCJleHAiOjE1Nzc3ODcyMDQsImlhdCI6MTU3Nzc4MDAwNH0.YiQ3qdAU82Q5-auAD74mzcKzQSHbJfih0jXoMcs6Pv819gvuNUK4-wEATouMjqEri-5JXx6gQ3Kmq990F7wQYA","serverDomain":"192.168.1.114:8085"}}
      */
 
-    private int statusCode;
-    private String message;
-    private String data;
+    private int code;
+    private String msg;
+    private Map<String, Object> data;
 
-    public int getStatusCode() {
-        return statusCode;
+    public int getCode() {
+        return code;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public String getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 }

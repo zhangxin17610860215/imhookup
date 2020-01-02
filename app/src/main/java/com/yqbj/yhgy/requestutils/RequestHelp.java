@@ -7,12 +7,11 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.request.GetRequest;
 import com.lzy.okgo.request.PostRequest;
-import com.netease.nim.uikit.common.util.SPUtils;
-import com.yqbj.yhgy.MyApplication;
 import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.api.ApiUrl;
 import com.yqbj.yhgy.utils.CrypticUtil;
 import com.yqbj.yhgy.utils.LogUtil;
-import com.yqbj.yhgy.utils.NumberUtil;
+import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.TimeUtils;
 
@@ -183,11 +182,50 @@ public class RequestHelp {
 
 
     private static Map<String, String> appendCommonParam(String url, Map<String, String> map) {
+        //进行Key=value的格式排版得到需要加密的字符串
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry : getSortedMapByKey(map).entrySet()) {
+            if (null == entry.getValue() || entry.getValue().equals("")) // 如果是null，则跳过
+                continue;
+
+            sb.append(entry.getKey())
+                    .append("=")
+                    .append(String.valueOf(entry.getValue()))
+                    .append("&");
+        }
+//        String key = "";
+//        try {
+//            key = CrypticUtil.RSADecrypt(SPUtils.getInstance().getString(Constants.USER_TYPE.KEY));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        String sign = "";
+        String md5Str = "";
+        String curTime = TimeUtils.getCurrentTime();
+        if (StringUtil.isNotEmpty(sb.toString())) {
+            sb.delete(sb.length() - 1, sb.length());
+            md5Str = CrypticUtil.md5(sb.toString()).toUpperCase();
+            sign = CrypticUtil.getSha1(Constants.APPSECRET + md5Str + curTime);
+        }else {
+            sign = CrypticUtil.getSha1(Constants.APPSECRET + curTime);
+        }
+
+
         map.clear();
         map.put("AppId", "sd_v1");
         map.put("System", "Android");
-        map.put("VersionNo", StringUtil.getAppVersionName(MyApplication.getInstance()));
-        map.put("CurTime", TimeUtils.getCurrentTime());
+        map.put("VersionNo", Constants.VERSIONCODE + "");
+        map.put("Sign", sign);
+        if (StringUtil.isNotEmpty(sb.toString())){
+            map.put("MD5", md5Str);
+        }
+        map.put("CurTime", curTime);
+        if (!url.equals(ApiUrl.USER_LOGIN) && !url.equals(ApiUrl.USER_SIGNUP)
+                && !url.equals(ApiUrl.USER_GETVFCODE) && !url.equals(ApiUrl.USER_RESETPWD)){
+            String userToken = Preferences.getUserToken();
+            map.put("userToken", userToken);
+        }
+
         return map;
     }
 

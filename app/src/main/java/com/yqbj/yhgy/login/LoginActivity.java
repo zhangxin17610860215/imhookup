@@ -9,11 +9,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nimlib.sdk.AbortableFuture;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.StatusBarNotificationConfig;
+import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.UserPreferences;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +41,8 @@ public class LoginActivity extends BaseActivity {
     EditText etPsw;
 
     private Activity activity;
-    private String phone,psw;
+    private String phone,psw,loginType;
+    private AbortableFuture<LoginInfo> loginRequest;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -68,11 +78,12 @@ public class LoginActivity extends BaseActivity {
                     toast("请输入密码");
                     return;
                 }
-
+                loginType = "1";
                 login();
                 break;
             case R.id.tv_weixin:
                 //微信
+                loginType = "2";
                 break;
             case R.id.tv_QQ:
                 //QQ
@@ -88,17 +99,68 @@ public class LoginActivity extends BaseActivity {
      * */
     private void login() {
         showProgress(false);
-        UserApi.login("1", phone, psw, "", "", "", activity, new RequestCallback() {
+        UserApi.login(loginType, phone,psw, "", "", "", activity, new RequestCallback() {
+                    @Override
+                    public void onSuccess(int code, Object object) {
+                        dismissProgress();
+                        yunXinLogin();
+                    }
+
+                    @Override
+                    public void onFailed(String errMessage) {
+                        dismissProgress();
+                    }
+                });
+    }
+
+    private void yunXinLogin() {
+        // 云信只提供消息通道，并不包含用户资料逻辑。开发者需要在管理后台或通过服务器接口将用户帐号和token同步到云信服务器。
+        // 在这里直接使用同步到云信服务器的帐号和token登录。
+        // 如果开发者直接使用这个demo，只更改appkey，然后就登入自己的账户体系的话，需要传入同步到云信服务器的token，而不是用户密码。
+        showProgress(false);
+        final String account = Preferences.getUserAccId();
+        final String token = Preferences.getYunxinToken();
+        loginRequest = NimUIKit.login(new LoginInfo(account, token), new com.netease.nimlib.sdk.RequestCallback<LoginInfo>() {
             @Override
-            public void onSuccess(Object object) {
+            public void onSuccess(LoginInfo param) {
                 dismissProgress();
-                BindPhoneActivity.start(activity);
+                onLoginDone();
+                DemoCache.setAccount(account);
+                // 初始化消息提醒配置
+                initNotificationConfig();
+                // 进入主界面
+                MainActivity.start(activity);
             }
 
             @Override
-            public void onFailed(String errMessage) {
+            public void onFailed(int code) {
                 dismissProgress();
+                onLoginDone();
+            }
+
+            @Override
+            public void onException(Throwable exception) {
+                dismissProgress();
+                onLoginDone();
             }
         });
     }
+
+    private void onLoginDone() {
+        loginRequest = null;
+    }
+
+    private void initNotificationConfig() {
+        // 初始化消息提醒
+        NIMClient.toggleNotification(UserPreferences.getNotificationToggle());
+        // 加载状态栏配置
+        StatusBarNotificationConfig statusBarNotificationConfig = UserPreferences.getStatusConfig();
+        if (statusBarNotificationConfig == null) {
+            statusBarNotificationConfig = DemoCache.getNotificationConfig();
+            UserPreferences.setStatusConfig(statusBarNotificationConfig);
+        }
+        // 更新配置
+        NIMClient.updateStatusBarNotificationConfig(statusBarNotificationConfig);
+    }
+
 }
