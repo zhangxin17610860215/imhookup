@@ -65,6 +65,7 @@ public class HomeFragment extends BaseFragment {
     private int type = 1;//类型    1=附近   2=新注册    3=女神
     private boolean isOnLine = true;        //是否在线
     private int pageNum = 1;
+    private String region = "510100";//区域（0：附近；区域id：对应具体id值）     默认成都510100
 
     public HomeFragment() {
 
@@ -126,7 +127,7 @@ public class HomeFragment extends BaseFragment {
 
     private void initData() {
         showProgress(false);
-        UserApi.index(gender+"", "510100", isOnLine?"1":"0",
+        UserApi.index(gender+"", region, isOnLine?"1":"0",
                 type+"", pageNum+"", "20", mActivity, new RequestCallback() {
             @Override
             public void onSuccess(int code, Object object) {
@@ -203,6 +204,7 @@ public class HomeFragment extends BaseFragment {
                     gender = 1;
                     imgSelecteGender.setImageResource(R.mipmap.gender_logo_nv);
                 }
+                pageNum = 1;
                 initData();
                 break;
             case R.id.el_Search:
@@ -212,16 +214,19 @@ public class HomeFragment extends BaseFragment {
             case R.id.tv_nearby:
                 //附近
                 type = 1;
+                pageNum = 1;
                 initData();
                 break;
             case R.id.tv_newRegister:
                 //新注册
                 type = 2;
+                pageNum = 1;
                 initData();
                 break;
             case R.id.tv_goddess:
                 //女神
                 type = 3;
+                pageNum = 1;
                 initData();
                 break;
             case R.id.tv_onLine:
@@ -233,6 +238,7 @@ public class HomeFragment extends BaseFragment {
                     isOnLine = true;
                     tvOnLine.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.online_yes_logo),null, null, null);
                 }
+                pageNum = 1;
                 initData();
                 break;
         }

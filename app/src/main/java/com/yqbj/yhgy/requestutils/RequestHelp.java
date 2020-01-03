@@ -47,7 +47,7 @@ public class RequestHelp {
      */
     public static void getRequest(String url, Object tag, Map<String, String> map, StringCallback callback) {
         Map<String, String> fullParam = getKeyHeaders(url,map);
-        LogUtil.e("okgo", "getRequest----->" + url + ">>>>>>>>>>>" + fullParam.toString());
+        LogUtil.e(TAG, "getRequest----->" + url + ">>>>>>>>>>>" + fullParam.toString());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.headersMap.putAll(fullParam);
         GetRequest<String> getRequest = OkGo.<String>get(url)
@@ -138,32 +138,17 @@ public class RequestHelp {
 
     /**
      * 获取Key接口的请求头参数
-     *
-     *
      * @param url
      * @param map
      * @return
      */
     private static Map<String, String> getKeyHeaders(String url, Map<String, String> map) {
         map.put("AppId", "xialiao_v1");
-//        if (!url.equals(ApiUrl.OVERALL_GET_KEY)){
-//            map.put("VersionNo", StringUtil.getAppVersionName(NimApplication.getInstance()));
-//        }
-//        if (url.equals(ApiUrl.CONFIGINFO)){
-//            //检查全局配置接口的头信息字段不同
-//            map.put("Token",SPUtils.getInstance().getString(Constants.USER_TYPE.USERTOKEN));
-//        }else {
-//            String RandomNu = getRandomNu();
-//            map.put("Nonce", RandomNu);//6位随机数
-//            map.put("CurTime", String.valueOf(System.currentTimeMillis() / 1000));//刷新时间
-//        }
-
         //进行Key=value的格式排版得到需要加密的字符串
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : getSortedMapByKey(map).entrySet()) {
             if (null == entry.getValue() || entry.getValue().equals("")) // 如果是null，则跳过
                 continue;
-
             sb.append(entry.getKey())
                     .append("=")
                     .append(String.valueOf(entry.getValue()))
@@ -180,7 +165,6 @@ public class RequestHelp {
         map.put("Sign", rsaStr);
         return map;
     }
-
 
     private static Map<String, String> appendCommonParam(String url, Map<String, String> map) {
         //进行Key=value的格式排版得到需要加密的字符串
@@ -205,7 +189,6 @@ public class RequestHelp {
             sign = CrypticUtil.getSha1(Constants.APPSECRET + curTime);
         }
 
-
         map.clear();
         map.put("AppId", "sd_v1");
         map.put("System", "Android");
@@ -225,6 +208,9 @@ public class RequestHelp {
         return map;
     }
 
+    /**
+     * 随机获取6位随机数
+     * */
     private static String getRandomNu() {
         Random random = new Random();
         String result = "";
