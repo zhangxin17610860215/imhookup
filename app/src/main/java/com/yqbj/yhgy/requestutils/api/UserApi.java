@@ -12,6 +12,7 @@ import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.GsonHelper;
 import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -178,6 +179,13 @@ public class UserApi {
                         userBean.setHeadImag(Constants.USER_ATTRIBUTE.WXHEADIMG);
                         DemoCache.setAccount(userBean.getAccid());
                         Preferences.saveUserData(userBean);
+
+                        String longitude = Preferences.getLongitude();
+                        String latitude = Preferences.getLatitude();
+                        if (StringUtil.isNotEmpty(longitude) && StringUtil.isNotEmpty(latitude)){
+                            updateLocation(latitude,longitude,object);
+                        }
+
                         callback.onSuccess(bean.getCode(),userBean);
                     } else {
                         callback.onFailed(bean.getMsg());
@@ -193,6 +201,27 @@ public class UserApi {
                 super.onError(response);
                 LogUtil.e(TAG, "login--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 更新经纬度
+     * */
+    public static void updateLocation(String latitude,String longitude, Object object){
+        Map<String,String> map = new HashMap<>();
+        map.put("latitude",latitude);
+        map.put("longitude",longitude);
+        RequestHelp.postRequest(ApiUrl.LOCATION_UPDATE, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "updateLocation--------->onSuccess" + response.body());
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "updateLocation--------->onError" + response.body());
             }
         });
     }
@@ -275,6 +304,45 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "upDateUserInfo--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取首页数据
+     * */
+    public static void index(String gender,String region,String onlinePriority,
+                             String queryType,String pageNum,String pageSize,
+                                   Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("gender",gender);
+        map.put("region",region);
+        map.put("onlinePriority",onlinePriority);
+        map.put("queryType",queryType);
+        map.put("pageNum",pageNum);
+        map.put("pageSize",pageSize);
+        RequestHelp.postRequest(ApiUrl.HOME_INDEX, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "index--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "index--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

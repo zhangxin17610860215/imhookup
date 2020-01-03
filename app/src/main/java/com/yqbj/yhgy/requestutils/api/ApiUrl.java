@@ -20,4 +20,6 @@ public class ApiUrl {
     public static String USER_CHECKVFCODE = BASE_URL_HEAD + BASE_URL + "/mobile/check/code";
     public static String USER_RESETPWD = BASE_URL_HEAD + BASE_URL + "/user/reset/pwd";
     public static String USER_UPDATEINFO = BASE_URL_HEAD + SERVERDOMAIN + "/user/info/update";
+    public static String LOCATION_UPDATE = BASE_URL_HEAD + SERVERDOMAIN + "/location/user/update";
+    public static String HOME_INDEX = BASE_URL_HEAD + SERVERDOMAIN + "/home/index";
 }

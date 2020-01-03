@@ -18,6 +18,8 @@ import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.view.MorePopupView;
 import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
@@ -62,6 +64,7 @@ public class HomeFragment extends BaseFragment {
     private int gender = 1;//性别    1=男   2=女
     private int type = 1;//类型    1=附近   2=新注册    3=女神
     private boolean isOnLine = true;        //是否在线
+    private int pageNum = 1;
 
     public HomeFragment() {
 
@@ -99,12 +102,13 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void initView() {
-        toggleSearchType();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 //下拉刷新
+                pageNum = 1;
+                initData();
                 refreshLayout.finishRefresh(3000); // 模拟请求数据, 3秒后结束
             }
         });
@@ -113,12 +117,28 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 //上拉加载更多
+                pageNum ++;
+                initData();
                 refreshLayout.finishLoadMore(3000);
             }
         });
     }
 
     private void initData() {
+        showProgress(false);
+        UserApi.index(gender+"", "510100", isOnLine?"1":"0",
+                type+"", pageNum+"", "20", mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
         list.add("1");
         list.add("2");
         list.add("3");
@@ -183,6 +203,7 @@ public class HomeFragment extends BaseFragment {
                     gender = 1;
                     imgSelecteGender.setImageResource(R.mipmap.gender_logo_nv);
                 }
+                initData();
                 break;
             case R.id.el_Search:
                 //搜索
@@ -191,17 +212,17 @@ public class HomeFragment extends BaseFragment {
             case R.id.tv_nearby:
                 //附近
                 type = 1;
-                toggleSearchType();
+                initData();
                 break;
             case R.id.tv_newRegister:
                 //新注册
                 type = 2;
-                toggleSearchType();
+                initData();
                 break;
             case R.id.tv_goddess:
                 //女神
                 type = 3;
-                toggleSearchType();
+                initData();
                 break;
             case R.id.tv_onLine:
                 //在线
@@ -212,7 +233,7 @@ public class HomeFragment extends BaseFragment {
                     isOnLine = true;
                     tvOnLine.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.online_yes_logo),null, null, null);
                 }
-                refreshList();
+                initData();
                 break;
         }
     }

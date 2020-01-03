@@ -84,6 +84,7 @@ public class RequestHelp {
         }
         Map<String, String> headersMap = appendCommonParam(url, paramsMap);
         LogUtil.e(TAG, "Post(headers)----->" + headersMap.toString());
+        LogUtil.e(TAG, "Post(params)----->" + map.toString());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.headersMap.putAll(headersMap);
         PostRequest postRequest = OkGo.<String>post(url)
@@ -218,7 +219,7 @@ public class RequestHelp {
                 && !url.equals(ApiUrl.USER_GETVFCODE) && !url.equals(ApiUrl.USER_RESETPWD)
                 && !url.equals(ApiUrl.USER_CHECKVFCODE)){
             String userToken = Preferences.getUserToken();
-            map.put("userToken", userToken);
+            map.put("Token", userToken);
         }
 
         return map;

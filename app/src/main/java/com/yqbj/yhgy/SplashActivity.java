@@ -13,6 +13,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.netease.nim.uikit.api.NimUIKit;
 import com.netease.nim.uikit.support.permission.MPermission;
 import com.netease.nimlib.sdk.AbortableFuture;
@@ -26,6 +30,7 @@ import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.UserPreferences;
@@ -88,13 +93,21 @@ public class SplashActivity extends BaseActivity {
                 }).show();
             }else if (null != unauthorizedList && unauthorizedList.size() == 0){
                 //权限均已允许
-                handler.postDelayed(readyShow, 2000);
+                getLongitudeAndLatitude();
             }else {
                 checkPermission();
             }
         }else {
-            handler.postDelayed(readyShow, 2000);
+            getLongitudeAndLatitude();
         }
+    }
+
+    /**
+     * 获取经纬度
+     * */
+    private void getLongitudeAndLatitude() {
+        startLocaion();
+        handler.postDelayed(readyShow, 2000);
     }
 
     Runnable readyShow = new Runnable() {
@@ -106,6 +119,47 @@ public class SplashActivity extends BaseActivity {
                 finish();
             }else {
                 login();
+            }
+        }
+    };
+
+    public void startLocaion(){
+
+        AMapLocationClient mLocationClient = new AMapLocationClient(getApplicationContext());
+        mLocationClient.setLocationListener(mLocationListener);
+
+        AMapLocationClientOption mLocationOption = new AMapLocationClientOption();
+        //设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        //设置是否返回地址信息（默认返回地址信息）
+        mLocationOption.setNeedAddress(true);
+        //获取一次定位结果：
+        //该方法默认为false。
+        mLocationOption.setOnceLocation(true);
+        //设置是否允许模拟位置,默认为false，不允许模拟位置
+        mLocationOption.setMockEnable(false);
+
+        //给定位客户端对象设置定位参数
+        mLocationClient.setLocationOption(mLocationOption);
+        //启动定位
+        mLocationClient.startLocation();
+    }
+
+    //声明定位回调监听器
+    public AMapLocationListener mLocationListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation amapLocation) {
+            if (amapLocation !=null ) {
+                if (amapLocation.getErrorCode() == 0) {
+                    //定位成功回调信息，设置相关消息
+                    Preferences.saveLongitude(amapLocation.getLongitude() + "");
+                    Preferences.saveLatitude(amapLocation.getLatitude() + "");
+                } else {
+                    //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
+                    LogUtil.e("AmapError", "location Error, ErrCode:"
+                            + amapLocation.getErrorCode() + ", errInfo:"
+                            + amapLocation.getErrorInfo());
+                }
             }
         }
     };

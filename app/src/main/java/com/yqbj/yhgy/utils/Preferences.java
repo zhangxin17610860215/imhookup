@@ -30,6 +30,8 @@ public class Preferences {
     private static final String KEY_LABELTYPE = "labeltype";           // 标签类型（0普通  1女神）
     private static final String KEY_CERTIFICATION = "certification";   // 是否真人认证（1有图片ID表示通过   0未真人认证）
     private static final String KEY_SERVERDOMAIN = "serverDomain";     // 域名
+    private static final String KEY_LONGITUDE = "longitude";           // 经度
+    private static final String KEY_LATITUDE = "latitude";             // 纬度
 
     private static void saveUserPayPassSet(boolean flag){
         if(TextUtils.isEmpty(NimUIKit.getAccount())){
@@ -73,6 +75,22 @@ public class Preferences {
 
     public static String getServerDomain() {
         return getString(KEY_SERVERDOMAIN);
+    }
+
+    public static void saveLatitude(String latitude){
+        saveString(KEY_LATITUDE,latitude);
+    }
+
+    public static String getLatitude() {
+        return getString(KEY_LATITUDE);
+    }
+
+    public static void saveLongitude(String longitude){
+        saveString(KEY_LONGITUDE,longitude);
+    }
+
+    public static String getLongitude() {
+        return getString(KEY_LONGITUDE);
     }
 
     public static String getUserAccId() {
