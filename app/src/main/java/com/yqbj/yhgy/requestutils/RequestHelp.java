@@ -193,12 +193,6 @@ public class RequestHelp {
                     .append(String.valueOf(entry.getValue()))
                     .append("&");
         }
-//        String key = "";
-//        try {
-//            key = CrypticUtil.RSADecrypt(SPUtils.getInstance().getString(Constants.USER_TYPE.KEY));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         String sign = "";
         String md5Str = "";
         String curTime = TimeUtils.getCurrentTime();
@@ -221,7 +215,8 @@ public class RequestHelp {
         }
         map.put("CurTime", curTime);
         if (!url.equals(ApiUrl.USER_LOGIN) && !url.equals(ApiUrl.USER_SIGNUP)
-                && !url.equals(ApiUrl.USER_GETVFCODE) && !url.equals(ApiUrl.USER_RESETPWD)){
+                && !url.equals(ApiUrl.USER_GETVFCODE) && !url.equals(ApiUrl.USER_RESETPWD)
+                && !url.equals(ApiUrl.USER_CHECKVFCODE)){
             String userToken = Preferences.getUserToken();
             map.put("userToken", userToken);
         }

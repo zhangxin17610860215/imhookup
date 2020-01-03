@@ -14,8 +14,12 @@ import com.netease.nimlib.sdk.AbortableFuture;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.StatusBarNotificationConfig;
 import com.netease.nimlib.sdk.auth.LoginInfo;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
@@ -23,6 +27,8 @@ import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.UserPreferences;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +47,7 @@ public class LoginActivity extends BaseActivity {
     EditText etPsw;
 
     private Activity activity;
-    private String phone,psw,loginType;
+    private String phone,psw,loginType,wxToken,wxOpenId,wxUUID;
     private AbortableFuture<LoginInfo> loginRequest;
 
     public static void start(Context context) {
@@ -84,6 +90,7 @@ public class LoginActivity extends BaseActivity {
             case R.id.tv_weixin:
                 //微信
                 loginType = "2";
+                authorization(SHARE_MEDIA.WEIXIN);
                 break;
             case R.id.tv_QQ:
                 //QQ
@@ -95,20 +102,63 @@ public class LoginActivity extends BaseActivity {
     }
 
     /**
+     * 授权
+     * */
+    private void authorization(SHARE_MEDIA share_media) {
+        UMShareAPI.get(this).getPlatformInfo(activity, share_media, new UMAuthListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) { }
+
+            @Override
+            public void onComplete(SHARE_MEDIA share_media, int i, Map<String, String> map) {
+                toast("授权成功");
+
+                //sdk是6.4.4的,但是获取值的时候用的是6.2以前的(access_token)才能获取到值,未知原因
+                Constants.USER_ATTRIBUTE.WXUUID = map.get("uid");
+                Constants.USER_ATTRIBUTE.OPENID = map.get("openid");
+                Constants.USER_ATTRIBUTE.WXTOKEN = map.get("access_token");
+                Constants.USER_ATTRIBUTE.WXNAME = map.get("name");
+                Constants.USER_ATTRIBUTE.WXHEADIMG = map.get("iconurl");
+                Constants.USER_ATTRIBUTE.SIGNUPTYPE = "2";
+                wxOpenId = map.get("openid");
+                wxToken = map.get("access_token");
+                wxUUID = map.get("uid");
+                //拿到信息去登录
+                login();
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
+                toast("授权失败");
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA share_media, int i) {
+                toast("取消授权");
+            }
+        });
+    }
+
+    /**
      * 登录
      * */
     private void login() {
         showProgress(false);
-        UserApi.login(loginType, phone,psw, "", "", "", activity, new RequestCallback() {
+        UserApi.login(loginType, phone,psw, wxOpenId, wxToken, wxUUID, activity, new RequestCallback() {
                     @Override
                     public void onSuccess(int code, Object object) {
                         dismissProgress();
-                        yunXinLogin();
+                        if (code == Constants.SUCCESS_CODE){
+                            yunXinLogin();
+                        }else {
+                            toast((String) object);
+                        }
                     }
 
                     @Override
                     public void onFailed(String errMessage) {
                         dismissProgress();
+                        toast(errMessage);
                     }
                 });
     }

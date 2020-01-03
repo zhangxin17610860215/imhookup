@@ -32,6 +32,7 @@
         android:padding="@dimen/dimen_15"
         android:background="@drawable/edittext_bg_shape_bg"
         android:hint="请输入账号"
+        android:numeric="integer"
         android:textColorHint="@color/edit_hint_color"
         android:textSize="@dimen/text_size_15"
         android:textColor="@color/black"
@@ -124,6 +125,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_QQ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

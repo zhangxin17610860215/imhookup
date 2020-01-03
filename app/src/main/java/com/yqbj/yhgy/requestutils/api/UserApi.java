@@ -91,8 +91,7 @@ public class UserApi {
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
                     if (bean.getCode() == Constants.SUCCESS_CODE){
-//                        TeamAllocationPriceBean priceBean = GsonHelper.getSingleton().fromJson(bean.getData(), TeamAllocationPriceBean.class);
-//                        callback.onSuccess(bean.getStatusCode(),priceBean);
+                        callback.onSuccess(bean.getCode(),bean);
                     } else {
                         callback.onFailed(bean.getMsg());
                     }
@@ -106,6 +105,41 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "getVfCode--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 校验验证码
+     * */
+    public static void checkVfCode(String smsCodeType,String mobile,String smsCode,
+                              Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("smsCodeType",smsCodeType);
+        map.put("mobile",mobile);
+        map.put("smsCode",smsCode);
+        RequestHelp.postRequest(ApiUrl.USER_CHECKVFCODE, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "checkVfCode--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "checkVfCode--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });
@@ -138,9 +172,9 @@ public class UserApi {
                         UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
                         userBean.setLoginType(loginType);
                         userBean.setPassword(password);
-                        userBean.setWxToken(Constants.USER_ATTRIBUTE.WXTOKEN);
-                        userBean.setWxOpenid(Constants.USER_ATTRIBUTE.OPENID);
-                        userBean.setWxUuid(Constants.USER_ATTRIBUTE.WXUUID);
+                        userBean.setWxToken(wxtoken);
+                        userBean.setWxOpenid(openid);
+                        userBean.setWxUuid(uuid);
                         userBean.setHeadImag(Constants.USER_ATTRIBUTE.WXHEADIMG);
                         DemoCache.setAccount(userBean.getAccid());
                         Preferences.saveUserData(userBean);
@@ -159,14 +193,89 @@ public class UserApi {
                 super.onError(response);
                 LogUtil.e(TAG, "login--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
-//                UserBean userBean = new UserBean();
-//                userBean.setAccid("144742596");
-//                userBean.setYunxinToken("9d97434a1413dd685584ffe49d412465");
-//                userBean.setAccount("17610860215");
-//                userBean.setUserToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJcdUQ4M0RcdURFMDIgXHVEODNEXHVERTFBIFx1RDgzRFx1REUwQyB4Z3YiLCJuYW1lIjoiXHVEODNEXHVERTAyIFx1RDgzRFx1REUxQSBcdUQ4M0RcdURFMEMgeGd2IiwibW9iaWxlIjoiMTc2MTA4NjAyMTUiLCJpc3MiOiJzZC1sb2dpbi1zZXJ2ZXIiLCJhY2NpZCI6IjE0NDc0MjU5NiIsImV4cCI6MTU3NzgwMDM2MiwiaWF0IjoxNTc3NzkzMTYyfQ.ZeA9C4YpqLrk7wcrsFGHE4kufulsX7ibWM5DtKbN7Wsrq1CD0Ru2_MYHjQ0E-wvFJdrO3c-Qi7D9GboYu7WVyA");
-//                userBean.setLoginType("1");
-//                Preferences.saveUserData(userBean);
-//                DemoCache.setAccount(userBean.getAccid());
+            }
+        });
+    }
+
+    /**
+     * 重置密码
+     * */
+    public static void resetPwd(String smsCodeType,String mobile,String smsCode,String passsword,
+                             Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("smsCodeType",smsCodeType);
+        map.put("mobile",mobile);
+        map.put("smsCode",smsCode);
+        map.put("passsword",passsword);
+        RequestHelp.postRequest(ApiUrl.USER_RESETPWD, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "resetPwd--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "resetPwd--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 更新用户信息
+     * */
+    public static void upDateUserInfo(String name,String headUrl,String birthday,String height,String weight,
+                                   String job,String cities,String description,String datingPrograms,
+                                   String desiredGoals,String hidecontactinfo,String qq,String wechat,
+                             Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("name",name);
+        map.put("headUrl",headUrl);
+        map.put("birthday",birthday);
+        map.put("height",height);
+        map.put("weight",weight);
+        map.put("job",job);
+        map.put("cities",cities);
+        map.put("description",description);
+        map.put("datingPrograms",datingPrograms);
+        map.put("desiredGoals",desiredGoals);
+        map.put("hidecontactinfo",hidecontactinfo);
+        map.put("qq",qq);
+        map.put("wechat",wechat);
+        RequestHelp.postRequest(ApiUrl.USER_UPDATEINFO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "upDateUserInfo--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "upDateUserInfo--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });
     }

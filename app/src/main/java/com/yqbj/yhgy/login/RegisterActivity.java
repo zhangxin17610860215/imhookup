@@ -71,7 +71,7 @@ public class RegisterActivity extends BaseActivity {
         setToolbar(activity, 0, "");
     }
 
-    private void initData() {
+    private void countDown() {
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -108,7 +108,6 @@ public class RegisterActivity extends BaseActivity {
                     if (StringUtil.isEmpty(phone)){
                         toast("请先输入手机号");
                     }else {
-                        initData();
                         getVfCode();
                     }
                 }
@@ -159,11 +158,17 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, Object object) {
                 dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    countDown();
+                }else {
+                    toast((String) object);
+                }
             }
 
             @Override
             public void onFailed(String errMessage) {
                 dismissProgress();
+                toast(errMessage);
             }
         });
     }
@@ -189,7 +194,6 @@ public class RegisterActivity extends BaseActivity {
                 Constants.USER_ATTRIBUTE.SIGNUPTYPE = "2";
                 //拿到信息去绑定手机号
                 BindPhoneActivity.start(activity);
-//                signup("2");
             }
 
             @Override

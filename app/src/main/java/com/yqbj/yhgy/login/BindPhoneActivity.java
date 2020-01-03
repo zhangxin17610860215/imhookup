@@ -14,6 +14,8 @@ import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.me.GenderSelectionAct;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import butterknife.BindView;
@@ -60,7 +62,7 @@ public class BindPhoneActivity extends BaseActivity {
         setToolbar(activity, 0, "");
     }
 
-    private void initData() {
+    private void countDown() {
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -96,7 +98,7 @@ public class BindPhoneActivity extends BaseActivity {
                     if (StringUtil.isEmpty(phone)){
                         toast("请先输入手机号");
                     }else {
-                        initData();
+                        getVfCode();
                     }
                 }
                 break;
@@ -123,4 +125,30 @@ public class BindPhoneActivity extends BaseActivity {
                 break;
         }
     }
+
+    /**
+     * 获取验证码
+     * */
+    private void getVfCode() {
+        showProgress(false);
+        UserApi.getVfCode("2", phone, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    countDown();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+
 }

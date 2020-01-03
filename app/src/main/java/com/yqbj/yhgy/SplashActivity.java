@@ -191,6 +191,7 @@ public class SplashActivity extends BaseActivity {
         UserApi.login(loginType, phone,psw, wxToken, openId, uuId, activity, new RequestCallback() {
             @Override
             public void onSuccess(int code, Object object) {
+                dismissProgress();
                 if (code == Constants.SUCCESS_CODE){
                     yunXinLogin();
                 }else {
@@ -200,6 +201,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errMessage) {
+                dismissProgress();
                 toast(errMessage);
             }
         });

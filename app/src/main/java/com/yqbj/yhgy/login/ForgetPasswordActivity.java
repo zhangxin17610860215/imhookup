@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import butterknife.BindView;
@@ -59,7 +62,7 @@ public class ForgetPasswordActivity extends BaseActivity {
         setToolbar(activity, 0, "");
     }
 
-    private void initData() {
+    private void countDown() {
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -70,7 +73,6 @@ public class ForgetPasswordActivity extends BaseActivity {
                     mSeconds = 30;
                 } else {
                     tvSendVfCode.setText(mSeconds + "s后重新获取");
-
                     mHandler.postDelayed(mRunnable, 1000);
                 }
             }
@@ -95,7 +97,7 @@ public class ForgetPasswordActivity extends BaseActivity {
                     if (StringUtil.isEmpty(phone)){
                         toast("请先输入手机号");
                     }else {
-                        initData();
+                        getVfCode();
                     }
                 }
                 break;
@@ -115,9 +117,80 @@ public class ForgetPasswordActivity extends BaseActivity {
                     toast("请输入密码");
                     return;
                 }
-                toast("密码修改成功");
-                finish();
+                checkVfCode();
                 break;
         }
+    }
+
+    /**
+     * 校验验证码
+     * */
+    private void checkVfCode() {
+        showProgress(false);
+        UserApi.checkVfCode("4", phone, vfCode, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                if (code == Constants.SUCCESS_CODE){
+                    resetPwd();
+                }else {
+                    dismissProgress();
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 获取验证码
+     * */
+    private void getVfCode() {
+        showProgress(false);
+        UserApi.getVfCode("4", phone, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    countDown();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 重置密码
+     * */
+    private void resetPwd() {
+        UserApi.resetPwd("4",phone, vfCode, psw, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code != Constants.SUCCESS_CODE){
+                    toast((String) object);
+                    return;
+                }
+                toast("密码修改成功");
+                finish();
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 }

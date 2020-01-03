@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@mipmap/purple_ellipse"
-        android:text="手机号注册"
+        android:text="注册"
         android:textSize="@dimen/text_size_15"
         android:textColor="@color/text_theme_color"
         android:gravity="center"
@@ -39,6 +39,7 @@
         android:layout_marginTop="@dimen/dimen_15"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_Other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,6 +51,7 @@
         android:layout_marginTop="@dimen/dimen_90"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_weixin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,6 +67,7 @@
         android:layout_marginLeft="@dimen/dimen_50"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_qq"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
