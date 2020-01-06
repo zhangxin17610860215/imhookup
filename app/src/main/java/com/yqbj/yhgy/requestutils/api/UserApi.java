@@ -347,4 +347,45 @@ public class UserApi {
             }
         });
     }
+
+    /**
+     * 更新隐私设置
+     * */
+    public static void upPrivacySetting(String hidelocation,String hideonline,String privacystate,
+                             String viewphotofee,String invisible,String hidecontactinfo,
+                                   Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("hidelocation",hidelocation);
+        map.put("hideonline",hideonline);
+        map.put("privacystate",privacystate);
+        if (privacystate.equals("0")){
+            map.put("viewphotofee",viewphotofee);
+        }
+        map.put("invisible",invisible);
+        map.put("hidecontactinfo",hidecontactinfo);
+        RequestHelp.postRequest(ApiUrl.USER_UPDATEPRIVACYSETTING, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "upPrivacySetting--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "upPrivacySetting--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
 }

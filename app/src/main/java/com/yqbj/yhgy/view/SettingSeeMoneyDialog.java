@@ -20,13 +20,16 @@ import com.yqbj.yhgy.utils.StringUtil;
  */
 public class SettingSeeMoneyDialog extends CenterPopupView implements View.OnClickListener {
 
-    public OnClickListener listener;
+    public interface OnSuccessClickListener{
+        void onClick(String str);
+    }
     private Context context;
     private TextView tvConfirm;
     private ImageView imgClose;
     private EditText etMoney;
+    private OnSuccessClickListener listener;
 
-    public SettingSeeMoneyDialog(@NonNull Context context, OnClickListener listener) {
+    public SettingSeeMoneyDialog(@NonNull Context context, OnSuccessClickListener listener) {
         super(context);
         this.context = context;
         this.listener = listener;
@@ -70,7 +73,7 @@ public class SettingSeeMoneyDialog extends CenterPopupView implements View.OnCli
                     ToastHelper.showToast(context,"金额必须大于0");
                     return;
                 }
-                listener.onClick(view);
+                listener.onClick(money);
                 dismiss();
                 break;
             case R.id.img_close:

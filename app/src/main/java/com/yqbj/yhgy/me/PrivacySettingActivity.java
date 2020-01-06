@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.lxj.xpopup.XPopup;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.view.MiddleDialog;
 import com.yqbj.yhgy.view.SettingSeeMoneyDialog;
 
@@ -46,6 +49,7 @@ public class PrivacySettingActivity extends BaseActivity {
     private boolean hideDistanceSwitch;         //对他人隐藏我的距离
     private boolean hideTimeSwitch;             //对他人隐藏我的在线时间
     private boolean hideAccountSwitch;          //对他人隐藏我的社交账号
+    private String albumMoney = "";             //相册金额
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PrivacySettingActivity.class);
@@ -127,6 +131,7 @@ public class PrivacySettingActivity extends BaseActivity {
                 tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.selected_logo), null);
                 tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
                 tvVerification.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                upPrivacySetting();
                 break;
             case 2:
                 new XPopup.Builder(mActivity)
@@ -136,15 +141,17 @@ public class PrivacySettingActivity extends BaseActivity {
                             public void onConfirmClickListener() {
                                 new XPopup.Builder(mActivity)
                                         .dismissOnTouchOutside(false)
-                                        .asCustom(new SettingSeeMoneyDialog(mActivity, new View.OnClickListener() {
+                                        .asCustom(new SettingSeeMoneyDialog(mActivity, new SettingSeeMoneyDialog.OnSuccessClickListener() {
                                             @Override
-                                            public void onClick(View view) {
+                                            public void onClick(String str) {
+                                                albumMoney = str;
                                                 publicSwitch = false;
                                                 albumSwitch = true;
                                                 verificationSwitch = false;
                                                 tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
                                                 tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.selected_logo), null);
                                                 tvVerification.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
+                                                upPrivacySetting();
                                             }
                                         })).show();
                             }
@@ -168,6 +175,7 @@ public class PrivacySettingActivity extends BaseActivity {
                                 tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
                                 tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.unselected_logo), null);
                                 tvVerification.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(R.mipmap.selected_logo), null);
+                                upPrivacySetting();
                             }
 
                             @Override
@@ -204,7 +212,28 @@ public class PrivacySettingActivity extends BaseActivity {
             default:
                 break;
         }
+        upPrivacySetting();
     }
 
+    private void upPrivacySetting(){
+        showProgress(false);
+        UserApi.upPrivacySetting(hideDistanceSwitch ? "1" : "0", hideTimeSwitch ? "1" : "0",
+                albumSwitch ? "0" : "1", albumMoney, listHideSwitch ? "1" : "0",
+                hideAccountSwitch ? "1" : "0", mActivity, new RequestCallback() {
+                    @Override
+                    public void onSuccess(int code, Object object) {
+                        dismissProgress();
+                        if (code != Constants.SUCCESS_CODE){
+                            toast((String) object);
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(String errMessage) {
+                        dismissProgress();
+                        toast(errMessage);
+                    }
+                });
+    }
 
 }
