@@ -10,11 +10,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
+import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nimlib.sdk.AbortableFuture;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.StatusBarNotificationConfig;
+import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.UserPreferences;
 import com.yqbj.yhgy.view.CautionDialog;
 
 import butterknife.BindView;
@@ -40,6 +49,7 @@ public class GenderSelectionAct extends BaseActivity {
      * gender == 2 (女)
      * */
     private int gender = 1;
+    private AbortableFuture<LoginInfo> loginRequest;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, GenderSelectionAct.class);
@@ -100,8 +110,8 @@ public class GenderSelectionAct extends BaseActivity {
                     public void onSuccess(int code, Object object) {
                         dismissProgress();
                         if (code == Constants.SUCCESS_CODE){
-                            //跳转完善资料
-                            PerfectDataActivity.start(activity);
+                            //云信登录
+                            yunXinLogin();
                         }else {
                             toast((String) object);
                         }
@@ -130,4 +140,52 @@ public class GenderSelectionAct extends BaseActivity {
             imgFemale.setImageResource(R.mipmap.female_yes);
         }
     }
+
+    private void yunXinLogin() {
+        // 云信只提供消息通道，并不包含用户资料逻辑。开发者需要在管理后台或通过服务器接口将用户帐号和token同步到云信服务器。
+        // 在这里直接使用同步到云信服务器的帐号和token登录。
+        // 如果开发者直接使用这个demo，只更改appkey，然后就登入自己的账户体系的话，需要传入同步到云信服务器的token，而不是用户密码。
+        final String account = Preferences.getUserAccId();
+        final String token = Preferences.getYunxinToken();
+        loginRequest = NimUIKit.login(new LoginInfo(account, token), new com.netease.nimlib.sdk.RequestCallback<LoginInfo>() {
+            @Override
+            public void onSuccess(LoginInfo param) {
+                onLoginDone();
+                DemoCache.setAccount(account);
+                // 初始化消息提醒配置
+                initNotificationConfig();
+                //跳转完善资料
+                PerfectDataActivity.start(activity,"0");
+                finish();
+            }
+
+            @Override
+            public void onFailed(int code) {
+                onLoginDone();
+            }
+
+            @Override
+            public void onException(Throwable exception) {
+                onLoginDone();
+            }
+        });
+    }
+
+    private void onLoginDone() {
+        loginRequest = null;
+    }
+
+    private void initNotificationConfig() {
+        // 初始化消息提醒
+        NIMClient.toggleNotification(UserPreferences.getNotificationToggle());
+        // 加载状态栏配置
+        StatusBarNotificationConfig statusBarNotificationConfig = UserPreferences.getStatusConfig();
+        if (statusBarNotificationConfig == null) {
+            statusBarNotificationConfig = DemoCache.getNotificationConfig();
+            UserPreferences.setStatusConfig(statusBarNotificationConfig);
+        }
+        // 更新配置
+        NIMClient.updateStatusBarNotificationConfig(statusBarNotificationConfig);
+    }
+
 }

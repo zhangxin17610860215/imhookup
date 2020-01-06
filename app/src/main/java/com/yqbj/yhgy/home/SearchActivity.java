@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.view.MorePopupView;
@@ -73,7 +74,7 @@ public class SearchActivity extends BaseActivity {
                 if (null == list || list.size() == 0) {
                     return;
                 }
-                ImageView imgHeader = viewHolder.getView(R.id.img_home_header);//头像
+                RoundedImageView imgHeader = viewHolder.getView(R.id.img_home_header);//头像
                 TextView tvPhoto = viewHolder.getView(R.id.tv_home_photo);//照片数量
                 TextView tvName = viewHolder.getView(R.id.tv_home_name);//姓名
                 ImageView imgNvShen = viewHolder.getView(R.id.img_home_nvshen);//女神

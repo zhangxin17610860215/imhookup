@@ -12,14 +12,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.netease.nim.uikit.common.util.CityBean;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
+import com.yqbj.yhgy.bean.HomeDataBean;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.TimeUtils;
+import com.yqbj.yhgy.utils.ZodiacUtil;
 import com.yqbj.yhgy.view.MorePopupView;
 import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
@@ -32,6 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 
 /**
  * 首页   公园
@@ -57,15 +67,15 @@ public class HomeFragment extends BaseFragment {
     MyRefreshLayout refreshLayout;
 
     private EasyRVAdapter mAdapter;
-    private List<String> list = new ArrayList<>();
+    private List<HomeDataBean.RecordsBean> list = new ArrayList<>();
 
     private Activity mActivity;
 
-    private int gender = 1;//性别    1=男   2=女
+    private int gender = Preferences.getGender().equals("1") ? 2:1;//性别    1=男   2=女
     private int type = 1;//类型    1=附近   2=新注册    3=女神
     private boolean isOnLine = true;        //是否在线
     private int pageNum = 1;
-    private String region = "510100";//区域（0：附近；区域id：对应具体id值）     默认成都510100
+    private String region = "北京市";//区域（0：附近；区域id：对应具体id值）     默认成都510100
 
     public HomeFragment() {
 
@@ -132,6 +142,14 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onSuccess(int code, Object object) {
                 dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    HomeDataBean dataBean = (HomeDataBean) object;
+                    list.clear();
+                    list.addAll(dataBean.getRecords());
+                    loadDate();
+                }else {
+                    toast((String) object);
+                }
             }
 
             @Override
@@ -140,20 +158,18 @@ public class HomeFragment extends BaseFragment {
                 toast(errMessage);
             }
         });
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        list.add("4");
-        list.add("5");
-        list.add("6");
-        list.add("7");
+    }
+
+    private void loadDate() {
+        toggleSearchType();
         mAdapter = new EasyRVAdapter(mActivity,list,R.layout.item_home_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
                 if (null == list || list.size() == 0) {
                     return;
                 }
-                ImageView imgHeader = viewHolder.getView(R.id.img_home_header);//头像
+                HomeDataBean.RecordsBean recordsBean = list.get(position);
+                RoundedImageView imgHeader = viewHolder.getView(R.id.img_home_header);//头像
                 TextView tvPhoto = viewHolder.getView(R.id.tv_home_photo);//照片数量
                 TextView tvName = viewHolder.getView(R.id.tv_home_name);//姓名
                 ImageView imgNvShen = viewHolder.getView(R.id.img_home_nvshen);//女神
@@ -167,6 +183,25 @@ public class HomeFragment extends BaseFragment {
                 TextView tvAge = viewHolder.getView(R.id.tv_home_age);//星座-年龄
                 TextView tvOccupation = viewHolder.getView(R.id.tv_home_Occupation);//职业
 
+                Glide.with(mActivity).load(recordsBean.getHeadUrl()).error(R.mipmap.default_home_head).into(imgHeader);
+                tvName.setText(recordsBean.getName());
+                imgNvShen.setVisibility(recordsBean.getLabeltype() == 1? View.VISIBLE : View.GONE);
+                imgZhenRen.setVisibility(recordsBean.getCertification() == 1? View.VISIBLE : View.GONE);
+                tvDistance.setText(recordsBean.getDistance() + "m");
+                tvAge.setText(ZodiacUtil.date2Constellation(recordsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(recordsBean.getBirthday()) + "岁");
+                CityBean occupationBean;
+                String job = "";
+                for (int i = 0; i < OCCUPATIONBEANLIST.size(); i ++ ){
+                    occupationBean = OCCUPATIONBEANLIST.get(i);
+                    for (int j = 0; j < occupationBean.getChild().size(); j ++){
+                        List<CityBean.ChildBeanX> occupation = OCCUPATIONBEANLIST.get(i).getChild();
+                        if (recordsBean.getJob().equals(occupation.get(j).getValue())){
+                            job = occupation.get(j).getText();
+                        }
+                    }
+                }
+
+                tvOccupation.setText(job);
                 imgMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -268,14 +303,6 @@ public class HomeFragment extends BaseFragment {
                 tvGoddess.setCompoundDrawablesWithIntrinsicBounds(null,null, null, getResources().getDrawable(R.mipmap.xiabiao_logo));
                 break;
         }
-        refreshList();
-    }
-
-    /**
-     * 根据type  和  isOnLine刷新列表
-     * */
-    private void refreshList() {
-
     }
 
     @Override

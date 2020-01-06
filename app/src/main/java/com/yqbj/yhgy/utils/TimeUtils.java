@@ -199,6 +199,45 @@ public class TimeUtils {
       return dataList;
     }
 
+    // 根据年月日计算年龄,birthTimeString:"1994-11-14"
+    public static int getAgeFromBirthTime(String birthday) {
+        SimpleDateFormat sdf = new SimpleDateFormat(TIME_TYPE_02);
+        Date date = new Date();
+        try {
+            date = sdf.parse(birthday);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // 得到当前时间的年、月、日
+        if (date!=null){
+            Calendar cal = Calendar.getInstance();
+            int yearNow = cal.get(Calendar.YEAR);
+            int monthNow = cal.get(Calendar.MONTH) + 1;
+            int dayNow = cal.get(Calendar.DATE);
+            //得到输入时间的年，月，日
+            cal.setTime(date);
+            int selectYear = cal.get(Calendar.YEAR);
+            int selectMonth = cal.get(Calendar.MONTH) + 1;
+            int selectDay =cal.get(Calendar.DATE);
+            // 用当前年月日减去生日年月日
+            int yearMinus = yearNow - selectYear;
+            int monthMinus = monthNow - selectMonth;
+            int dayMinus = dayNow - selectDay;
+            int age = yearMinus;// 先大致赋值
+            if (yearMinus <=0) {
+                age = 0;
+            }if (monthMinus < 0) {
+                age=age-1;
+            } else if (monthMinus == 0) {
+                if (dayMinus < 0) {
+                    age=age-1;
+                }
+            }
+            return age;
+        }
+        return 0;
+    }
+
     public static void main(String args[]){
         List<Double> numList = new ArrayList<Double>();
         numList.add(12.05);

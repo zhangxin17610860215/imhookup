@@ -218,7 +218,7 @@ public class PrivacySettingActivity extends BaseActivity {
     private void upPrivacySetting(){
         showProgress(false);
         UserApi.upPrivacySetting(hideDistanceSwitch ? "1" : "0", hideTimeSwitch ? "1" : "0",
-                albumSwitch ? "0" : "1", albumMoney, listHideSwitch ? "1" : "0",
+                albumSwitch ? "2" : "1", albumMoney, listHideSwitch ? "1" : "0",
                 hideAccountSwitch ? "1" : "0", mActivity, new RequestCallback() {
                     @Override
                     public void onSuccess(int code, Object object) {

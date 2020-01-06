@@ -154,6 +154,7 @@ public class SplashActivity extends BaseActivity {
                     //定位成功回调信息，设置相关消息
                     Preferences.saveLongitude(amapLocation.getLongitude() + "");
                     Preferences.saveLatitude(amapLocation.getLatitude() + "");
+                    Preferences.saveCity(amapLocation.getCity() + "");
                 } else {
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                     LogUtil.e("AmapError", "location Error, ErrCode:"
@@ -276,6 +277,7 @@ public class SplashActivity extends BaseActivity {
                 initNotificationConfig();
                 // 进入主界面
                 MainActivity.start(activity);
+                finish();
             }
 
             @Override

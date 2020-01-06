@@ -3,6 +3,7 @@ package com.yqbj.yhgy.requestutils.api;
 import com.alibaba.fastjson.JSON;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.yqbj.yhgy.bean.HomeDataBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.BaseBean;
@@ -182,8 +183,9 @@ public class UserApi {
 
                         String longitude = Preferences.getLongitude();
                         String latitude = Preferences.getLatitude();
+                        String city = Preferences.getCity();
                         if (StringUtil.isNotEmpty(longitude) && StringUtil.isNotEmpty(latitude)){
-                            updateLocation(latitude,longitude,object);
+                            updateLocation(latitude,longitude,city,object);
                         }
 
                         callback.onSuccess(bean.getCode(),userBean);
@@ -208,10 +210,11 @@ public class UserApi {
     /**
      * 更新经纬度
      * */
-    public static void updateLocation(String latitude,String longitude, Object object){
+    public static void updateLocation(String latitude,String longitude,String city, Object object){
         Map<String,String> map = new HashMap<>();
         map.put("latitude",latitude);
         map.put("longitude",longitude);
+        map.put("region",city);
         RequestHelp.postRequest(ApiUrl.LOCATION_UPDATE, object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
@@ -290,6 +293,12 @@ public class UserApi {
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
                     if (bean.getCode() == Constants.SUCCESS_CODE){
+                        String longitude = Preferences.getLongitude();
+                        String latitude = Preferences.getLatitude();
+                        String city = Preferences.getCity();
+                        if (StringUtil.isNotEmpty(longitude) && StringUtil.isNotEmpty(latitude)){
+                            updateLocation(latitude,longitude,city,object);
+                        }
                         callback.onSuccess(bean.getCode(),bean);
                     } else {
                         callback.onFailed(bean.getMsg());
@@ -329,7 +338,9 @@ public class UserApi {
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
                     if (bean.getCode() == Constants.SUCCESS_CODE){
-                        callback.onSuccess(bean.getCode(),bean);
+                        Map<String, Object> data = bean.getData();
+                        HomeDataBean homeDataBean = JSON.parseObject(JSON.toJSONString(data.get("PageResult")),HomeDataBean.class);
+                        callback.onSuccess(bean.getCode(),homeDataBean);
                     } else {
                         callback.onFailed(bean.getMsg());
                     }

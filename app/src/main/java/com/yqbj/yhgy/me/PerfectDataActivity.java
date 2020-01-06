@@ -9,34 +9,34 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
-import com.netease.nim.uikit.api.NimUIKit;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.business.session.actions.PickImageAction;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePickerLauncher;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
-import com.netease.nim.uikit.common.ui.imageview.HeadImageView;
 import com.netease.nim.uikit.common.util.CityBean;
 import com.netease.nimlib.sdk.AbortableFuture;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
-import com.netease.nimlib.sdk.StatusBarNotificationConfig;
+import com.netease.nimlib.sdk.ResponseCode;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.nos.NosService;
+import com.netease.nimlib.sdk.uinfo.UserService;
+import com.netease.nimlib.sdk.uinfo.constant.UserInfoFieldEnum;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
-import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StatusBarsUtil;
 import com.yqbj.yhgy.utils.StringUtil;
-import com.yqbj.yhgy.utils.UserPreferences;
 import com.yqbj.yhgy.view.ChoiceCityDialog;
 import com.yqbj.yhgy.view.CustomDatePicker;
 import com.yqbj.yhgy.view.MiddleListDialog;
@@ -45,8 +45,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +63,7 @@ import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 public class PerfectDataActivity extends BaseActivity {
 
     @BindView(R.id.img_upHead)
-    HeadImageView imgUpHead;
+    RoundedImageView imgUpHead;
     @BindView(R.id.et_name)
     EditText etName;
     @BindView(R.id.tv_selecteCity)
@@ -113,9 +115,11 @@ public class PerfectDataActivity extends BaseActivity {
 
     private String headUrl,nikeName,city,birthday,job,desiredGoals,qq,weChat,hidecontactinfo,
                     height,weight,description;
+    private String type = "";//type == 0,未登录   type == 1,已登录
 
-    public static void start(Context context) {
+    public static void start(Context context,String type) {
         Intent intent = new Intent(context, PerfectDataActivity.class);
+        intent.putExtra("type",type);
         context.startActivity(intent);
     }
 
@@ -135,8 +139,8 @@ public class PerfectDataActivity extends BaseActivity {
     }
 
     private void initData() {
-
-        imgUpHead.setIsRect(true);
+        type = getIntent().getStringExtra("type");
+//        imgUpHead.setIsRect(true);
         headUrl = Preferences.getHeadImag();
         nikeName = Preferences.getNikename();
         Glide.with(activity).load(headUrl).error(R.mipmap.default_head_logo).into(imgUpHead);
@@ -361,6 +365,10 @@ public class PerfectDataActivity extends BaseActivity {
             toast("请选择城市");
             return;
         }
+        if (StringUtil.isEmpty(qq) && StringUtil.isEmpty(weChat)){
+            toast("社交账号请至少填写一个");
+            return;
+        }
         upDateInfo();
     }
 
@@ -373,34 +381,13 @@ public class PerfectDataActivity extends BaseActivity {
                 "", desiredGoals, hidecontactinfo, qq, weChat, activity, new RequestCallback() {
                     @Override
                     public void onSuccess(int code, Object object) {
-                        if (code == Constants.SUCCESS_CODE){
-                            login();
-                        }else {
-                            dismissProgress();
-                            toast((String) object);
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(String errMessage) {
-                        dismissProgress();
-                        toast(errMessage);
-                    }
-                });
-    }
-
-    /**
-     * 登录
-     * */
-    private void login() {
-        UserApi.login(Constants.USER_ATTRIBUTE.SIGNUPTYPE, Constants.USER_ATTRIBUTE.PHONE,
-                Constants.USER_ATTRIBUTE.PSW, Constants.USER_ATTRIBUTE.WXTOKEN, Constants.USER_ATTRIBUTE.OPENID,
-                Constants.USER_ATTRIBUTE.WXUUID, activity, new RequestCallback() {
-                    @Override
-                    public void onSuccess(int code, Object object) {
                         dismissProgress();
                         if (code == Constants.SUCCESS_CODE){
-                            yunXinLogin();
+                            toast("信息更改成功");
+                            if (StringUtil.isNotEmpty(type) && type.equals("0")){
+                                MainActivity.start(activity);
+                            }
+                            finish();
                         }else {
                             toast((String) object);
                         }
@@ -412,56 +399,6 @@ public class PerfectDataActivity extends BaseActivity {
                         toast(errMessage);
                     }
                 });
-    }
-
-    private void yunXinLogin() {
-        // 云信只提供消息通道，并不包含用户资料逻辑。开发者需要在管理后台或通过服务器接口将用户帐号和token同步到云信服务器。
-        // 在这里直接使用同步到云信服务器的帐号和token登录。
-        // 如果开发者直接使用这个demo，只更改appkey，然后就登入自己的账户体系的话，需要传入同步到云信服务器的token，而不是用户密码。
-        showProgress(false);
-        final String account = Preferences.getUserAccId();
-        final String token = Preferences.getYunxinToken();
-        loginRequest = NimUIKit.login(new LoginInfo(account, token), new com.netease.nimlib.sdk.RequestCallback<LoginInfo>() {
-            @Override
-            public void onSuccess(LoginInfo param) {
-                dismissProgress();
-                onLoginDone();
-                DemoCache.setAccount(account);
-                // 初始化消息提醒配置
-                initNotificationConfig();
-                // 进入主界面
-                MainActivity.start(activity);
-            }
-
-            @Override
-            public void onFailed(int code) {
-                dismissProgress();
-                onLoginDone();
-            }
-
-            @Override
-            public void onException(Throwable exception) {
-                dismissProgress();
-                onLoginDone();
-            }
-        });
-    }
-
-    private void onLoginDone() {
-        loginRequest = null;
-    }
-
-    private void initNotificationConfig() {
-        // 初始化消息提醒
-        NIMClient.toggleNotification(UserPreferences.getNotificationToggle());
-        // 加载状态栏配置
-        StatusBarNotificationConfig statusBarNotificationConfig = UserPreferences.getStatusConfig();
-        if (statusBarNotificationConfig == null) {
-            statusBarNotificationConfig = DemoCache.getNotificationConfig();
-            UserPreferences.setStatusConfig(statusBarNotificationConfig);
-        }
-        // 更新配置
-        NIMClient.updateStatusBarNotificationConfig(statusBarNotificationConfig);
     }
 
     /**
@@ -590,12 +527,27 @@ public class PerfectDataActivity extends BaseActivity {
         if (file == null) {
             return;
         }
-        AbortableFuture<String> upload = NIMClient.getService(NosService.class).upload(file, PickImageAction.MIME_JPEG);
-        upload.setCallback(new RequestCallbackWrapper<String>() {
+        NIMClient.getService(NosService.class).upload(file, PickImageAction.MIME_JPEG).setCallback(new RequestCallbackWrapper<String>() {
             @Override
             public void onResult(int i, final String url, Throwable throwable) {
-                Glide.with(activity).load(url).error(R.mipmap.default_head_logo).into(imgUpHead);
-                headUrl = url;
+                if (i != ResponseCode.RES_SUCCESS){
+                    toast("上传头像失败，请稍后重试");
+                    return;
+                }
+                Map<UserInfoFieldEnum, Object> fields = new HashMap<>(1);
+                fields.put(UserInfoFieldEnum.AVATAR, url);
+                NIMClient.getService(UserService.class).updateUserInfo(fields).setCallback(new RequestCallbackWrapper<Void>() {
+                    @Override
+                    public void onResult(int code, Void aVoid, Throwable throwable) {
+                        if (code == ResponseCode.RES_SUCCESS) {
+                            toast("头像上传成功");
+                            Glide.with(activity).load(url).error(R.mipmap.default_head_logo).into(imgUpHead);
+                            headUrl = url;
+                        } else {
+                            toast("上传头像失败，请稍后重试");
+                        }
+                    }
+                });
             }
         });
     }

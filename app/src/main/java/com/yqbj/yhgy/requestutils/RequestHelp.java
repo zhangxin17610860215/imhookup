@@ -80,18 +80,22 @@ public class RequestHelp {
     public static void postRequest(String url, final Object tag, Map<String, String> map, StringCallback callback) {
         Map<String, String> paramsMap = new HashMap<>();
         if (map != null) {
-            paramsMap.putAll(map);
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                if (null == entry.getValue() || entry.getValue().equals("")) // 如果是null，则跳过
+                    continue;
+                paramsMap.put(entry.getKey(),entry.getValue());
+            }
         }
-        Map<String, String> headersMap = appendCommonParam(url, paramsMap);
+        Map<String, String> headersMap = appendCommonParam(url, map);
         LogUtil.e(TAG, "Post(headers)----->" + headersMap.toString());
-        LogUtil.e(TAG, "Post(params)----->" + map.toString());
+        LogUtil.e(TAG, "Post(params)----->" + paramsMap.toString());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.headersMap.putAll(headersMap);
         PostRequest postRequest = OkGo.<String>post(url)
                 .cacheMode(CacheMode.NO_CACHE)//设置缓存模式
                 .tag(tag)
                 .headers(httpHeaders)
-                .params(getSortedMapByKey(map));
+                .params(getSortedMapByKey(paramsMap));
         postRequest.execute(callback);
     }
 

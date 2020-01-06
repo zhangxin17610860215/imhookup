@@ -2,15 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/dimen_15"
     android:paddingLeft="@dimen/dimen_15"
     android:background="@color/white">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/img_home_header"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:src="@mipmap/default_home_head"
+        app:riv_corner_radius="@dimen/dimen_5"
+        android:scaleType="fitXY"
         android:layout_marginRight="@dimen/dimen_15"/>
 
     <RelativeLayout

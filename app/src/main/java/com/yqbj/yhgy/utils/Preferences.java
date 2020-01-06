@@ -32,6 +32,7 @@ public class Preferences {
     private static final String KEY_SERVERDOMAIN = "serverDomain";     // 域名
     private static final String KEY_LONGITUDE = "longitude";           // 经度
     private static final String KEY_LATITUDE = "latitude";             // 纬度
+    private static final String KEY_CITY = "city";                     // 市区
 
     private static void saveUserPayPassSet(boolean flag){
         if(TextUtils.isEmpty(NimUIKit.getAccount())){
@@ -71,6 +72,14 @@ public class Preferences {
         saveString(KEY_LABELTYPE, userBean.getLabeltype() + "");
         saveString(KEY_CERTIFICATION, userBean.getCertification() + "");
         saveString(KEY_SERVERDOMAIN, userBean.getServerDomain());
+    }
+
+    public static String getCity() {
+        return getString(KEY_CITY);
+    }
+
+    public static void saveCity(String city){
+        saveString(KEY_CITY,city);
     }
 
     public static String getServerDomain() {
