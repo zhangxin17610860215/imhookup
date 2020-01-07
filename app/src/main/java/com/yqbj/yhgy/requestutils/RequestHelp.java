@@ -43,21 +43,19 @@ public class RequestHelp {
     }
 
     /**
-     * Get   请求    APP第一个接口对参数加密
+     * Get   请求
      */
     public static void getRequest(String url, Object tag, Map<String, String> map, StringCallback callback) {
-        Map<String, String> fullParam = getKeyHeaders(url,map);
-        LogUtil.e(TAG, "getRequest----->" + url + ">>>>>>>>>>>" + fullParam.toString());
+        Map<String, String> headersMap = appendCommonParam(url, map);
+        LogUtil.e(TAG, "get(headers)----->" + headersMap.toString());
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.headersMap.putAll(fullParam);
+        httpHeaders.headersMap.putAll(headersMap);
+
         GetRequest<String> getRequest = OkGo.<String>get(url)
                 .cacheMode(CacheMode.NO_CACHE)//设置缓存模式
 //                .cacheKey(url)//作为缓存的key
                 .tag(tag)
                 .headers(httpHeaders);
-//        if (!url.equals(ApiUrl.CONFIGINFO)){
-//            getRequest.params(map);
-//        }
         getRequest.execute(callback);
     }
 

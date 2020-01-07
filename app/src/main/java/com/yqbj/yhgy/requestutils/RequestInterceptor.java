@@ -1,6 +1,11 @@
 package com.yqbj.yhgy.requestutils;
 
+import com.netease.nim.uikit.common.ToastHelper;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.GsonHelper;
+import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import java.io.IOException;
@@ -50,7 +55,25 @@ public class RequestInterceptor implements Interceptor {
             if (StringUtil.isNotEmpty(bodyString)){
                 BaseBean bean = GsonHelper.getSingleton().fromJson(bodyString, BaseBean.class);
                 if(null != bean){
+                    if (bean.getCode() == Constants.RESPONSE_CODE.CODE_10002){
+                        String loginType = Preferences.getLoginType();
+                        String wxToken = Preferences.getWxToken();
+                        String openId = Preferences.getWxOpenid();
+                        String uuId = Preferences.getWxUuid();
+                        String phone = Preferences.getAccount();
+                        String psw = Preferences.getPassword();
+                        UserApi.login(loginType, phone,psw, wxToken, openId, uuId, DemoCache.getContext(), new RequestCallback() {
+                            @Override
+                            public void onSuccess(int code, Object object) {
+                                if (code == Constants.SUCCESS_CODE){
+                                    ToastHelper.showToast(DemoCache.getContext(),"认证过期，请重试");
+                                }
+                            }
 
+                            @Override
+                            public void onFailed(String errMessage) {}
+                        });
+                    }
                 }
             }
         }catch (Exception e){

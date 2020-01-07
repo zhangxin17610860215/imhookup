@@ -1,10 +1,14 @@
 package com.yqbj.yhgy.requestutils.api;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.yqbj.yhgy.bean.HomeDataBean;
 import com.yqbj.yhgy.bean.UserBean;
+import com.yqbj.yhgy.bean.VipListInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.BaseBean;
 import com.yqbj.yhgy.requestutils.RequestCallback;
@@ -15,7 +19,9 @@ import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.yqbj.yhgy.config.Constants.ERROR_REQUEST_EXCEPTION_MESSAGE;
@@ -369,8 +375,9 @@ public class UserApi {
         map.put("hidelocation",hidelocation);
         map.put("hideonline",hideonline);
         map.put("privacystate",privacystate);
-        if (privacystate.equals("0")){
+        if (privacystate.equals("2")){
             map.put("viewphotofee",viewphotofee);
+            map.put("currencyType","2");
         }
         map.put("invisible",invisible);
         map.put("hidecontactinfo",hidecontactinfo);
@@ -399,4 +406,38 @@ public class UserApi {
             }
         });
     }
+
+    /**
+     * 获取VIP价格列表
+     * */
+    public static void getVipListInfo(Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        RequestHelp.getRequest(ApiUrl.GETVIPLISTINFO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getVipListInfo--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        List<VipListInfoBean> list = JSON.parseObject(JSON.toJSONString(data.get("priceList")), new TypeReference<ArrayList<VipListInfoBean>>(){});
+                        callback.onSuccess(bean.getCode(),list);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getVipListInfo--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
 }

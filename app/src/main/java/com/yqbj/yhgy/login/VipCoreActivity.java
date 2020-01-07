@@ -15,6 +15,10 @@ import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.VipListInfoBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.view.PaySelect;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
@@ -36,7 +40,7 @@ public class VipCoreActivity extends BaseActivity {
     RecyclerView mRecyclerView;
     private Activity mActivity;
     private EasyRVAdapter mAdapter;
-    private List<String> list = new ArrayList<>();
+    private List<VipListInfoBean> list = new ArrayList<>();
     private String amount = "";         //选择套餐的金额
     private int pos;                    //选择套餐的索引
 
@@ -63,30 +67,60 @@ public class VipCoreActivity extends BaseActivity {
     }
 
     private void initData() {
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        list.add("4");
-        list.add("5");
-        list.add("6");
-        list.add("7");
+        showProgress(false);
+        UserApi.getVipListInfo(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code != Constants.SUCCESS_CODE){
+                    toast((String) object);
+                    return;
+                }
+                List<VipListInfoBean> bean = (List<VipListInfoBean>) object;
+                list.addAll(bean);
+                loadDate();
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void loadDate() {
         mAdapter = new EasyRVAdapter(mActivity, list, R.layout.vipsetmeal_item_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
                 if (null == list || list.size() == 0) {
                     return;
                 }
+                VipListInfoBean bean = list.get(position);
                 ImageView imgVipSetmealBg = viewHolder.getView(R.id.img_vipsetmeal_bg);
                 TextView tvTime = viewHolder.getView(R.id.tv_Time);
                 TextView tvAmount = viewHolder.getView(R.id.tv_Amount);
                 TextView tvCompany = viewHolder.getView(R.id.tv_Company);
+                String vipAmount = bean.getValue();
+                String[] amountSplit;
+                String[] labelSplit;
+                if (vipAmount.contains("/")){
+                    amountSplit = vipAmount.split("/");
+                }else {
+                    amountSplit = new String[]{"",""};
+                }
+                if (bean.getLabel().contains("_")){
+                    labelSplit = bean.getLabel().split("_");
+                }else {
+                    labelSplit = new String[]{"",""};
+                }
                 if (StringUtil.isEmpty(amount)){
                     //第一次进入该页面   默认选择第三个套餐
-                    if (list.get(position).equals("3")){
+                    if (position == 2){
                         imgVipSetmealBg.setImageResource(R.mipmap.vipselection_logo);
                         tvAmount.setTextColor(getResources().getColor(R.color.white));
                         tvCompany.setTextColor(getResources().getColor(R.color.white));
-                        amount = list.get(position);
+                        amount = amountSplit[0];
                         pos = position;
                     }else {
                         imgVipSetmealBg.setImageResource(R.mipmap.vipselection_no_logo);
@@ -98,7 +132,7 @@ public class VipCoreActivity extends BaseActivity {
                         imgVipSetmealBg.setImageResource(R.mipmap.vipselection_logo);
                         tvAmount.setTextColor(getResources().getColor(R.color.white));
                         tvCompany.setTextColor(getResources().getColor(R.color.white));
-                        amount = list.get(position);
+                        amount = amountSplit[0];
                         pos = position;
                     }else {
                         imgVipSetmealBg.setImageResource(R.mipmap.vipselection_no_logo);
@@ -106,8 +140,14 @@ public class VipCoreActivity extends BaseActivity {
                         tvCompany.setTextColor(getResources().getColor(R.color.black));
                     }
                 }
-                tvTime.setText(list.get(position) + "个月");
-                tvAmount.setText(list.get(position));
+                String[] strings;
+                if (labelSplit[1].contains("元")){
+                    strings = labelSplit[1].split("元");
+                }else {
+                    strings = new String[]{"",""};
+                }
+                tvTime.setText(labelSplit[0]);
+                tvAmount.setText(strings[0]);
             }
         };
         mRecyclerView.setAdapter(mAdapter);
@@ -115,6 +155,7 @@ public class VipCoreActivity extends BaseActivity {
         mAdapter.setOnItemClickListener(new EasyRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, Object item) {
+                VipListInfoBean bean = list.get(position);
                 mAdapter.notifyDataSetChanged();
                 ImageView imgVipSetmealBg = view.findViewById(R.id.img_vipsetmeal_bg);
                 TextView tvAmount = view.findViewById(R.id.tv_Amount);
@@ -122,7 +163,11 @@ public class VipCoreActivity extends BaseActivity {
                 imgVipSetmealBg.setImageResource(R.mipmap.vipselection_logo);
                 tvAmount.setTextColor(getResources().getColor(R.color.white));
                 tvCompany.setTextColor(getResources().getColor(R.color.white));
-                amount = list.get(position);
+                String[] amountSplit = new String[]{};
+                if (bean.getValue().contains("/")){
+                    amountSplit = bean.getValue().split("/");
+                }
+                amount = amountSplit[0];
                 pos = position;
             }
         });

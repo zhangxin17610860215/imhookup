@@ -8,7 +8,7 @@ public class HomeDataBean {
      * total : 1
      * size : 20
      * current : 1
-     * records : [{"accid":"517044816","name":"女神范儿💋💋","gender":2,"headUrl":"https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4MDQzNTU3MzA1Xzk0Y2IyZGE1LTg0M2QtNGY4Yi04MmVkLWZhMWI0ZGNjMWEyZQ==","birthday":"2020-01-05T16:00:00.000+0000","height":"173CM","weight":"56KG","job":"1002","cities":"510100","certification":0,"labeltype":0,"distance":0}]
+     * records : [{"accid":"517044816","name":"女神范儿💋💋","gender":2,"headUrl":"https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==","birthday":"1993-06-04T16:00:00.000+0000","height":"173CM","weight":"55KG","job":"1604","cities":"110100","certification":0,"region":"北京市","labeltype":0,"online":1,"distance":14,"vipMember":0,"multimediaSize":0,"config":{"accid":"517044816","hidelocation":0,"hideonline":0,"privacystate":1,"desiredGoals":"关爱我/有趣/看感觉"}}]
      * pages : 1
      */
 
@@ -63,15 +63,20 @@ public class HomeDataBean {
          * accid : 517044816
          * name : 女神范儿💋💋
          * gender : 2
-         * headUrl : https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4MDQzNTU3MzA1Xzk0Y2IyZGE1LTg0M2QtNGY4Yi04MmVkLWZhMWI0ZGNjMWEyZQ==
-         * birthday : 2020-01-05T16:00:00.000+0000
+         * headUrl : https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==
+         * birthday : 1993-06-04T16:00:00.000+0000
          * height : 173CM
-         * weight : 56KG
-         * job : 1002
-         * cities : 510100
+         * weight : 55KG
+         * job : 1604
+         * cities : 110100
          * certification : 0
+         * region : 北京市
          * labeltype : 0
-         * distance : 0
+         * online : 1
+         * distance : 14
+         * vipMember : 0
+         * multimediaSize : 0
+         * config : {"accid":"517044816","hidelocation":0,"hideonline":0,"privacystate":1,"desiredGoals":"关爱我/有趣/看感觉"}
          */
 
         private String accid;
@@ -83,18 +88,14 @@ public class HomeDataBean {
         private String weight;
         private String job;
         private String cities;
-        private String description;
         private int certification;
+        private String region;
         private int labeltype;
+        private int online;
         private int distance;
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
+        private int vipMember;
+        private int multimediaSize;
+        private ConfigBean config;
 
         public String getAccid() {
             return accid;
@@ -176,6 +177,14 @@ public class HomeDataBean {
             this.certification = certification;
         }
 
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
         public int getLabeltype() {
             return labeltype;
         }
@@ -184,12 +193,100 @@ public class HomeDataBean {
             this.labeltype = labeltype;
         }
 
+        public int getOnline() {
+            return online;
+        }
+
+        public void setOnline(int online) {
+            this.online = online;
+        }
+
         public int getDistance() {
             return distance;
         }
 
         public void setDistance(int distance) {
             this.distance = distance;
+        }
+
+        public int getVipMember() {
+            return vipMember;
+        }
+
+        public void setVipMember(int vipMember) {
+            this.vipMember = vipMember;
+        }
+
+        public int getMultimediaSize() {
+            return multimediaSize;
+        }
+
+        public void setMultimediaSize(int multimediaSize) {
+            this.multimediaSize = multimediaSize;
+        }
+
+        public ConfigBean getConfig() {
+            return config;
+        }
+
+        public void setConfig(ConfigBean config) {
+            this.config = config;
+        }
+
+        public static class ConfigBean {
+            /**
+             * accid : 517044816
+             * hidelocation : 0
+             * hideonline : 0
+             * privacystate : 1
+             * desiredGoals : 关爱我/有趣/看感觉
+             */
+
+            private String accid;
+            private int hidelocation;
+            private int hideonline;
+            private int privacystate;
+            private String desiredGoals;
+
+            public String getAccid() {
+                return accid;
+            }
+
+            public void setAccid(String accid) {
+                this.accid = accid;
+            }
+
+            public int getHidelocation() {
+                return hidelocation;
+            }
+
+            public void setHidelocation(int hidelocation) {
+                this.hidelocation = hidelocation;
+            }
+
+            public int getHideonline() {
+                return hideonline;
+            }
+
+            public void setHideonline(int hideonline) {
+                this.hideonline = hideonline;
+            }
+
+            public int getPrivacystate() {
+                return privacystate;
+            }
+
+            public void setPrivacystate(int privacystate) {
+                this.privacystate = privacystate;
+            }
+
+            public String getDesiredGoals() {
+                return desiredGoals;
+            }
+
+            public void setDesiredGoals(String desiredGoals) {
+                this.desiredGoals = desiredGoals;
+            }
         }
     }
 }

@@ -88,6 +88,20 @@
             android:drawablePadding="4dp"
             android:layout_toRightOf="@+id/tv_newRegister"/>
         <TextView
+            android:id="@+id/tv_VIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="会员"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/black"
+            android:paddingLeft="@dimen/dimen_18"
+            android:paddingTop="@dimen/dimen_15"
+            android:paddingRight="@dimen/dimen_18"
+            android:drawableBottom="@drawable/line_not_selected"
+            android:drawablePadding="4dp"
+            android:layout_toRightOf="@+id/tv_nearby"
+            android:visibility="gone"/>
+        <TextView
             android:id="@+id/tv_onLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
