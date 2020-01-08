@@ -8,6 +8,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.yqbj.yhgy.bean.HomeDataBean;
 import com.yqbj.yhgy.bean.UserBean;
+import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.bean.VipListInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.BaseBean;
@@ -435,6 +436,49 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "getVipListInfo--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取用户详情
+     * */
+    public static void getUserDetails(Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        RequestHelp.getRequest(ApiUrl.GETUSERDETAILS, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getUserDetails--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        UserInfoBean userInfoBean = new UserInfoBean();
+                        UserInfoBean.UserDetailsBean userDetails = JSON.parseObject(JSON.toJSONString(data.get("userDetails")), UserInfoBean.UserDetailsBean.class);
+                        UserInfoBean.WalletBean wallet = JSON.parseObject(JSON.toJSONString(data.get("wallet")), UserInfoBean.WalletBean.class);
+                        UserInfoBean.ContactInfoBean contactInfo = JSON.parseObject(JSON.toJSONString(data.get("contactInfo")), UserInfoBean.ContactInfoBean.class);
+                        UserInfoBean.ConfigBean config = JSON.parseObject(JSON.toJSONString(data.get("config")), UserInfoBean.ConfigBean.class);
+                        List<UserInfoBean.PhotoAlbumBean> photoAlbum = JSON.parseObject(JSON.toJSONString(data.get("photoAlbum")), new TypeReference<ArrayList<UserInfoBean.PhotoAlbumBean>>(){});
+                        userInfoBean.setConfig(config);
+                        userInfoBean.setContactInfo(contactInfo);
+                        userInfoBean.setPhotoAlbum(photoAlbum);
+                        userInfoBean.setWallet(wallet);
+                        userInfoBean.setUserDetails(userDetails);
+                        callback.onSuccess(bean.getCode(),userInfoBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getUserDetails--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

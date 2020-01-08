@@ -1,5 +1,7 @@
 package com.yqbj.yhgy.base;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.yqbj.yhgy.view.LoadingDialog;
  */
 public class BaseFragment extends Fragment {
     protected final String TAG = this.getClass().getSimpleName();
+    protected Activity mActivity;
     //是否可见状态
     private boolean isVisible;
     //View已经初始化完成
@@ -38,6 +41,7 @@ public class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         isFirstLoad = true;
+        this.mActivity = getActivity();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -82,6 +86,19 @@ public class BaseFragment extends Fragment {
         }
     }
 
+    //这个是不在viewpager中的隐藏和显示
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            isVisible = true;
+            onVisible();
+        } else {
+            isVisible = false;
+            onInvisible();
+        }
+    }
+
     protected void onVisible() {
         lazyLoad();
     }
@@ -99,6 +116,12 @@ public class BaseFragment extends Fragment {
 
     protected void lazyLoadData() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        mActivity = null;
+        super.onDestroy();
     }
 
 }

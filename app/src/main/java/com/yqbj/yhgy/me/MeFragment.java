@@ -1,6 +1,5 @@
 package com.yqbj.yhgy.me;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,8 +27,12 @@ import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.bean.UserInfoBean;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.login.VipCoreActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.ApiUrl;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.EventBusUtils;
 import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.utils.UMShareUtil;
@@ -60,7 +62,7 @@ public class MeFragment extends BaseFragment {
 
     Unbinder unbinder;
     @BindView(R.id.img_header)
-    ImageView imgHeader;
+    RoundedImageView imgHeader;
     @BindView(R.id.tv_place)
     TextView tvPlace;
     @BindView(R.id.tv_age)
@@ -78,7 +80,11 @@ public class MeFragment extends BaseFragment {
     @BindView(R.id.ll_noData)
     LinearLayout llNoData;
 
-    private Activity mActivity;
+    private UserInfoBean.UserDetailsBean userDetailsBean;
+    private UserInfoBean.ConfigBean configBean;
+    private UserInfoBean.ContactInfoBean contactInfoBean;
+    private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean;
+    private UserInfoBean.WalletBean walletBean;
     private List<PhotoBean> burnAfterReadingList = new ArrayList<>();
     private List<PhotoBean> list = new ArrayList<>();
     private List<PhotoBean> photoList = new ArrayList<>();
@@ -118,7 +124,46 @@ public class MeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         mActivity = getActivity();
         initView();
-        initData();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Constants.REFRESH){
+            onVisible();
+        }
+    }
+
+    @Override
+    protected void onVisible() {
+        super.onVisible();
+        showProgress(false);
+        UserApi.getUserDetails(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    Constants.REFRESH = false;
+                    UserInfoBean userInfoBean = (UserInfoBean) object;
+                    userDetailsBean = userInfoBean.getUserDetails();
+                    configBean = userInfoBean.getConfig();
+                    contactInfoBean = userInfoBean.getContactInfo();
+                    photoAlbumBean = userInfoBean.getPhotoAlbum();
+                    walletBean = userInfoBean.getWallet();
+                    Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).error(R.mipmap.default_head_logo).into(imgHeader);
+                    initData();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     private void initView() {

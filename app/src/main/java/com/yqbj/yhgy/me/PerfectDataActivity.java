@@ -386,6 +386,8 @@ public class PerfectDataActivity extends BaseActivity {
                             toast("信息更改成功");
                             if (StringUtil.isNotEmpty(type) && type.equals("0")){
                                 MainActivity.start(activity);
+                            }else {
+                                Constants.REFRESH = true;
                             }
                             finish();
                         }else {
@@ -437,27 +439,27 @@ public class PerfectDataActivity extends BaseActivity {
 
     }
 
-    private void initPopupWindow(ArrayList<CityBean> beanList, List<String> selValueList, List<String> selTextList, final int type, int optionNumber) {
+    private void initPopupWindow(ArrayList<CityBean> beanList, List<String> selValueList, List<String> selTextList, final int selType, int optionNumber) {
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
         int height = metric.heightPixels;   // 屏幕高度（像素）
         new XPopup.Builder(activity)
                 .dismissOnTouchOutside(false)
                 .maxHeight(height - StatusBarsUtil.getStatusBarHeight(activity))   //窗口高度减去状态栏高度
-                .asCustom(new ChoiceCityDialog(activity, beanList, selValueList, selTextList, type, optionNumber, new ChoiceCityDialog.DetermineOnClickListener() {
+                .asCustom(new ChoiceCityDialog(activity, beanList, selValueList, selTextList, selType, optionNumber, new ChoiceCityDialog.DetermineOnClickListener() {
                     @Override
                     public void determineOnClickListener(List<String> textList, List<String> valueList) {
                         if (null == valueList || textList.size() <= 0){
-                            if (type == 1){
+                            if (selType == 1){
                                 tvSelecteCity.setText("请选择");
                                 tvSelecteCity.setTextColor(getResources().getColor(R.color.edit_hint_color));
-                            }else if (type == 2){
+                            }else if (selType == 2){
                                 tvOccupation.setText("请选择");
                                 tvOccupation.setTextColor(getResources().getColor(R.color.edit_hint_color));
                             }
                             return;
                         }
-                        if (type == 1){
+                        if (selType == 1){
                             String cityText = "";
                             for (int i = 0; i < textList.size(); i++){
                                 cityText = cityText + textList.get(i) + "/";
@@ -467,7 +469,7 @@ public class PerfectDataActivity extends BaseActivity {
                             }
                             tvSelecteCity.setText(cityText);
                             tvSelecteCity.setTextColor(getResources().getColor(R.color.color_333333));
-                        }else if (type == 2){
+                        }else if (selType == 2){
                             tvOccupation.setText(textList.get(0));
                             tvOccupation.setTextColor(getResources().getColor(R.color.color_333333));
                         }

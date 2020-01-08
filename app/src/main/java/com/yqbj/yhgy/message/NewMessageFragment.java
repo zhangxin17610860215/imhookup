@@ -1,6 +1,5 @@
 package com.yqbj.yhgy.message;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -34,8 +33,6 @@ import java.util.Map;
  * 消息
  */
 public class NewMessageFragment extends BaseFragment {
-
-    private Activity mActivity;
     private RecentContactsFragment fragment;
 
     public NewMessageFragment() {

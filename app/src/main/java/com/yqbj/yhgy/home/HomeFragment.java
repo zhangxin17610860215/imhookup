@@ -72,8 +72,6 @@ public class HomeFragment extends BaseFragment {
     private EasyRVAdapter mAdapter;
     private List<HomeDataBean.RecordsBean> list = new ArrayList<>();
 
-    private Activity mActivity;
-
 //    private int gender = Preferences.getGender().equals("1") ? 2 : 1;//性别    1=男   2=女
     private int gender = 2;//性别    1=男   2=女
     private int type = 1;//类型    1=附近   2=新注册    3=女神   4=VIP
@@ -149,7 +147,7 @@ public class HomeFragment extends BaseFragment {
     private void initData() {
         showProgress(false);
         UserApi.index(gender + "", region, isOnLine ? "1" : "0",
-                type + "", pageNum + "", "20", mActivity, new RequestCallback() {
+                type+"", pageNum+"", rows+"", mActivity, new RequestCallback() {
                     @Override
                     public void onSuccess(int code, Object object) {
                         dismissProgress();
