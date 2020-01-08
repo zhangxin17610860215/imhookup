@@ -24,6 +24,8 @@ import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
+import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
+import com.netease.nim.uikit.common.util.CityBean;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
 import com.yqbj.yhgy.bean.PhotoBean;
@@ -35,7 +37,10 @@ import com.yqbj.yhgy.requestutils.api.ApiUrl;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.EventBusUtils;
 import com.yqbj.yhgy.utils.ImageFilter;
+import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.TimeUtils;
 import com.yqbj.yhgy.utils.UMShareUtil;
+import com.yqbj.yhgy.utils.ZodiacUtil;
 import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.wxapi.WXUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
@@ -54,6 +59,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.yqbj.yhgy.MyApplication.ALIPAY_APPID;
+import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 
 /**
  * 我
@@ -73,10 +79,16 @@ public class MeFragment extends BaseFragment {
     RecyclerView mRecyclerView;
     @BindView(R.id.tv_seeNum)
     TextView tvSeeNum;
+    @BindView(R.id.tv_ZhenRen)
+    TextView tvZhenRen;
+    @BindView(R.id.tv_NvShen)
+    TextView tvNvShen;
     @BindView(R.id.tv_BurnDownNum)
     TextView tvBurnDownNum;
     @BindView(R.id.tv_wallet)
     TextView tvWallet;
+    @BindView(R.id.ll_vipBg)
+    LinearLayout llVipBg;
     @BindView(R.id.ll_noData)
     LinearLayout llNoData;
 
@@ -151,7 +163,51 @@ public class MeFragment extends BaseFragment {
                     contactInfoBean = userInfoBean.getContactInfo();
                     photoAlbumBean = userInfoBean.getPhotoAlbum();
                     walletBean = userInfoBean.getWallet();
-                    Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).error(R.mipmap.default_head_logo).into(imgHeader);
+                    Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
+                    tvPlace.setText(Preferences.getCity());
+                    tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");
+                    String job = "";
+                    CityBean occupationBean;
+                    for (int i = 0; i < OCCUPATIONBEANLIST.size(); i++) {
+                        occupationBean = OCCUPATIONBEANLIST.get(i);
+                        for (int j = 0; j < occupationBean.getChild().size(); j++) {
+                            List<CityBean.ChildBeanX> occupation = OCCUPATIONBEANLIST.get(i).getChild();
+                            if (userDetailsBean.getJob().equals(occupation.get(j).getValue())) {
+                                job = occupation.get(j).getText();
+                            }
+                        }
+                    }
+                    tvOccupation.setText(job);
+                    tvZhenRen.setVisibility(userDetailsBean.getCertification() == 1 ? View.VISIBLE : View.GONE);
+                    tvNvShen.setVisibility(userDetailsBean.getGender() == 2 ? userDetailsBean.getLabeltype() == 1 ? View.VISIBLE : View.GONE : View.GONE);
+                    llVipBg.setVisibility(userDetailsBean.getGender() == 1 ? userDetailsBean.getVipMember() == 0 ? View.VISIBLE : View.GONE : View.GONE);
+                    tvWallet.setText(walletBean.getMoney()+"元," + walletBean.getCurrency() + "约会币");
+
+                    if (null != photoAlbumBean && photoAlbumBean.size() > 0){
+                        photoAlbumBean.clear();
+                    }
+                    for (int i = 0; i < 10; i++){
+                        UserInfoBean.PhotoAlbumBean albumBean = new UserInfoBean.PhotoAlbumBean();
+                        albumBean.setType(1);
+                        if (i == 2 || i == 6){
+                            albumBean.setStatusFlag(1);
+                        }
+                        if (i == 3 || i == 5 || i == 6){
+                            albumBean.setPayFlag(1);
+                            albumBean.setFee(3);
+                        }
+                        albumBean.setUrl("https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==");
+                        photoAlbumBean.add(albumBean);
+                    }
+                    list.clear();
+                    for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
+                        PhotoBean photoBean = new PhotoBean();
+                        photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1 ? true : false);
+                        photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1? true : false);
+                        photoBean.setPhotoUrl(albumBean.getUrl());
+                        photoBean.setFee(albumBean.getFee()+"");
+                        list.add(photoBean);
+                    }
                     initData();
                 }else {
                     toast((String) object);
@@ -195,11 +251,7 @@ public class MeFragment extends BaseFragment {
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
                 if (photoBean.isBurnAfterReading()){
-                    //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                    //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
                         tvBurnedDown.setText("已焚毁");
@@ -210,16 +262,12 @@ public class MeFragment extends BaseFragment {
                         tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
                     }
                 }else {
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                 }
 
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
                     //阅后即焚的红包照片
-                    //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                    //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
@@ -231,11 +279,12 @@ public class MeFragment extends BaseFragment {
                     }
                 }else if (photoBean.isRedEnvelopePhotos()){
                     //只是红包照片
-                    //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                    //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(photoBean.isRedEnvelopePhotosPaid() ? photoBean.getPhotoUrl() : blurBitmap).into(imgHead);
+                    if (photoBean.isRedEnvelopePhotosPaid()){
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }else {
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }
+
                     rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
                     tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
                     tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);

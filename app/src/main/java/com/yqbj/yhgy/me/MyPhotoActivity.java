@@ -22,10 +22,10 @@ import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
+import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
-import com.yqbj.yhgy.utils.ImageFilter;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -87,10 +87,7 @@ public class MyPhotoActivity extends BaseActivity {
                 TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
                 if (photoBean.isBurnAfterReading()){
                     //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                    //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
                         tvBurnedDown.setText("已焚毁");
@@ -101,16 +98,12 @@ public class MyPhotoActivity extends BaseActivity {
                         tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
                     }
                 }else {
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                 }
 
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
                     //阅后即焚的红包照片
-                    //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-                    //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
@@ -125,8 +118,7 @@ public class MyPhotoActivity extends BaseActivity {
                     //拿到初始图
                     Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                     //处理得到模糊效果的图
-                    Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-                    Glide.with(mActivity).load(blurBitmap).into(imgHead);
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");

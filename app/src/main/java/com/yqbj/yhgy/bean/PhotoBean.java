@@ -4,10 +4,19 @@ import java.io.Serializable;
 
 public class PhotoBean implements Serializable {
     private String photoUrl;
-    private boolean burnAfterReading;
-    private boolean redEnvelopePhotos;
-    private boolean burnedDown;
-    private boolean redEnvelopePhotosPaid;
+    private boolean burnAfterReading;       //阅后即焚
+    private boolean redEnvelopePhotos;      //红包照片
+    private boolean burnedDown;             //阅后即焚是否已焚毁
+    private boolean redEnvelopePhotosPaid;  //红包照片是否支付过
+    private String fee;                     //需要支付的金额
+
+    public String getFee() {
+        return fee;
+    }
+
+    public void setFee(String fee) {
+        this.fee = fee;
+    }
 
     public boolean isRedEnvelopePhotosPaid() {
         return redEnvelopePhotosPaid;

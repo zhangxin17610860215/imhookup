@@ -20,12 +20,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.login.VipCoreActivity;
-import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.view.MiddleDialog;
 import com.yqbj.yhgy.view.PaySelect;
 
@@ -191,27 +191,32 @@ public class LookPhotoActivity extends BaseActivity {
             tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
             tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
             rl_redenvelopephotos_View.setVisibility(!isShowButton && photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
-            //拿到初始图
-            Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
-            //处理得到模糊效果的图
-            Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
+
             if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
-                Glide.with(mContext).load(isShowButton ? photoBean.getPhotoUrl() : blurBitmap).into(img);
+                if (isShowButton){
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                }else {
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                }
                 tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
                     //红包照片而且已付过费
-                    Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+                    Glide.with(mContext).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
                     tv_Watermark.setVisibility(View.VISIBLE);
                     rl_redenvelopephotos_View.setVisibility(View.GONE);
                 }
             }else {
-                Glide.with(mContext).load(photoBean.getPhotoUrl()).into(img);
+                Glide.with(mContext).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
                 tv_Watermark.setVisibility(View.VISIBLE);
             }
             if (photoBean.isBurnedDown()){
                 if (photoBean.isBurnAfterReading() && photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
                     //阅后即焚而且是红包照片而且已付过费而且没有被焚毁
-                    Glide.with(mContext).load(isShowButton ? photoBean.getPhotoUrl() : blurBitmap).into(img);
+                    if (isShowButton){
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                    }else {
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                    }
                     tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
                     rl_redenvelopephotos_View.setVisibility(View.GONE);
                 }
@@ -358,7 +363,7 @@ public class LookPhotoActivity extends BaseActivity {
 
                     }else if (!isShowButton && !bean.isBurnAfterReading()){
                         rlRedenvelopephotosView.setVisibility(View.GONE);
-                        Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+                        Glide.with(mActivity).load(bean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHeader);
                         tvWatermark.setVisibility(View.VISIBLE);
                     }
                 }
@@ -386,7 +391,7 @@ public class LookPhotoActivity extends BaseActivity {
                 toast("图片不存在");
             }else {
                 bean.setBurnedDown(true);
-                Glide.with(mActivity).load(bean.getPhotoUrl()).into(imgHeader);
+                Glide.with(mActivity).load(bean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHeader);
                 tvWatermark.setVisibility(View.VISIBLE);
                 endHandler.postDelayed(endShow, 2000);
             }
@@ -396,11 +401,7 @@ public class LookPhotoActivity extends BaseActivity {
     Runnable endShow = new Runnable() {
         @Override
         public void run() {
-            //拿到初始图
-            Bitmap bmp= BitmapFactory.decodeFile(bean.getPhotoUrl());
-            //处理得到模糊效果的图
-            Bitmap blurBitmap = ImageFilter.blurBitmap(mActivity, bmp, 25f);
-            Glide.with(mActivity).load(blurBitmap).into(imgHeader);
+            Glide.with(mActivity).load(bean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHeader);
             tvWatermark.setVisibility(View.GONE);
             llBurnedDown.setVisibility(View.VISIBLE);
             tvGoVIP.setOnClickListener(new View.OnClickListener() {
