@@ -85,6 +85,7 @@ public class MyPhotoActivity extends BaseActivity {
                 RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
+                TextView tvIsBenRen = viewHolder.getView(R.id.tv_isBenRen);
                 if (photoBean.isBurnAfterReading()){
                     //拿到初始图
                     Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
@@ -132,7 +133,7 @@ public class MyPhotoActivity extends BaseActivity {
 
                 rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
                 rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
-
+                tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
                 imgHead.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

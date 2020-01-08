@@ -9,12 +9,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.netease.nim.uikit.common.util.CityBean;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.UserInfoBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.TimeUtils;
+import com.yqbj.yhgy.utils.ZodiacUtil;
 import com.yqbj.yhgy.view.ChatCautionDialog;
 import com.yqbj.yhgy.view.EvaluateDialog;
 
@@ -24,6 +34,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 
 /**
  * 查看对方详情页面
@@ -92,12 +104,29 @@ public class DetailsActivity extends BaseActivity {
     TextView tvIntroduce;                       //个人介绍
     @BindView(R.id.ll_YseJurisdiction)
     LinearLayout llYseJurisdiction;             //有查看权限
+    @BindView(R.id.rl_QQ)
+    RelativeLayout rlQQ;
+    @BindView(R.id.rl_weChat)
+    RelativeLayout rlWeChat;
 
     private Activity mActivity;
     private int addLike = 0;                    //是否加入喜欢     0=不加入     1=加入
+    private String accid = "";
+    private String region = "";
+    private String distance = "";
+    private String online = "";
+    private List<String> data = new ArrayList<>();
+    private UserInfoBean.UserDetailsBean userDetailsBean;
+    private UserInfoBean.ConfigBean configBean;
+    private UserInfoBean.ContactInfoBean contactInfoBean;
+    private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean;
 
-    public static void start(Context context) {
+    public static void start(Context context,String accid,String region,String distance,String online) {
         Intent intent = new Intent(context, DetailsActivity.class);
+        intent.putExtra("accid",accid);
+        intent.putExtra("region",region);
+        intent.putExtra("distance",distance);
+        intent.putExtra("online",online);
         context.startActivity(intent);
     }
 
@@ -107,6 +136,10 @@ public class DetailsActivity extends BaseActivity {
         setContentView(R.layout.details_activity_layout);
         ButterKnife.bind(this);
         mActivity = this;
+        accid = getIntent().getStringExtra("accid");
+        region = getIntent().getStringExtra("region");
+        distance = getIntent().getStringExtra("distance");
+        online = getIntent().getStringExtra("online");
         initView();
         initData();
     }
@@ -118,8 +151,6 @@ public class DetailsActivity extends BaseActivity {
             public void onRight(View view) {
                 //更多
                 new XPopup.Builder(mActivity).asBottomList(null,new String[]{"备注", "匿名举报"},
-                        // null, /** 图标Id数组，可无 **/
-                        // 1,    /** 选中的position，默认没有选中效果 **/
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -138,10 +169,59 @@ public class DetailsActivity extends BaseActivity {
     }
 
     private void initData() {
+        showProgress(false);
+        UserApi.getTargetDetails(accid, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    UserInfoBean userInfoBean = (UserInfoBean) object;
+                    userDetailsBean = userInfoBean.getUserDetails();
+                    configBean = userInfoBean.getConfig();
+                    contactInfoBean = userInfoBean.getContactInfo();
+                    photoAlbumBean = userInfoBean.getPhotoAlbum();
+                    Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
+                    tvName.setText(userDetailsBean.getName());
+                    tvPlace.setText(region);
+                    tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");
+                    CityBean occupationBean;
+                    String job = "";
+                    for (int i = 0; i < OCCUPATIONBEANLIST.size(); i++) {
+                        occupationBean = OCCUPATIONBEANLIST.get(i);
+                        for (int j = 0; j < occupationBean.getChild().size(); j++) {
+                            List<CityBean.ChildBeanX> occupation = OCCUPATIONBEANLIST.get(i).getChild();
+                            if (userDetailsBean.getJob().equals(occupation.get(j).getValue())) {
+                                job = occupation.get(j).getText();
+                            }
+                        }
+                    }
+                    tvOccupation.setText(job);
+                    tvAdoptZhenRen.setVisibility(userDetailsBean.getCertification() == 1 ? View.VISIBLE : View.GONE);
+                    tvAdoptNvShen.setVisibility(userDetailsBean.getGender() == 2 ? userDetailsBean.getLabeltype() == 1 ? View.VISIBLE : View.GONE : View.GONE);
+                    tvName.setCompoundDrawablesWithIntrinsicBounds(null, null, userDetailsBean.getGender() == 1 ? userDetailsBean.getVipMember() == 0 ? getResources().getDrawable(R.mipmap.vip_huangguan_logo) : null : null, null);
+                    tvDistance.setText(distance);
+                    tvHomeOnline.setVisibility(online.equals("1")?View.VISIBLE:View.GONE);
+                    tvHomePaidAlbum.setVisibility(configBean.getPrivacystate() == 2?View.VISIBLE:View.GONE);
+                    tvHeight.setText(userDetailsBean.getHeight());
+                    tvWeight.setText(userDetailsBean.getWeight());
+                    tvProgram.setText(configBean.getDatingPrograms());
+                    tvExpect.setText(configBean.getDesiredGoals());
+                    tvIntroduce.setText(userDetailsBean.getDescription());
+                    rlQQ.setVisibility(StringUtil.isEmpty(contactInfoBean.getQq()) ? View.GONE : View.VISIBLE);
+                    rlWeChat.setVisibility(StringUtil.isEmpty(contactInfoBean.getWeChat()) ? View.GONE : View.VISIBLE);
 
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
-
-    List<String> data = new ArrayList<>();
 
     @OnClick({R.id.ll_evaluate, R.id.ll_chat, R.id.ll_SocialContact, R.id.tv_addLike, R.id.img_header, R.id.tv_ApplySee, R.id.rl_dynamic, R.id.tv_wechat, R.id.tv_QQ})
     public void onViewClicked(View view) {

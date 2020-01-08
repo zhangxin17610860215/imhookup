@@ -191,10 +191,14 @@ public class MeFragment extends BaseFragment {
                         albumBean.setType(1);
                         if (i == 2 || i == 6){
                             albumBean.setStatusFlag(1);
+                        }else {
+                            albumBean.setSelfFlag(1);
                         }
                         if (i == 3 || i == 5 || i == 6){
                             albumBean.setPayFlag(1);
                             albumBean.setFee(3);
+                        }else {
+                            albumBean.setSelfFlag(1);
                         }
                         albumBean.setUrl("https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==");
                         photoAlbumBean.add(albumBean);
@@ -206,6 +210,7 @@ public class MeFragment extends BaseFragment {
                         photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1? true : false);
                         photoBean.setPhotoUrl(albumBean.getUrl());
                         photoBean.setFee(albumBean.getFee()+"");
+                        photoBean.setOneself(albumBean.getSelfFlag()==1? true : false);
                         list.add(photoBean);
                     }
                     initData();
@@ -245,7 +250,7 @@ public class MeFragment extends BaseFragment {
                 RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
                 RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
                 TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
-
+                TextView tvIsBenRen = viewHolder.getView(R.id.tv_isBenRen);
                 RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
@@ -294,7 +299,7 @@ public class MeFragment extends BaseFragment {
                 tvMengceng.setText("+" + (list.size() - 8));
                 rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
                 rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
-
+                tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
                 tvMengceng.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

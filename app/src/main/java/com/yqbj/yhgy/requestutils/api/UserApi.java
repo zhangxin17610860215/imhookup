@@ -484,4 +484,46 @@ public class UserApi {
         });
     }
 
+    /**
+     * 获取其他用户详情
+     * */
+    public static void getTargetDetails(String userAccid, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("userAccid",userAccid);
+        RequestHelp.postRequest(ApiUrl.GETTARGETDETAILS, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getTargetDetails--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        UserInfoBean userInfoBean = new UserInfoBean();
+                        UserInfoBean.UserDetailsBean userDetails = JSON.parseObject(JSON.toJSONString(data.get("userDetails")), UserInfoBean.UserDetailsBean.class);
+                        UserInfoBean.ContactInfoBean contactInfo = JSON.parseObject(JSON.toJSONString(data.get("contactInfo")), UserInfoBean.ContactInfoBean.class);
+                        UserInfoBean.ConfigBean config = JSON.parseObject(JSON.toJSONString(data.get("config")), UserInfoBean.ConfigBean.class);
+                        List<UserInfoBean.PhotoAlbumBean> photoAlbum = JSON.parseObject(JSON.toJSONString(data.get("photoAlbum")), new TypeReference<ArrayList<UserInfoBean.PhotoAlbumBean>>(){});
+                        userInfoBean.setConfig(config);
+                        userInfoBean.setContactInfo(contactInfo);
+                        userInfoBean.setPhotoAlbum(photoAlbum);
+                        userInfoBean.setUserDetails(userDetails);
+                        callback.onSuccess(bean.getCode(),userInfoBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getTargetDetails--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
 }

@@ -105,7 +105,7 @@ public class SearchActivity extends BaseActivity {
         mAdapter.setOnItemClickListener(new EasyRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, Object item) {
-                DetailsActivity.start(mActivity);
+                DetailsActivity.start(mActivity,"","","","");
             }
         });
     }

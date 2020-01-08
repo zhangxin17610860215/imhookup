@@ -262,7 +262,7 @@ public class HomeFragment extends BaseFragment {
                     }
                     return;
                 }
-                DetailsActivity.start(mActivity);
+                DetailsActivity.start(mActivity,recordsBean.getAccid(),recordsBean.getRegion(),recordsBean.getDistance()+"",recordsBean.getOnline()+"");
             }
         });
     }

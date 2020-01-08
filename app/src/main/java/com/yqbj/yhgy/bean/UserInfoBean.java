@@ -177,9 +177,18 @@ public class UserInfoBean {
         private String job;
         private String cities;
         private String loginTime;
+        private String description;
         private int certification;
         private int labeltype;
         private int vipMember;
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
 
         public String getLoginTime() {
             return loginTime;
@@ -306,11 +315,20 @@ public class UserInfoBean {
         private String accid;
         private int hidelocation;
         private int hideonline;
+        private int invisible;
         private int privacystate;
         private int currencyType;
-        private String viewphotofee;
+        private int viewphotofee;
         private String desiredGoals;
         private String datingPrograms;
+
+        public int getInvisible() {
+            return invisible;
+        }
+
+        public void setInvisible(int invisible) {
+            this.invisible = invisible;
+        }
 
         public int getCurrencyType() {
             return currencyType;
@@ -320,11 +338,11 @@ public class UserInfoBean {
             this.currencyType = currencyType;
         }
 
-        public String getViewphotofee() {
+        public int getViewphotofee() {
             return viewphotofee;
         }
 
-        public void setViewphotofee(String viewphotofee) {
+        public void setViewphotofee(int viewphotofee) {
             this.viewphotofee = viewphotofee;
         }
 
@@ -395,6 +413,33 @@ public class UserInfoBean {
         private int checkFlag;
         private int currencyType;
         private int fee;
+        private int selfFlag;
+        private int paidFlag;
+        private int setOnFire;
+
+        public int getPaidFlag() {
+            return paidFlag;
+        }
+
+        public void setPaidFlag(int paidFlag) {
+            this.paidFlag = paidFlag;
+        }
+
+        public int getSetOnFire() {
+            return setOnFire;
+        }
+
+        public void setSetOnFire(int setOnFire) {
+            this.setOnFire = setOnFire;
+        }
+
+        public int getSelfFlag() {
+            return selfFlag;
+        }
+
+        public void setSelfFlag(int selfFlag) {
+            this.selfFlag = selfFlag;
+        }
 
         public int getFee() {
             return fee;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -166,6 +167,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_adoptAdd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -224,7 +226,7 @@
                     android:id="@+id/tv_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="500m"
+                    android:text=""
                     android:textSize="@dimen/text_size_11"
                     android:textColor="@color/color_gray_999999"
                     android:drawableLeft="@mipmap/distance_logo"
@@ -314,6 +316,7 @@
                     android:layout_marginLeft="@dimen/dimen_15"
                     android:layout_marginRight="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rl_dynamic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -357,7 +360,6 @@
                     android:textSize="@dimen/text_size_12"
                     android:paddingTop="@dimen/dimen_15"
                     android:paddingBottom="@dimen/dimen_15"
-                    android:drawableRight="@mipmap/right_jiantou_logo"
                     android:layout_marginLeft="@dimen/dimen_15"
                     android:layout_marginRight="@dimen/dimen_15"/>
                 <android.support.v7.widget.RecyclerView
@@ -477,7 +479,7 @@
                         android:id="@+id/tv_program"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="健康运动/社交聚会"
+                        android:text=""
                         android:textColor="@color/color_gray_999999"
                         android:textSize="@dimen/text_size_12"
                         android:layout_marginLeft="@dimen/dimen_80"
@@ -502,15 +504,15 @@
                         android:textSize="@dimen/text_size_12"
                         android:textColor="@color/black"
                         android:layout_centerVertical="true" />
+
                     <TextView
                         android:id="@+id/tv_Expect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_80"
                         android:text="看感觉"
                         android:textColor="@color/color_gray_999999"
-                        android:textSize="@dimen/text_size_12"
-                        android:layout_marginLeft="@dimen/dimen_80"
-                        android:layout_centerVertical="true"/>
+                        android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
@@ -518,6 +520,7 @@
                     android:background="@color/activity_grey_bg"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_weChat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"
@@ -547,6 +550,7 @@
                     android:background="@color/activity_grey_bg"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_QQ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"

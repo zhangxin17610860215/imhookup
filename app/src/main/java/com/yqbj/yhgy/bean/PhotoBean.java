@@ -8,7 +8,16 @@ public class PhotoBean implements Serializable {
     private boolean redEnvelopePhotos;      //红包照片
     private boolean burnedDown;             //阅后即焚是否已焚毁
     private boolean redEnvelopePhotosPaid;  //红包照片是否支付过
+    private boolean oneself;                //本人
     private String fee;                     //需要支付的金额
+
+    public boolean isOneself() {
+        return oneself;
+    }
+
+    public void setOneself(boolean oneself) {
+        this.oneself = oneself;
+    }
 
     public String getFee() {
         return fee;

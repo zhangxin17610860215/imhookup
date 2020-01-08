@@ -69,10 +69,24 @@
         android:layout_height="@dimen/dp_size_62"
         android:background="@drawable/huisetouming_bg_shape"
         android:layout_centerInParent="true"
-        android:text="+2"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_18"
         android:gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_isBenRen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/righttop_bg"
+        android:layout_alignRight="@+id/img_head"
+        android:text="本人"
+        android:textSize="@dimen/text_size_9"
+        android:textColor="@color/white"
+        android:paddingTop="@dimen/dp_size_1"
+        android:paddingBottom="@dimen/dp_size_1"
+        android:paddingLeft="@dimen/dp_size_2"
+        android:paddingRight="@dimen/dp_size_2"
         android:visibility="gone"/>
 
 </RelativeLayout>

@@ -24,4 +24,5 @@ public class ApiUrl {
     public static String HOME_INDEX = BASE_URL_HEAD + SERVERDOMAIN + "/home/index";
     public static String GETVIPLISTINFO = BASE_URL_HEAD + SERVERDOMAIN + "/vip/base/info";
     public static String GETUSERDETAILS = BASE_URL_HEAD + SERVERDOMAIN + "/user/details/self";
+    public static String GETTARGETDETAILS = BASE_URL_HEAD + SERVERDOMAIN + "/user/details/target";
 }
