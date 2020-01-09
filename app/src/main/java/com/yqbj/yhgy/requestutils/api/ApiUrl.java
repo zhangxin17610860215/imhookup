@@ -25,4 +25,5 @@ public class ApiUrl {
     public static String GETVIPLISTINFO = BASE_URL_HEAD + SERVERDOMAIN + "/price/list/vip";
     public static String GETUSERDETAILS = BASE_URL_HEAD + SERVERDOMAIN + "/user/details/self";
     public static String GETTARGETDETAILS = BASE_URL_HEAD + SERVERDOMAIN + "/user/details/target";
+    public static String GETCURRENCYPRICELIST = BASE_URL_HEAD + SERVERDOMAIN + "/price/list/recharge";
 }

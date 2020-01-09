@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.yqbj.yhgy.bean.CurrencyPriceBean;
 import com.yqbj.yhgy.bean.HomeDataBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.yqbj.yhgy.config.Constants.ERROR_REQUEST_EXCEPTION_MESSAGE;
+import static com.yqbj.yhgy.config.Constants.ERROR_REQUEST_FAILED_MESSAGE;
 
 public class UserApi {
 
@@ -72,7 +74,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -106,7 +108,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -141,7 +143,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -201,7 +203,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -259,7 +261,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -312,7 +314,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -353,7 +355,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -395,7 +397,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -428,7 +430,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -471,7 +473,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -513,7 +515,7 @@ public class UserApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    callback.onFailed(e.getMessage());
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
                 }
             }
 
@@ -521,6 +523,39 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "getTargetDetails--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取虚拟币价格列表
+     * */
+    public static void getCurrencyPriceList(Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        RequestHelp.getRequest(ApiUrl.GETCURRENCYPRICELIST, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getCurrencyPriceList--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        List<CurrencyPriceBean> priceList = JSON.parseObject(JSON.toJSONString(data.get("priceList")), new TypeReference<ArrayList<CurrencyPriceBean>>(){});
+                        callback.onSuccess(bean.getCode(),priceList);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getCurrencyPriceList--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

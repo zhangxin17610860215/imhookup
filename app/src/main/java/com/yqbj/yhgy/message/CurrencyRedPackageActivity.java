@@ -11,13 +11,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
+import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.CurrencyPriceBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.RedPacketTextWatcher;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.view.CurrencyPayDialog;
+import com.yqbj.yhgy.view.CurrencyRechargeDialog;
+import com.yqbj.yhgy.view.PaySelect;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,7 +124,7 @@ public class CurrencyRedPackageActivity extends BaseActivity {
                         toast("单次红包约会币不得大于4000");
                         return;
                     }
-                    showPayDialog();
+                    showPayDialog(view);
                     break;
             }
         }
@@ -125,11 +134,99 @@ public class CurrencyRedPackageActivity extends BaseActivity {
     /**
      * 显示支付弹窗
      * */
-    private void showPayDialog() {
+    private void showPayDialog(View view) {
         new XPopup.Builder(mActivity)
                 .dismissOnTouchOutside(false)
-                .asCustom(new CurrencyPayDialog(mActivity,1,"99"))
+                .asCustom(new CurrencyPayDialog(mActivity, 1, new CurrencyPayDialog.CurrencyPayListener() {
+                    @Override
+                    public void recharge(String currencyNum) {
+                        //充值
+                        showRechargeDialog(view);
+                    }
+
+                    @Override
+                    public void pay() {
+                        //支付
+                        Intent intent = new Intent();
+                        intent.putExtra("redId", "redId");
+                        intent.putExtra("redTitle", "redTitle");
+                        intent.putExtra("redContent", "小小意思,拿去浪吧");
+                        mActivity.setResult(Activity.RESULT_OK, intent);
+                        mActivity.finish();
+                    }
+                }))
                 .show();
+    }
+
+    /**
+     * 显示虚拟币充值弹窗
+     * */
+    private void showRechargeDialog(View view) {
+        showProgress(false);
+        UserApi.getCurrencyPriceList(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    List<CurrencyPriceBean> priceList = (List<CurrencyPriceBean>) object;
+                    new XPopup.Builder(mActivity)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new CurrencyRechargeDialog(mActivity, priceList, "99", new CurrencyRechargeDialog.GoPayListener() {
+                                @Override
+                                public void goPay(String money) {
+                                    showPayMode(money,view);
+                                }
+                            }))
+                            .show();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 显示支付方式弹窗
+     * */
+    private void showPayMode(String money, View v) {
+        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,2);
+        new XPopup.Builder(mActivity)
+                .atView(v)
+                .asCustom(paySelect)
+                .show();
+        paySelect.setOnClickListenerOnSure(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //立即支付
+                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
+                int payType = 1;
+                switch (type) {
+                    case ALI:
+                        //支付宝支付
+                        payType = 3;
+                        break;
+                    case WCHAT:
+                        //微信支付
+                        payType = 2;
+                        break;
+                    case WALLET:
+                        //钱包支付
+                        payType = 1;
+                        break;
+                }
+                if (!NoDoubleClickUtils.isDoubleClick(2000)){
+//                    getRedPageId(amount,payType);
+                    ToastHelper.showToast(mActivity,payType == 3 ? "支付宝支付" : "微信支付");
+                    paySelect.dismiss();
+                }
+            }
+        });
     }
 
 }

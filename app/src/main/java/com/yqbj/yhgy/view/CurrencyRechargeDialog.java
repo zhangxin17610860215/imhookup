@@ -12,6 +12,8 @@ import com.lxj.xpopup.core.BottomPopupView;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
+import com.yqbj.yhgy.bean.CurrencyPriceBean;
+import com.yqbj.yhgy.utils.StringUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -27,14 +29,16 @@ public class CurrencyRechargeDialog extends BottomPopupView {
     private RecyclerView mRecyclerView;
 
     private EasyRVAdapter mAdapter;
-    private List<String> list;
+    private List<CurrencyPriceBean> list;
     private String currencyNum = "";
+    private GoPayListener listener;
 
-    public CurrencyRechargeDialog(@NonNull Activity activity, List<String> data, String currencyNum) {
+    public CurrencyRechargeDialog(@NonNull Activity activity, List<CurrencyPriceBean> data, String currencyNum, GoPayListener listener) {
         super(activity);
         this.mActivity = activity;
         this.list = data;
         this.currencyNum = currencyNum;
+        this.listener = listener;
     }
 
     @Override
@@ -62,56 +66,30 @@ public class CurrencyRechargeDialog extends BottomPopupView {
         mAdapter = new EasyRVAdapter(mActivity,list,R.layout.item_currencyrecharge_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
+                CurrencyPriceBean currencyPriceBean = list.get(position);
                 TextView tv_number = viewHolder.getView(R.id.tv_number);
                 TextView tv_money = viewHolder.getView(R.id.tv_money);
-                tv_money.setText("¥  " + list.get(position));
-                tv_money.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPayMode(list.get(position),v);
-                    }
-                });
+
+                String value = currencyPriceBean.getValue();
+                if (StringUtil.isNotEmpty(value) && value.contains("/")){
+                    String[] split = value.split("/");
+                    tv_number.setText(split[0] + "个");
+                    tv_money.setText("¥  " + split[1]);
+                    tv_money.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            listener.goPay(split[1]);
+                            dismiss();
+                        }
+                    });
+                }
             }
         };
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    /**
-     * 显示支付方式弹窗
-     * */
-    private void showPayMode(String money, View v) {
-        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,2);
-        new XPopup.Builder(mActivity)
-                .atView(v)
-                .asCustom(paySelect)
-                .show();
-        paySelect.setOnClickListenerOnSure(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //立即支付
-                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
-                int payType = 1;
-                switch (type) {
-                    case ALI:
-                        //支付宝支付
-                        payType = 3;
-                        break;
-                    case WCHAT:
-                        //微信支付
-                        payType = 2;
-                        break;
-                    case WALLET:
-                        //钱包支付
-                        payType = 1;
-                        break;
-                }
-                if (!NoDoubleClickUtils.isDoubleClick(2000)){
-//                    getRedPageId(amount,payType);
-                    ToastHelper.showToast(mActivity,payType == 3 ? "支付宝支付" : "微信支付");
-                    paySelect.dismiss();
-                }
-            }
-        });
+    public interface GoPayListener{
+        void goPay(String money);
     }
 
 }

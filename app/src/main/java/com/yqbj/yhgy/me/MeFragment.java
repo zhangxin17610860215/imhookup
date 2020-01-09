@@ -182,27 +182,6 @@ public class MeFragment extends BaseFragment {
                     tvNvShen.setVisibility(userDetailsBean.getGender() == 2 ? userDetailsBean.getLabeltype() == 1 ? View.VISIBLE : View.GONE : View.GONE);
                     llVipBg.setVisibility(userDetailsBean.getGender() == 1 ? userDetailsBean.getVipMember() == 0 ? View.VISIBLE : View.GONE : View.GONE);
                     tvWallet.setText(walletBean.getMoney()+"元," + walletBean.getCurrency() + "约会币");
-
-                    if (null != photoAlbumBean && photoAlbumBean.size() > 0){
-                        photoAlbumBean.clear();
-                    }
-                    for (int i = 0; i < 10; i++){
-                        UserInfoBean.PhotoAlbumBean albumBean = new UserInfoBean.PhotoAlbumBean();
-                        albumBean.setType(1);
-                        if (i == 2 || i == 6){
-                            albumBean.setStatusFlag(1);
-                        }else {
-                            albumBean.setSelfFlag(1);
-                        }
-                        if (i == 3 || i == 5 || i == 6){
-                            albumBean.setPayFlag(1);
-                            albumBean.setFee(3);
-                        }else {
-                            albumBean.setSelfFlag(1);
-                        }
-                        albumBean.setUrl("https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==");
-                        photoAlbumBean.add(albumBean);
-                    }
                     list.clear();
                     for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
                         PhotoBean photoBean = new PhotoBean();

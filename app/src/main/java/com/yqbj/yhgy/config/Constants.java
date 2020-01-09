@@ -22,7 +22,7 @@ public class Constants {
     public static boolean REFRESH = false;//控制我的页面是否可以刷新
 
     public static final String WX_LOGIN_API = "https://api.weixin.qq.com/sns/oauth2/access_token";//微信登录接口
-    public static final String ERROR_REQUEST_FAILED_MESSAGE = "网络请求失败";//REQUEST_FAILED"; // 网络请求失败，出现onerror
+    public static final String ERROR_REQUEST_FAILED_MESSAGE = "网络请求出现异常";//REQUEST_FAILED"; // 网络请求失败，出现onerror
     public static final String ERROR_REQUEST_EXCEPTION_MESSAGE = "服务返回数据异常";//REQUEST_EXCEPTION"; // 网络请求数据异常
 
     public static final int VERSIONCODE = AppUtils.getCurrentVersion(MyApplication.getInstance()).versionCode;//当前版本号

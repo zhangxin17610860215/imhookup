@@ -32,13 +32,14 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
      * */
     private int type;
 
-    private String currencyNum = "";
+    private String currencyNum = "99";
+    private CurrencyPayListener listener;
 
-    public CurrencyPayDialog(@NonNull Activity activity, int type, String currencyNum) {
+    public CurrencyPayDialog(@NonNull Activity activity, int type, CurrencyPayListener listener) {
         super(activity);
         this.mActivity = activity;
         this.type = type;
-        this.currencyNum = currencyNum;
+        this.listener = listener;
     }
 
     @Override
@@ -62,8 +63,6 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
         tv_pay = findViewById(R.id.tv_pay);
         tv_Recharge = findViewById(R.id.tv_Recharge);
 
-
-
         img_Refresh.setOnClickListener(this);
         tv_pay.setOnClickListener(this);
         tv_Recharge.setOnClickListener(this);
@@ -86,27 +85,19 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
                 break;
             case R.id.tv_pay:
                 //支付
-                Intent intent = new Intent();
-                intent.putExtra("redId", "redId");
-                intent.putExtra("redTitle", "redTitle");
-                intent.putExtra("redContent", "小小意思,拿去浪吧");
-                mActivity.setResult(Activity.RESULT_OK, intent);
-                mActivity.finish();
+                listener.pay();
+                dismiss();
                 break;
             case R.id.tv_Recharge:
                 //充值
-                List<String> list = new ArrayList<>();
-                list.add("1");
-                list.add("2");
-                list.add("3");
-                list.add("4");
-                list.add("5");
-                list.add("6");
-                new XPopup.Builder(mActivity)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new CurrencyRechargeDialog(mActivity,list,currencyNum))
-                        .show();
+                listener.recharge(currencyNum);
+                dismiss();
                 break;
         }
+    }
+
+    public interface CurrencyPayListener{
+        void recharge(String currencyNum);
+        void pay();
     }
 }
