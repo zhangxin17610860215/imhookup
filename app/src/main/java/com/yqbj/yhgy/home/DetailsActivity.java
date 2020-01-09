@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,19 +16,31 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.common.util.CityBean;
+import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.me.LookPhotoActivity;
+import com.yqbj.yhgy.me.MyPhotoActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.TimeUtils;
 import com.yqbj.yhgy.utils.ZodiacUtil;
 import com.yqbj.yhgy.view.ChatCautionDialog;
 import com.yqbj.yhgy.view.EvaluateDialog;
+import com.yqbj.yhgy.view.PaySelect;
+import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
+import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.yqbj.yhgy.config.Constants.CITYBEANLIST;
 import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 
 /**
@@ -71,7 +85,7 @@ public class DetailsActivity extends BaseActivity {
     @BindView(R.id.tv_adoptZhenRen)
     TextView tvAdoptZhenRen;                    //通过系统真人认证
     @BindView(R.id.img_header)
-    ImageView imgHeader;                        //头像
+    RoundedImageView imgHeader;                 //头像
     @BindView(R.id.tv_distance)
     TextView tvDistance;                        //距离
     @BindView(R.id.tv_home_online)
@@ -108,6 +122,38 @@ public class DetailsActivity extends BaseActivity {
     RelativeLayout rlQQ;
     @BindView(R.id.rl_weChat)
     RelativeLayout rlWeChat;
+    @BindView(R.id.rl_height)
+    RelativeLayout rlHeight;
+    @BindView(R.id.view_height)
+    View viewHeight;
+    @BindView(R.id.rl_weight)
+    RelativeLayout rlWeight;
+    @BindView(R.id.view_weight)
+    View viewWeight;
+    @BindView(R.id.rl_program)
+    RelativeLayout rlProgram;
+    @BindView(R.id.view_program)
+    View viewProgram;
+    @BindView(R.id.rl_Expect)
+    RelativeLayout rlExpect;
+    @BindView(R.id.view_Expect)
+    View viewExpect;
+    @BindView(R.id.view_weChat)
+    View viewWeChat;
+    @BindView(R.id.view_qq)
+    View viewQq;
+    @BindView(R.id.rl_introduce)
+    RelativeLayout rlIntroduce;
+    @BindView(R.id.ll_albumlock)
+    LinearLayout llAlbumlock;
+    @BindView(R.id.tv_albumlock)
+    TextView tvAlbumlock;
+    @BindView(R.id.tv_Unlock)
+    TextView tvUnlock;
+    @BindView(R.id.tv_setalbumlock)
+    TextView tvSetalbumlock;
+    @BindView(R.id.tv_NoPhoto)
+    TextView tvNoPhoto;
 
     private Activity mActivity;
     private int addLike = 0;                    //是否加入喜欢     0=不加入     1=加入
@@ -115,18 +161,22 @@ public class DetailsActivity extends BaseActivity {
     private String region = "";
     private String distance = "";
     private String online = "";
-    private List<String> data = new ArrayList<>();
+    private String albumMoney = "";
+    private List<String> evaluateList = new ArrayList<>();
     private UserInfoBean.UserDetailsBean userDetailsBean;
     private UserInfoBean.ConfigBean configBean;
     private UserInfoBean.ContactInfoBean contactInfoBean;
     private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean;
+    private List<PhotoBean> list = new ArrayList<>();
+    private List<PhotoBean> photoList = new ArrayList<>();
+    private EasyRVAdapter mAdapter;
 
-    public static void start(Context context,String accid,String region,String distance,String online) {
+    public static void start(Context context, String accid, String region, String distance, String online) {
         Intent intent = new Intent(context, DetailsActivity.class);
-        intent.putExtra("accid",accid);
-        intent.putExtra("region",region);
-        intent.putExtra("distance",distance);
-        intent.putExtra("online",online);
+        intent.putExtra("accid", accid);
+        intent.putExtra("region", region);
+        intent.putExtra("distance", distance);
+        intent.putExtra("online", online);
         context.startActivity(intent);
     }
 
@@ -150,15 +200,15 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onRight(View view) {
                 //更多
-                new XPopup.Builder(mActivity).asBottomList(null,new String[]{"备注", "匿名举报"},
+                new XPopup.Builder(mActivity).asBottomList(null, new String[]{"备注", "匿名举报"},
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                toast("click "+text);
-                                if (position == 1){
+                                toast("click " + text);
+                                if (position == 1) {
                                     //匿名举报
                                     AnonymousReportActivity.start(mActivity);
-                                }else {
+                                } else {
                                     //备注
                                 }
                             }
@@ -166,6 +216,7 @@ public class DetailsActivity extends BaseActivity {
                         .show();
             }
         });
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity,4));
     }
 
     private void initData() {
@@ -174,43 +225,15 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, Object object) {
                 dismissProgress();
-                if (code == Constants.SUCCESS_CODE){
+                if (code == Constants.SUCCESS_CODE) {
                     UserInfoBean userInfoBean = (UserInfoBean) object;
                     userDetailsBean = userInfoBean.getUserDetails();
                     configBean = userInfoBean.getConfig();
                     contactInfoBean = userInfoBean.getContactInfo();
                     photoAlbumBean = userInfoBean.getPhotoAlbum();
-                    Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
-                    tvName.setText(userDetailsBean.getName());
-                    tvPlace.setText(region);
-                    tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");
-                    CityBean occupationBean;
-                    String job = "";
-                    for (int i = 0; i < OCCUPATIONBEANLIST.size(); i++) {
-                        occupationBean = OCCUPATIONBEANLIST.get(i);
-                        for (int j = 0; j < occupationBean.getChild().size(); j++) {
-                            List<CityBean.ChildBeanX> occupation = OCCUPATIONBEANLIST.get(i).getChild();
-                            if (userDetailsBean.getJob().equals(occupation.get(j).getValue())) {
-                                job = occupation.get(j).getText();
-                            }
-                        }
-                    }
-                    tvOccupation.setText(job);
-                    tvAdoptZhenRen.setVisibility(userDetailsBean.getCertification() == 1 ? View.VISIBLE : View.GONE);
-                    tvAdoptNvShen.setVisibility(userDetailsBean.getGender() == 2 ? userDetailsBean.getLabeltype() == 1 ? View.VISIBLE : View.GONE : View.GONE);
-                    tvName.setCompoundDrawablesWithIntrinsicBounds(null, null, userDetailsBean.getGender() == 1 ? userDetailsBean.getVipMember() == 0 ? getResources().getDrawable(R.mipmap.vip_huangguan_logo) : null : null, null);
-                    tvDistance.setText(distance);
-                    tvHomeOnline.setVisibility(online.equals("1")?View.VISIBLE:View.GONE);
-                    tvHomePaidAlbum.setVisibility(configBean.getPrivacystate() == 2?View.VISIBLE:View.GONE);
-                    tvHeight.setText(userDetailsBean.getHeight());
-                    tvWeight.setText(userDetailsBean.getWeight());
-                    tvProgram.setText(configBean.getDatingPrograms());
-                    tvExpect.setText(configBean.getDesiredGoals());
-                    tvIntroduce.setText(userDetailsBean.getDescription());
-                    rlQQ.setVisibility(StringUtil.isEmpty(contactInfoBean.getQq()) ? View.GONE : View.VISIBLE);
-                    rlWeChat.setVisibility(StringUtil.isEmpty(contactInfoBean.getWeChat()) ? View.GONE : View.VISIBLE);
-
-                }else {
+                    loadDetails();
+                    initPhotoAlbum();
+                } else {
                     toast((String) object);
                 }
             }
@@ -223,44 +246,289 @@ public class DetailsActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.ll_evaluate, R.id.ll_chat, R.id.ll_SocialContact, R.id.tv_addLike, R.id.img_header, R.id.tv_ApplySee, R.id.rl_dynamic, R.id.tv_wechat, R.id.tv_QQ})
+    /**
+     * 加载相册信息
+     * */
+    private void initPhotoAlbum() {
+        if (null != photoAlbumBean && photoAlbumBean.size() > 0){
+            photoAlbumBean.clear();
+        }
+        for (int i = 0; i < 10; i++){
+            UserInfoBean.PhotoAlbumBean albumBean = new UserInfoBean.PhotoAlbumBean();
+            albumBean.setType(1);
+            if (i == 2 || i == 6){
+                albumBean.setStatusFlag(1);
+            }else {
+                albumBean.setSelfFlag(1);
+            }
+            if (i == 3 || i == 5 || i == 6){
+                albumBean.setPayFlag(1);
+                albumBean.setFee(3);
+            }else {
+                albumBean.setSelfFlag(1);
+            }
+            albumBean.setUrl("https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==");
+            photoAlbumBean.add(albumBean);
+        }
+        list.clear();
+        for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
+            PhotoBean photoBean = new PhotoBean();
+            photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1 ? true : false);
+            photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1? true : false);
+            photoBean.setPhotoUrl(albumBean.getUrl());
+            photoBean.setFee(albumBean.getFee()+"");
+            photoBean.setOneself(albumBean.getSelfFlag()==1? true : false);
+            list.add(photoBean);
+        }
+        photoList.clear();
+        for (int i = 0; list.size() > 8 ? i < 8 : i < list.size(); i ++){
+            photoList.add(list.get(i));
+        }
+
+        mAdapter = new EasyRVAdapter(mActivity,photoList,R.layout.item_mephoto_layout) {
+            @Override
+            protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
+                PhotoBean photoBean = photoList.get(position);
+                RoundedImageView imgHead = viewHolder.getView(R.id.img_head);
+                RelativeLayout rlBurnAfterReading = viewHolder.getView(R.id.rl_BurnAfterReading);
+                TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
+                TextView tvIsBenRen = viewHolder.getView(R.id.tv_isBenRen);
+                RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
+                TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
+                TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
+
+                if (photoBean.isBurnAfterReading()){
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    if (photoBean.isBurnedDown()){
+                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
+                        tvBurnedDown.setText("已焚毁");
+                        tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                    }else {
+                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
+                        tvBurnedDown.setText("阅后即焚");
+                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                    }
+                }else {
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                }
+
+                if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
+                    //阅后即焚的红包照片
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    if (photoBean.isBurnedDown()){
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                        tvRedEnvelopePhotos.setText("已焚毁");
+                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                    }else {
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
+                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                    }
+                }else if (photoBean.isRedEnvelopePhotos()){
+                    //只是红包照片
+                    if (photoBean.isRedEnvelopePhotosPaid()){
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }else {
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }
+
+                    rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                    tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
+                    tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                }
+
+                tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
+                tvMengceng.setText("+" + (list.size() - 8));
+                rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+                rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+                tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
+                tvMengceng.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //进入我的相册
+                        Intent intent = new Intent();
+                        intent.setClass(mActivity, MyPhotoActivity.class);
+                        intent.putExtra("photoList", (Serializable) list);
+                        intent.putExtra("isShowButton",false);
+                        intent.putExtra("Gender",userDetailsBean.getGender()+"");
+                        startActivityForResult(intent, 20);
+                    }
+                });
+                imgHead.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //查看删除该照片
+                        Intent intent = new Intent();
+                        intent.setClass(mActivity, LookPhotoActivity.class);
+                        intent.putExtra("position", position);
+                        intent.putExtra("photoList", (Serializable) list);
+                        intent.putExtra("accId",NimUIKit.getAccount());
+                        intent.putExtra("type","2");
+                        intent.putExtra("isShowButton",false);
+                        startActivityForResult(intent, 10);
+                    }
+                });
+            }
+        };
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    /**
+     * 加载页面详情信息
+     * */
+    private void loadDetails() {
+        Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
+        tvName.setText(userDetailsBean.getName());
+        tvPlace.setText(region);
+        tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");
+        CityBean occupationBean;
+        String job = "";
+        for (int i = 0; i < OCCUPATIONBEANLIST.size(); i++) {
+            occupationBean = OCCUPATIONBEANLIST.get(i);
+            for (int j = 0; j < occupationBean.getChild().size(); j++) {
+                List<CityBean.ChildBeanX> occupation = OCCUPATIONBEANLIST.get(i).getChild();
+                if (userDetailsBean.getJob().equals(occupation.get(j).getValue())) {
+                    job = occupation.get(j).getText();
+                }
+            }
+        }
+        tvOccupation.setText(job);
+        tvOccupation.setVisibility(StringUtil.isEmpty(job) ? View.GONE : View.VISIBLE);
+        String onCity = "";
+        CityBean cityBean;
+        for (int i = 0; i < CITYBEANLIST.size(); i++) {
+            cityBean = CITYBEANLIST.get(i);
+            for (int j = 0; j < cityBean.getChild().size(); j++) {
+                List<CityBean.ChildBeanX> city = CITYBEANLIST.get(i).getChild();
+                if (userDetailsBean.getCities().contains(city.get(j).getValue())) {
+                    onCity = onCity + city.get(j).getText() + "/";
+                }
+            }
+        }
+        if (onCity.contains("/")) {
+            onCity=onCity.substring(0, onCity.length() - 1);
+        }
+        tvOnCity.setText(onCity);
+        tvOnCity.setVisibility(StringUtil.isEmpty(onCity) ? View.GONE : View.VISIBLE);
+        tvAdoptZhenRen.setVisibility(userDetailsBean.getCertification() == 1 ? View.VISIBLE : View.GONE);
+        tvAdoptNvShen.setVisibility(userDetailsBean.getGender() == 2 ? userDetailsBean.getLabeltype() == 1 ? View.VISIBLE : View.GONE : View.GONE);
+        tvName.setCompoundDrawablesWithIntrinsicBounds(null, null, userDetailsBean.getGender() == 1 ? userDetailsBean.getVipMember() == 0 ? getResources().getDrawable(R.mipmap.vip_huangguan_logo) : null : null, null);
+        tvDistance.setText(distance + "m");
+        tvHomeOnline.setVisibility(online.equals("1") ? View.VISIBLE : View.GONE);
+        tvHomePaidAlbum.setVisibility(configBean.getPrivacystate() == 2 ? View.VISIBLE : View.GONE);
+        tvHeight.setText(userDetailsBean.getHeight());
+        tvWeight.setText(userDetailsBean.getWeight());
+        tvProgram.setText(configBean.getDatingPrograms());
+        tvExpect.setText(configBean.getDesiredGoals());
+        tvIntroduce.setText(userDetailsBean.getDescription());
+        viewHeight.setVisibility(StringUtil.isEmpty(userDetailsBean.getHeight()) ? View.GONE : View.VISIBLE);
+        rlHeight.setVisibility(StringUtil.isEmpty(userDetailsBean.getHeight()) ? View.GONE : View.VISIBLE);
+        viewWeight.setVisibility(StringUtil.isEmpty(userDetailsBean.getWeight()) ? View.GONE : View.VISIBLE);
+        rlWeight.setVisibility(StringUtil.isEmpty(userDetailsBean.getWeight()) ? View.GONE : View.VISIBLE);
+        viewProgram.setVisibility(StringUtil.isEmpty(configBean.getDatingPrograms()) ? View.GONE : View.VISIBLE);
+        rlProgram.setVisibility(StringUtil.isEmpty(configBean.getDatingPrograms()) ? View.GONE : View.VISIBLE);
+        viewExpect.setVisibility(StringUtil.isEmpty(configBean.getDesiredGoals()) ? View.GONE : View.VISIBLE);
+        rlExpect.setVisibility(StringUtil.isEmpty(configBean.getDesiredGoals()) ? View.GONE : View.VISIBLE);
+        rlIntroduce.setVisibility(StringUtil.isEmpty(userDetailsBean.getDescription()) ? View.GONE : View.VISIBLE);
+        rlQQ.setVisibility(StringUtil.isEmpty(contactInfoBean.getQq()) ? View.GONE : View.VISIBLE);
+        rlWeChat.setVisibility(StringUtil.isEmpty(contactInfoBean.getWeChat()) ? View.GONE : View.VISIBLE);
+        viewQq.setVisibility(StringUtil.isEmpty(contactInfoBean.getQq()) ? View.GONE : View.VISIBLE);
+        viewWeChat.setVisibility(StringUtil.isEmpty(contactInfoBean.getWeChat()) ? View.GONE : View.VISIBLE);
+        String socialContact = "";
+        if (contactInfoBean.getHidecontactinfo() == 1){
+            //隐藏社交账号
+            socialContact = userDetailsBean.getGender() == 1 ? "已隐藏(直接私聊他)":"已隐藏(直接私聊她)";
+        }else {
+            //显示社交账号
+            socialContact = "已填写，点击查看";
+        }
+        tvQQ.setText(socialContact);
+        tvWechat.setText(socialContact);
+        if (null == photoAlbumBean || photoAlbumBean.size() <= 0){
+            tvNoPhoto.setVisibility(View.VISIBLE);
+            llAlbumlock.setVisibility(View.GONE);
+        }else {
+            tvNoPhoto.setVisibility(View.GONE);
+            llAlbumlock.setVisibility(configBean.getPrivacystate()==2 ? View.VISIBLE : View.GONE);
+            int payNum = 0;
+            for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
+                if (albumBean.getPayFlag() == 1){
+                    payNum++;
+                }
+            }
+            tvAlbumlock.setText("有"+photoAlbumBean.size()+"张照片，其中"+payNum+"张为红包照片");
+            if (configBean.getCurrencyType() == 2){
+                //现金
+                albumMoney = configBean.getViewphotofee()+"";
+            }else {
+                //虚拟币
+                try {
+                    albumMoney = NumberUtil.div_Intercept("20",configBean.getViewphotofee()+"",1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (userDetailsBean.getGender() == 1){
+                tvUnlock.setText("解锁他的相册(" + albumMoney + "元),会员免费");
+                tvSetalbumlock.setText("他设置了相册锁");
+            }else {
+                tvUnlock.setText("解锁她的相册(" + albumMoney + "元),会员免费");
+                tvSetalbumlock.setText("她设置了相册锁");
+            }
+        }
+    }
+
+    @OnClick({R.id.tv_Unlock, R.id.ll_evaluate, R.id.ll_chat, R.id.ll_SocialContact, R.id.tv_addLike, R.id.img_header, R.id.tv_ApplySee, R.id.rl_dynamic, R.id.tv_wechat, R.id.tv_QQ})
     public void onViewClicked(View view) {
+        String title = userDetailsBean.getGender() == 1 ? "是否与他私聊，同时会解锁他的全部资料哦":"是否与她私聊，同时会解锁她的全部资料哦";
         switch (view.getId()) {
             case R.id.ll_evaluate:
                 //评价
-                data.clear();
-                data.add("友好");
-                data.add("有趣");
-                data.add("爽快");
-                data.add("耐心");
-                data.add("高冷");
-                data.add("暴脾气");
+                evaluateList.clear();
+                evaluateList.add("友好");
+                evaluateList.add("有趣");
+                evaluateList.add("爽快");
+                evaluateList.add("耐心");
+                evaluateList.add("高冷");
+                evaluateList.add("暴脾气");
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new EvaluateDialog(mActivity,data))
+                        .asCustom(new EvaluateDialog(mActivity, evaluateList))
                         .show();
                 break;
             case R.id.ll_chat:
                 //私聊
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new ChatCautionDialog(mActivity))
+                        .asCustom(new ChatCautionDialog(mActivity, title, "10", new ChatCautionDialog.PaySeeOnClickListener() {
+                            @Override
+                            public void onClick(String money) {
+                                //付费查看
+                                showPayMode(view,money);
+                            }
+                        }))
                         .show();
                 break;
             case R.id.ll_SocialContact:
                 //社交
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new ChatCautionDialog(mActivity))
+                        .asCustom(new ChatCautionDialog(mActivity,title,"10", new ChatCautionDialog.PaySeeOnClickListener() {
+                            @Override
+                            public void onClick(String money) {
+                                //付费查看
+                                showPayMode(view,money);
+                            }
+                        }))
                         .show();
                 break;
             case R.id.tv_addLike:
                 //添加喜欢
-                if (addLike == 0){
+                if (addLike == 0) {
                     addLike = 1;
                     tvAddLike.setText("取消喜欢");
                     tvAddLike.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.yes_like_logo), null);
-                }else {
+                } else {
                     addLike = 0;
                     tvAddLike.setText("加入喜欢");
                     tvAddLike.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.no_like_logo), null);
@@ -280,15 +548,94 @@ public class DetailsActivity extends BaseActivity {
                 //微信
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new ChatCautionDialog(mActivity))
+                        .asCustom(new ChatCautionDialog(mActivity,title,"10", new ChatCautionDialog.PaySeeOnClickListener() {
+                            @Override
+                            public void onClick(String money) {
+                                //付费查看
+                                showPayMode(view,money);
+                            }
+                        }))
                         .show();
                 break;
             case R.id.tv_QQ:
                 //QQ
                 new XPopup.Builder(mActivity)
                         .dismissOnTouchOutside(false)
-                        .asCustom(new ChatCautionDialog(mActivity))
+                        .asCustom(new ChatCautionDialog(mActivity,title,"10", new ChatCautionDialog.PaySeeOnClickListener() {
+                            @Override
+                            public void onClick(String money) {
+                                //付费查看
+                                showPayMode(view,money);
+                            }
+                        }))
                         .show();
+                break;
+            case R.id.tv_Unlock:
+                //相册解锁
+                new XPopup.Builder(mActivity)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new ChatCautionDialog(mActivity,title,albumMoney, new ChatCautionDialog.PaySeeOnClickListener() {
+                            @Override
+                            public void onClick(String money) {
+                                //付费查看
+                                showPayMode(view,money);
+                            }
+                        }))
+                        .show();
+                break;
+        }
+    }
+
+    /**
+     * 显示支付方式弹窗
+     * */
+    private void showPayMode(View v,String amount) {
+        final PaySelect paySelect = new PaySelect(mActivity,amount,"会员套餐",amount,2);
+        new XPopup.Builder(mActivity)
+                .atView(v)
+                .asCustom(paySelect)
+                .show();
+        paySelect.setOnClickListenerOnSure(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //立即支付
+                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
+                int payType = 1;
+                switch (type) {
+                    case ALI:
+                        //支付宝支付
+                        payType = 3;
+                        break;
+                    case WCHAT:
+                        //微信支付
+                        payType = 2;
+                        break;
+                    case WALLET:
+                        //钱包支付
+                        payType = 1;
+                        break;
+                }
+                if (!NoDoubleClickUtils.isDoubleClick(2000)){
+//                    getRedPageId(amount,payType);
+                    toast(payType == 3 ? "支付宝支付" : "微信支付");
+                    paySelect.dismiss();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (null == data) return;
+        switch (requestCode) {
+            case 10:
+            case 20:
+                list = (List<PhotoBean>) data.getSerializableExtra("photoList");
+                photoList.clear();
+                for (int i = 0; list.size() > 8 ? i < 8 : i < list.size(); i ++){
+                    photoList.add(list.get(i));
+                }
+                mAdapter.notifyDataSetChanged();
                 break;
         }
     }

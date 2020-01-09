@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <include
@@ -119,7 +120,7 @@
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="用户昵称"
+                    android:text=""
                     android:textColor="@color/text_theme_color"
                     android:textSize="@dimen/text_size_15"
                     android:layout_centerHorizontal="true"
@@ -139,7 +140,7 @@
                         android:id="@+id/tv_place"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="地点"
+                        android:text=""
                         android:textSize="@dimen/text_size_11"
                         android:textColor="@color/color_gray_999999"
                         android:drawableLeft="@mipmap/dian_logo"
@@ -149,7 +150,7 @@
                         android:id="@+id/tv_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="星座年龄"
+                        android:text=""
                         android:textSize="@dimen/text_size_11"
                         android:textColor="@color/color_gray_999999"
                         android:drawableLeft="@mipmap/dian_logo"
@@ -159,7 +160,7 @@
                         android:id="@+id/tv_Occupation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="职业"
+                        android:text=""
                         android:textSize="@dimen/text_size_11"
                         android:textColor="@color/color_gray_999999"
                         android:drawableLeft="@mipmap/dian_logo"
@@ -207,10 +208,12 @@
                     android:drawablePadding="@dimen/dimen_5"/>
 
             </RelativeLayout>
-            <ImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_header"
-                android:layout_width="78dp"
-                android:layout_height="78dp"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_72"
+                android:scaleType="fitXY"
+                app:riv_corner_radius="@dimen/dimen_5"
                 android:layout_centerHorizontal="true"
                 android:src="@mipmap/default_home_head"/>
 
@@ -346,6 +349,7 @@
                         android:layout_marginRight="@dimen/dimen_15"/>
                 </RelativeLayout>
                 <View
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
@@ -362,12 +366,67 @@
                     android:paddingBottom="@dimen/dimen_15"
                     android:layout_marginLeft="@dimen/dimen_15"
                     android:layout_marginRight="@dimen/dimen_15"/>
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/mRecyclerView"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_15"
-                    android:layout_marginRight="@dimen/dimen_15"/>
+                    android:layout_height="160dp">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/mRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_15"
+                        android:layout_marginRight="@dimen/dimen_15"/>
+                    <LinearLayout
+                        android:id="@+id/ll_albumlock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:visibility="gone">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/albumlock_logo"/>
+                        <TextView
+                            android:id="@+id/tv_setalbumlock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="她设置了相册锁"
+                            android:textSize="@dimen/text_size_15"
+                            android:textColor="@color/color_999999"
+                            android:layout_marginTop="@dimen/dimen_10"/>
+                        <TextView
+                            android:id="@+id/tv_albumlock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="有12张照片，其中1张为红包照片"
+                            android:textSize="@dimen/sp_12"
+                            android:textColor="@color/color_999999"
+                            android:layout_marginTop="@dimen/dimen_10"/>
+                        <TextView
+                            android:id="@+id/tv_Unlock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="解锁她的相册（35元），会员免费"
+                            android:textColor="@color/theme_color"
+                            android:textSize="@dimen/text_size_15"
+                            android:paddingRight="@dimen/dimen_20"
+                            android:paddingLeft="@dimen/dimen_20"
+                            android:paddingTop="@dimen/dimen_10"
+                            android:paddingBottom="@dimen/dimen_10"
+                            android:layout_marginTop="@dimen/dimen_10"
+                            android:background="@drawable/shape_circularline_base"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_NoPhoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="这个人比较懒，还没有上传照片"
+                        android:textSize="@dimen/dimen_20"
+                        android:textColor="@color/theme_color"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"/>
+                </RelativeLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -375,6 +434,7 @@
                     android:layout_marginTop="@dimen/dimen_10"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_height"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"
@@ -392,18 +452,20 @@
                         android:id="@+id/tv_height"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="163cm"
+                        android:text=""
                         android:textColor="@color/color_gray_999999"
                         android:textSize="@dimen/text_size_12"
                         android:layout_marginLeft="@dimen/dimen_80"
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
                 <View
+                    android:id="@+id/view_height"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_weight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"
@@ -421,13 +483,14 @@
                         android:id="@+id/tv_weight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="48KG"
+                        android:text=""
                         android:textColor="@color/color_gray_999999"
                         android:textSize="@dimen/text_size_12"
                         android:layout_marginLeft="@dimen/dimen_80"
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
                 <View
+                    android:id="@+id/view_weight"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
@@ -450,7 +513,7 @@
                         android:id="@+id/tv_onCity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="成都"
+                        android:text=""
                         android:textColor="@color/color_gray_999999"
                         android:textSize="@dimen/text_size_12"
                         android:layout_marginLeft="@dimen/dimen_80"
@@ -462,6 +525,7 @@
                     android:background="@color/activity_grey_bg"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_program"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"
@@ -486,11 +550,13 @@
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
                 <View
+                    android:id="@+id/view_program"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_Expect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"
@@ -510,11 +576,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_80"
-                        android:text="看感觉"
+                        android:text=""
                         android:textColor="@color/color_gray_999999"
                         android:textSize="@dimen/text_size_12" />
                 </RelativeLayout>
                 <View
+                    android:id="@+id/view_Expect"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
@@ -545,6 +612,7 @@
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
                 <View
+                    android:id="@+id/view_weChat"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
@@ -575,11 +643,13 @@
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
                 <View
+                    android:id="@+id/view_qq"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/activity_grey_bg"
                     android:layout_marginLeft="@dimen/dimen_15"/>
                 <RelativeLayout
+                    android:id="@+id/rl_introduce"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/dimen_15"
@@ -597,7 +667,7 @@
                         android:id="@+id/tv_introduce"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="叽哩哇啦叽哩哇啦叽哩哇啦叽哩哇啦叽哩哇啦叽哩哇啦叽哩哇啦叽哩哇啦"
+                        android:text=""
                         android:textColor="@color/color_gray_999999"
                         android:textSize="@dimen/text_size_12"
                         android:layout_marginLeft="@dimen/dimen_80"

@@ -45,17 +45,25 @@ public class MyPhotoActivity extends BaseActivity {
 
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
+    @BindView(R.id.tv_title)
+    TextView tv_title;
+    @BindView(R.id.tv_UpPhoto)
+    TextView tv_UpPhoto;
 
     private Activity mActivity;
     private List<PhotoBean> photoList = new ArrayList<>();
     private List<PhotoBean> sendImageList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
     private int sendImageNum = 0;
+    private String gender = "";
+    private boolean isShowButton;       //是否显示底部阅后即焚和红包相册按钮(相当于是否是本人进来此页面)
 
-    public static void start(Context context, List<PhotoBean> photoList) {
+    public static void start(Context context, List<PhotoBean> photoList,boolean isShowButton,String gender) {
         Intent intent = new Intent();
         intent.setClass(context, MyPhotoActivity.class);
         intent.putExtra("photoList", (Serializable) photoList);
+        intent.putExtra("isShowButton", isShowButton);
+        intent.putExtra("Gender", gender);
         ((Activity) context).startActivityForResult(intent, 20);
     }
 
@@ -72,7 +80,11 @@ public class MyPhotoActivity extends BaseActivity {
 
     private void initView() {
         photoList = (List<PhotoBean>) getIntent().getSerializableExtra("photoList");
+        isShowButton = getIntent().getBooleanExtra("isShowButton",false);
+        gender = getIntent().getStringExtra("Gender");
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity,4));
+        tv_UpPhoto.setVisibility(isShowButton?View.VISIBLE:View.GONE);
+        tv_title.setText(isShowButton?"我的相册":gender.equals("1")?"他的相册":"她的相册");
     }
 
     private void initData() {
@@ -87,8 +99,9 @@ public class MyPhotoActivity extends BaseActivity {
                 TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
                 TextView tvIsBenRen = viewHolder.getView(R.id.tv_isBenRen);
                 if (photoBean.isBurnAfterReading()){
-                    //拿到初始图
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    if (!isShowButton){
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }
                     if (photoBean.isBurnedDown()){
                         rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
                         tvBurnedDown.setText("已焚毁");
@@ -104,7 +117,9 @@ public class MyPhotoActivity extends BaseActivity {
 
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
                     //阅后即焚的红包照片
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    if (!isShowButton){
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
@@ -116,10 +131,14 @@ public class MyPhotoActivity extends BaseActivity {
                     }
                 }else if (photoBean.isRedEnvelopePhotos()){
                     //只是红包照片
-                    //拿到初始图
-                    Bitmap bmp= BitmapFactory.decodeFile(photoBean.getPhotoUrl());
                     //处理得到模糊效果的图
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    if (!isShowButton){
+                        if (photoBean.isRedEnvelopePhotosPaid()){
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }else {
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }
+                    }
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
@@ -144,7 +163,7 @@ public class MyPhotoActivity extends BaseActivity {
                         intent.putExtra("photoList", (Serializable) photoList);
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
-                        intent.putExtra("isShowButton",true);
+                        intent.putExtra("isShowButton",isShowButton);
                         mActivity.startActivityForResult(intent, 10);
                     }
                 });

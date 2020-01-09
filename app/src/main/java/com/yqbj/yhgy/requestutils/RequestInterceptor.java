@@ -66,7 +66,7 @@ public class RequestInterceptor implements Interceptor {
                             @Override
                             public void onSuccess(int code, Object object) {
                                 if (code == Constants.SUCCESS_CODE){
-                                    ToastHelper.showToast(DemoCache.getContext(),"认证过期，请重试");
+                                    ToastHelper.showToast(DemoCache.getContext(),"认证过期，已重新登录，请重试");
                                 }
                             }
 

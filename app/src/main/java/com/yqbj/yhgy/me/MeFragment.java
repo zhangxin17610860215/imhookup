@@ -256,7 +256,6 @@ public class MeFragment extends BaseFragment {
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
                 if (photoBean.isBurnAfterReading()){
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
                         tvBurnedDown.setText("已焚毁");
@@ -272,7 +271,6 @@ public class MeFragment extends BaseFragment {
 
                 if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
                     //阅后即焚的红包照片
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
                     if (photoBean.isBurnedDown()){
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
                         tvRedEnvelopePhotos.setText("已焚毁");
@@ -284,12 +282,6 @@ public class MeFragment extends BaseFragment {
                     }
                 }else if (photoBean.isRedEnvelopePhotos()){
                     //只是红包照片
-                    if (photoBean.isRedEnvelopePhotosPaid()){
-                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    }else {
-                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    }
-
                     rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
                     tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
                     tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
@@ -307,6 +299,8 @@ public class MeFragment extends BaseFragment {
                         Intent intent = new Intent();
                         intent.setClass(mActivity, MyPhotoActivity.class);
                         intent.putExtra("photoList", (Serializable) list);
+                        intent.putExtra("isShowButton",true);
+                        intent.putExtra("Gender",userDetailsBean.getGender()+"");
                         startActivityForResult(intent, 20);
                     }
                 });
@@ -320,7 +314,7 @@ public class MeFragment extends BaseFragment {
                         intent.putExtra("photoList", (Serializable) list);
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
-                        intent.putExtra("isShowButton",false);
+                        intent.putExtra("isShowButton",true);
                         startActivityForResult(intent, 10);
                     }
                 });

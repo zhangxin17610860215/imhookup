@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.core.CenterPopupView;
 import com.yqbj.yhgy.R;
+import com.yqbj.yhgy.login.VipCoreActivity;
 
 /**
  * 解锁私聊警示弹窗
@@ -15,13 +16,19 @@ import com.yqbj.yhgy.R;
 public class ChatCautionDialog extends CenterPopupView implements View.OnClickListener {
 
     private Context context;
+    private TextView tv_title;
     private TextView tv_paySee;
     private TextView tv_OpeningVip;
     private ImageView imgClose;
+    private String title,money;
+    private PaySeeOnClickListener listener;
 
-    public ChatCautionDialog(@NonNull Context context) {
+    public ChatCautionDialog(@NonNull Context context, String title, String money, PaySeeOnClickListener listener) {
         super(context);
         this.context = context;
+        this.title = title;
+        this.money = money;
+        this.listener = listener;
     }
 
     @Override
@@ -38,6 +45,7 @@ public class ChatCautionDialog extends CenterPopupView implements View.OnClickLi
     }
 
     private void initView() {
+        tv_title = findViewById(R.id.tv_title);
         tv_paySee = findViewById(R.id.tv_paySee);
         tv_OpeningVip = findViewById(R.id.tv_OpeningVip);
         imgClose = findViewById(R.id.img_close);
@@ -47,7 +55,8 @@ public class ChatCautionDialog extends CenterPopupView implements View.OnClickLi
     }
 
     private void initData() {
-
+        tv_paySee.setText("付费查看("+money+"元)");
+        tv_title.setText(title);
     }
 
     @Override
@@ -55,10 +64,12 @@ public class ChatCautionDialog extends CenterPopupView implements View.OnClickLi
         switch (v.getId()){
             case R.id.tv_paySee:
                 //付费查看
+                listener.onClick(money);
                 dismiss();
                 break;
             case R.id.tv_OpeningVip:
                 //成为会员,免费查看
+                VipCoreActivity.start(context);
                 dismiss();
                 break;
             case R.id.img_close:
@@ -66,4 +77,9 @@ public class ChatCautionDialog extends CenterPopupView implements View.OnClickLi
                 break;
         }
     }
+
+    public interface PaySeeOnClickListener{
+        void onClick(String money);
+    }
+
 }

@@ -11,9 +11,9 @@
         android:background="@mipmap/fillet"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="是否与她私聊,同时会解锁她的全部资料哦"
             android:textSize="@dimen/text_size_15"
             android:textColor="@color/color_gray_333333"
             android:layout_marginLeft="@dimen/dimen_30"
@@ -28,7 +28,7 @@
             android:layout_marginLeft="@dimen/dimen_30"
             android:layout_marginRight="@dimen/dimen_30"
             android:background="@drawable/shape_rectangleline_from"
-            android:text="付费查看(10元)"
+            android:text=""
             android:textSize="@dimen/text_size_15"
             android:textColor="@color/color_gray_999999"
             android:gravity="center"
