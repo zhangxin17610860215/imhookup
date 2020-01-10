@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.lxj.xpopup.XPopup;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.api.NimUIKit;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
@@ -28,6 +29,7 @@ import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.common.util.CityBean;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
+import com.yqbj.yhgy.bean.EvaluateDataBean;
 import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
@@ -35,13 +37,16 @@ import com.yqbj.yhgy.login.VipCoreActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.ApiUrl;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.EventBusUtils;
 import com.yqbj.yhgy.utils.ImageFilter;
 import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.TimeUtils;
 import com.yqbj.yhgy.utils.UMShareUtil;
 import com.yqbj.yhgy.utils.ZodiacUtil;
 import com.yqbj.yhgy.utils.pay.MyALipayUtils;
+import com.yqbj.yhgy.view.EvaluateDialog;
 import com.yqbj.yhgy.wxapi.WXUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
@@ -102,6 +107,7 @@ public class MeFragment extends BaseFragment {
     private List<PhotoBean> photoList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
     private int sendImageNum = 0;
+    private String accid = "";
 
     public MeFragment() {
 
@@ -136,7 +142,7 @@ public class MeFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         mActivity = getActivity();
         initView();
-
+        accid = DemoCache.getAccount();
     }
 
     @Override
@@ -345,6 +351,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_evaluate:
                 //我的评价
+                showEvaluateDialog();
                 break;
             case R.id.tv_myLike:
                 //我喜欢的
@@ -498,6 +505,39 @@ public class MeFragment extends BaseFragment {
         Bundle bundle = commonEvent.data;
         String result = (String) bundle.get("payResult");
         Log.e("TAG","微信支付结果回调>>>>>>>>" + result);
+    }
+
+    /**
+     * 显示评价弹窗
+     * */
+    private void showEvaluateDialog() {
+        showProgress(false);
+        UserApi.getEvalualeData(accid, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    List<EvaluateDataBean> dataList = (List<EvaluateDataBean>) object;
+                    new XPopup.Builder(mActivity)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new EvaluateDialog(accid, userDetailsBean.getGender()+"", mActivity, dataList, new EvaluateDialog.EvaluateListener() {
+                                @Override
+                                public void evaluateOnClick(String[] ids) {
+
+                                }
+                            }))
+                            .show();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
 }

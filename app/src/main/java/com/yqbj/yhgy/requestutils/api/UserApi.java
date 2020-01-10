@@ -7,6 +7,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.yqbj.yhgy.bean.CurrencyPriceBean;
+import com.yqbj.yhgy.bean.EvaluateDataBean;
 import com.yqbj.yhgy.bean.HomeDataBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
@@ -556,6 +557,153 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "getCurrencyPriceList--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取评价数据
+     * */
+    public static void getEvalualeData(String targetId, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("targetId",targetId);
+        RequestHelp.postRequest(ApiUrl.GETEVALUALEDATA, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getEvalualeData--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        String gender = JSON.toJSONString(data.get("gender"));
+                        List<EvaluateDataBean> dataList = JSON.parseObject(JSON.toJSONString(data.get("estimateInfo")), new TypeReference<ArrayList<EvaluateDataBean>>(){});
+                        List<EvaluateDataBean> list = new ArrayList<>();
+                        for (EvaluateDataBean dictData : dataList){
+                            if (StringUtil.isNotEmpty(dictData.getLabel()) && dictData.getLabel().contains("/")){
+                                String[] split = dictData.getLabel().split("/");
+                                dictData.setLabel(gender.equals("1") ? split[0] : split[1]);
+                            }else {
+                                dictData.setLabel("");
+                            }
+                            dictData.setId(dictData.getId());
+                            dictData.setTotalValue(dictData.getTotalValue());
+                            dictData.setSort(dictData.getSort());
+                            list.add(dictData);
+                        }
+                        callback.onSuccess(bean.getCode(),list);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getEvalualeData--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 评价用户
+     * */
+    public static void evalualeUser(String targetId, String estimateData, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("targetId",targetId);
+        map.put("estimateData",estimateData);
+        RequestHelp.postRequest(ApiUrl.EVALUALEUSER, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "evalualeUser--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "evalualeUser--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 操作喜欢（收藏）
+     * */
+    public static void operatorEnjoy(String targetId, int operate, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("targetId",targetId);
+        map.put("operate",operate+"");
+        RequestHelp.postRequest(ApiUrl.OPERATORENJOY, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "operatorEnjoy--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "operatorEnjoy--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取喜欢列表
+     * */
+    public static void getEnjoyList(int pageNum, int pageSize, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("pageSize",pageSize+"");
+        map.put("pageNum",pageNum+"");
+        RequestHelp.postRequest(ApiUrl.GETENJOYLIST, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getEnjoyList--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getEnjoyList--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

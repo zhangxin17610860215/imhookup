@@ -26,4 +26,8 @@ public class ApiUrl {
     public static String GETUSERDETAILS = BASE_URL_HEAD + SERVERDOMAIN + "/user/details/self";
     public static String GETTARGETDETAILS = BASE_URL_HEAD + SERVERDOMAIN + "/user/details/target";
     public static String GETCURRENCYPRICELIST = BASE_URL_HEAD + SERVERDOMAIN + "/price/list/recharge";
+    public static String GETEVALUALEDATA = BASE_URL_HEAD + SERVERDOMAIN + "/estimate/user/info";
+    public static String EVALUALEUSER = BASE_URL_HEAD + SERVERDOMAIN + "/estimate/user";
+    public static String OPERATORENJOY = BASE_URL_HEAD + SERVERDOMAIN + "/tendency/operator/enjoy";
+    public static String GETENJOYLIST = BASE_URL_HEAD + SERVERDOMAIN + "/tendency/enjoy/list";
 }

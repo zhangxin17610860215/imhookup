@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import com.netease.nim.uikit.common.util.CityBean;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.EvaluateDataBean;
 import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
@@ -42,6 +44,7 @@ import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -156,13 +159,12 @@ public class DetailsActivity extends BaseActivity {
     TextView tvNoPhoto;
 
     private Activity mActivity;
-    private int addLike = 0;                    //是否加入喜欢     0=不加入     1=加入
+    private int addLike = 1;                    //是否加入喜欢     1=不加入     2=加入
     private String accid = "";
     private String region = "";
     private String distance = "";
     private String online = "";
     private String albumMoney = "";
-    private List<String> evaluateList = new ArrayList<>();
     private UserInfoBean.UserDetailsBean userDetailsBean;
     private UserInfoBean.ConfigBean configBean;
     private UserInfoBean.ContactInfoBean contactInfoBean;
@@ -464,17 +466,7 @@ public class DetailsActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.ll_evaluate:
                 //评价
-                evaluateList.clear();
-                evaluateList.add("友好");
-                evaluateList.add("有趣");
-                evaluateList.add("爽快");
-                evaluateList.add("耐心");
-                evaluateList.add("高冷");
-                evaluateList.add("暴脾气");
-                new XPopup.Builder(mActivity)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new EvaluateDialog(mActivity, evaluateList))
-                        .show();
+                showEvaluateDialog();
                 break;
             case R.id.ll_chat:
                 //私聊
@@ -504,15 +496,8 @@ public class DetailsActivity extends BaseActivity {
                 break;
             case R.id.tv_addLike:
                 //添加喜欢
-                if (addLike == 0) {
-                    addLike = 1;
-                    tvAddLike.setText("取消喜欢");
-                    tvAddLike.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.yes_like_logo), null);
-                } else {
-                    addLike = 0;
-                    tvAddLike.setText("加入喜欢");
-                    tvAddLike.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.no_like_logo), null);
-                }
+                addLike = addLike == 1? 2:1;
+                operatorEnjoy(addLike);
                 break;
             case R.id.img_header:
                 //头像
@@ -564,6 +549,96 @@ public class DetailsActivity extends BaseActivity {
                         .show();
                 break;
         }
+    }
+
+    /**
+     * 添加移除收藏
+     * */
+    private void operatorEnjoy(int addLike) {
+        showProgress(false);
+        UserApi.operatorEnjoy(accid, addLike, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    tvAddLike.setText(addLike==1?"取消喜欢":"加入喜欢");
+                    tvAddLike.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(addLike==1?R.mipmap.yes_like_logo:R.mipmap.no_like_logo), null);
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 显示评价弹窗
+     * */
+    private void showEvaluateDialog() {
+        showProgress(false);
+        UserApi.getEvalualeData(accid, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    List<EvaluateDataBean> dataList = (List<EvaluateDataBean>) object;
+                    new XPopup.Builder(mActivity)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new EvaluateDialog(accid, userDetailsBean.getGender()+"", mActivity, dataList, new EvaluateDialog.EvaluateListener() {
+                                @Override
+                                public void evaluateOnClick(String[] ids) {
+                                    String estimateData = "";
+                                    StringBuilder builder = new StringBuilder();
+                                    builder.append("[");
+                                    for (String id : ids){
+                                        if (StringUtil.isNotEmpty(id)){
+                                            builder.append(id);
+                                            builder.append(",");
+                                        }
+                                    }
+                                    if (builder.toString().contains(",")){
+                                        estimateData = builder.toString().substring(0,builder.toString().length()-1) + "]";
+                                    }
+                                    evalualeUser(estimateData);
+                                }
+                            }))
+                            .show();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 评价用户
+     * */
+    private void evalualeUser(String estimateData) {
+        showProgress(false);
+        UserApi.evalualeUser(accid, estimateData, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                toast((String) object);
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     /**

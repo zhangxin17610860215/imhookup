@@ -19,6 +19,9 @@ import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.view.MorePopupView;
 import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
@@ -88,7 +91,24 @@ public class MyLikeActivity extends BaseActivity {
         list.add("6");
         list.add("7");
 
-        loadData();
+        showProgress(false);
+        UserApi.getEnjoyList(1, 1, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    loadData();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     private void loadData() {
