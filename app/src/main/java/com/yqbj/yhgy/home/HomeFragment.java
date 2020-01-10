@@ -193,7 +193,7 @@ public class HomeFragment extends BaseFragment {
                 ImageView imgNvShen = viewHolder.getView(R.id.img_home_nvshen);//女神
                 ImageView imgZhenRen = viewHolder.getView(R.id.img_home_zhenren);//真人
                 ImageView imgVip = viewHolder.getView(R.id.img_home_vip);//VIP
-                ImageView imgMore = viewHolder.getView(R.id.img_home_more);//更多
+                ImageView imgIsLike = viewHolder.getView(R.id.img_isLike);//是否是喜欢
                 TextView tvDistance = viewHolder.getView(R.id.tv_home_distance);//距离
                 TextView tvPaidAlbum = viewHolder.getView(R.id.tv_home_PaidAlbum);//付费相册
                 TextView tvOLine = viewHolder.getView(R.id.tv_home_online);//在线时长
@@ -216,7 +216,7 @@ public class HomeFragment extends BaseFragment {
                 tvPlace.setText(recordsBean.getRegion());
                 tvPaidAlbum.setVisibility(recordsBean.getConfig().getPrivacystate() == 2 ? View.VISIBLE : View.GONE);
                 tvOLine.setVisibility(recordsBean.getConfig().getHideonline() == 1 ? View.GONE : View.VISIBLE);
-                Glide.with(mActivity).load(recordsBean.getHeadUrl()).error(R.mipmap.default_home_head).into(imgHeader);
+                Glide.with(mActivity).load(recordsBean.getHeadUrl()).placeholder(R.mipmap.default_home_head).error(R.mipmap.default_home_head).into(imgHeader);
                 tvName.setText(recordsBean.getName());
 
                 tvDistance.setText(recordsBean.getDistance() + "m");
@@ -235,14 +235,22 @@ public class HomeFragment extends BaseFragment {
                 }
 
                 tvOccupation.setText(job);
-                imgMore.setOnClickListener(new View.OnClickListener() {
+                imgIsLike.setImageResource(recordsBean.getEnjoyFlag()==1?R.mipmap.yes_like_logo:R.mipmap.no_like_logo);
+                imgIsLike.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        //更多
-                        new XPopup.Builder(mActivity)
-                                .atView(v)
-                                .asCustom(new MorePopupView(mActivity, 1))
-                                .show();
+                    public void onClick(View view) {
+                        //是否加入喜欢
+                        String gender = StringUtil.isEmpty(Preferences.getGender()) ? "1" : Preferences.getGender();
+                        if (gender.equals(recordsBean.getGender() + "")){
+                            if (gender.equals("1")){
+                                toast("男士无法收藏其他男士");
+                            }else {
+                                toast("女士无法收藏其他女士");
+                            }
+                            return;
+                        }
+                        int addLike = recordsBean.getEnjoyFlag() == 1? 2:1;
+                        operatorEnjoy(recordsBean, recordsBean.getAccid(), addLike,imgIsLike);
                     }
                 });
             }
@@ -262,7 +270,32 @@ public class HomeFragment extends BaseFragment {
                     }
                     return;
                 }
-                DetailsActivity.start(mActivity,recordsBean.getAccid(),recordsBean.getRegion(),recordsBean.getDistance()+"",recordsBean.getOnline()+"");
+                DetailsActivity.start(mActivity,recordsBean.getAccid());
+            }
+        });
+    }
+
+    /**
+     * 添加移除收藏
+     * */
+    private void operatorEnjoy(HomeDataBean.RecordsBean recordsBean, String accid, int addLike, ImageView imgIsLike) {
+        showProgress(false);
+        UserApi.operatorEnjoy(accid, addLike, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    imgIsLike.setImageResource(addLike==1?R.mipmap.yes_like_logo:R.mipmap.no_like_logo);
+                    recordsBean.setEnjoyFlag(addLike);
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
             }
         });
     }

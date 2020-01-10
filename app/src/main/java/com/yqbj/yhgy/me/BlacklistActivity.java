@@ -12,12 +12,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.HomeDataBean;
+import com.yqbj.yhgy.bean.MyLikeBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.home.DetailsActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.Preferences;
+import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.view.MorePopupView;
 import com.yqbj.yhgy.view.MyRefreshLayout;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
@@ -41,7 +51,10 @@ public class BlacklistActivity extends BaseActivity {
 
     private Activity mActivity;
     private EasyRVAdapter mAdapter;
-    private List<String> list = new ArrayList<>();
+    private List<MyLikeBean.RecordsBean> list = new ArrayList<>();
+    private int count;              //总数量
+    private int pageNum = 1;        //页码
+    private int pageSize = 20;      //每页需要展示的数量
 
     public static void start(Context context) {
         Intent intent = new Intent(context, BlacklistActivity.class);
@@ -67,6 +80,8 @@ public class BlacklistActivity extends BaseActivity {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 //下拉刷新
+                pageNum = 1;
+                initData();
             }
         });
 
@@ -74,45 +89,122 @@ public class BlacklistActivity extends BaseActivity {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 //上拉加载更多
+                if (count / pageNum > pageSize && count / pageNum > 0){
+                    pageNum++;
+                    initData();
+                }else {
+                    if (refreshLayout != null) {
+                        refreshLayout.finishRefresh();
+                        refreshLayout.finishLoadMore();
+                    }
+                }
             }
         });
     }
 
     private void initData() {
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        list.add("4");
-        list.add("5");
-        list.add("6");
-        list.add("7");
+        showProgress(false);
+        UserApi.getBlackList(pageNum, pageSize, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (refreshLayout != null) {
+                    refreshLayout.finishRefresh();
+                    refreshLayout.finishLoadMore();
+                }
+                if (code == Constants.SUCCESS_CODE){
+                    MyLikeBean bean = (MyLikeBean) object;
+                    List<MyLikeBean.RecordsBean> records = bean.getRecords();
+                    count = bean.getTotal();
+                    list.clear();
+                    list.addAll(records);
+                    loadData();
+                }else {
+                    toast((String) object);
+                }
+            }
 
-        loadData();
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+                if (refreshLayout != null) {
+                    refreshLayout.finishRefresh();
+                    refreshLayout.finishLoadMore();
+                }
+            }
+        });
     }
 
     private void loadData() {
         mAdapter = new EasyRVAdapter(mActivity, list, R.layout.blacklist_item_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {
+                MyLikeBean.RecordsBean recordsBean = list.get(position);
                 if (null == list || list.size() == 0) {
                     return;
                 }
-                ImageView imgHeader = viewHolder.getView(R.id.img_header);
-                ImageView imgMore = viewHolder.getView(R.id.img_More);
+                RoundedImageView imgHeader = viewHolder.getView(R.id.img_head);
                 TextView tvName = viewHolder.getView(R.id.tv_name);
+                TextView tvBlacklist = viewHolder.getView(R.id.tv_Blacklist);
+                Glide.with(mActivity).load(recordsBean.getHeadUrl()).placeholder(R.mipmap.default_home_head).error(R.mipmap.default_home_head).into(imgHeader);
+                tvName.setText(recordsBean.getName());
+                recordsBean.setBlacklistFlag(1);
 
-                imgMore.setOnClickListener(new View.OnClickListener() {
+                tvBlacklist.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        new XPopup.Builder(mActivity)
-                                .atView(v)
-                                .asCustom(new MorePopupView(mActivity,3))
-                                .show();
+                    public void onClick(View view) {
+                        int addBlacklist = recordsBean.getBlacklistFlag() == 1? 2:1;
+                        operatorBlackList(recordsBean,addBlacklist,tvBlacklist);
                     }
                 });
             }
         };
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new EasyRVAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, Object item) {
+                MyLikeBean.RecordsBean recordsBean = list.get(position);
+                String gender = StringUtil.isEmpty(Preferences.getGender()) ? "1" : Preferences.getGender();
+                if (gender.equals(recordsBean.getGender() + "")){
+                    if (gender.equals("1")){
+                        toast("男士无法查看其他男士详情");
+                    }else {
+                        toast("女士无法查看其他女士详情");
+                    }
+                    return;
+                }
+                DetailsActivity.start(mActivity,recordsBean.getAccid());
+            }
+        });
+    }
+
+    /**
+     * 操作黑名单
+     *
+     * @param recordsBean
+     * @param addBlacklist
+     * @param tvBlacklist*/
+    private void operatorBlackList(MyLikeBean.RecordsBean recordsBean, int addBlacklist, TextView tvBlacklist) {
+        showProgress(false);
+        UserApi.operatorBlackList(recordsBean.getAccid(), addBlacklist, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    tvBlacklist.setText(addBlacklist==1? "取消拉黑":"拉黑");
+                    recordsBean.setBlacklistFlag(addBlacklist);
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
 }

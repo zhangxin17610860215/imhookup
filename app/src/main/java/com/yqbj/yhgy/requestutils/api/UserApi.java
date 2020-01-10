@@ -9,6 +9,7 @@ import com.lzy.okgo.model.Response;
 import com.yqbj.yhgy.bean.CurrencyPriceBean;
 import com.yqbj.yhgy.bean.EvaluateDataBean;
 import com.yqbj.yhgy.bean.HomeDataBean;
+import com.yqbj.yhgy.bean.MyLikeBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.bean.VipListInfoBean;
@@ -677,16 +678,16 @@ public class UserApi {
     }
 
     /**
-     * 获取喜欢列表
+     * 操作黑名单
      * */
-    public static void getEnjoyList(int pageNum, int pageSize, Object object, final RequestCallback callback){
+    public static void operatorBlackList(String targetId, int operate, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        map.put("pageSize",pageSize+"");
-        map.put("pageNum",pageNum+"");
-        RequestHelp.postRequest(ApiUrl.GETENJOYLIST, object, map, new StringCallback() {
+        map.put("targetId",targetId);
+        map.put("operate",operate+"");
+        RequestHelp.postRequest(ApiUrl.OPERATORBLACKLIST, object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
-                LogUtil.e(TAG, "getEnjoyList--------->onSuccess" + response.body());
+                LogUtil.e(TAG, "operatorBlackList--------->onSuccess" + response.body());
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
                     if (bean.getCode() == Constants.SUCCESS_CODE){
@@ -703,7 +704,77 @@ public class UserApi {
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
+                LogUtil.e(TAG, "operatorBlackList--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取喜欢列表
+     * */
+    public static void getEnjoyList(int pageNum, int pageSize, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("pageNum",pageNum+"");
+        map.put("pageSize",pageSize+"");
+        RequestHelp.postRequest(ApiUrl.GETENJOYLIST, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getEnjoyList--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        MyLikeBean myLikeBean = JSON.parseObject(JSON.toJSONString(data.get("PageResult")), MyLikeBean.class);
+                        callback.onSuccess(bean.getCode(),myLikeBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
                 LogUtil.e(TAG, "getEnjoyList--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取黑名单列表
+     * */
+    public static void getBlackList(int pageNum, int pageSize, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("pageNum",pageNum+"");
+        map.put("pageSize",pageSize+"");
+        RequestHelp.postRequest(ApiUrl.GETBLACKLIST, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getBlackList--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        MyLikeBean myLikeBean = JSON.parseObject(JSON.toJSONString(data.get("PageResult")), MyLikeBean.class);
+                        callback.onSuccess(bean.getCode(),myLikeBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getBlackList--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

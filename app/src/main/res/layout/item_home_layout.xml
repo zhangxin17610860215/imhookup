@@ -31,7 +31,6 @@
                 android:id="@+id/tv_home_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="女神一号"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_15"
                 android:layout_marginRight="@dimen/dimen_5"
@@ -65,6 +64,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:src="@mipmap/more_logo"
+                android:layout_centerVertical="true"
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/img_isLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/no_like_logo"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 
@@ -72,7 +79,6 @@
             android:id="@+id/tv_home_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="500m"
             android:textSize="@dimen/text_size_11"
             android:textColor="@color/color_gray_999999"
             android:layout_alignParentBottom="true"
@@ -121,7 +127,6 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/dian_logo"
             android:drawablePadding="@dimen/dimen_5"
-            android:text="地点"
             android:textSize="@dimen/text_size_11"
             android:textColor="@color/color_gray_999999"
             android:layout_centerVertical="true"
@@ -133,7 +138,6 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/dian_logo"
             android:drawablePadding="@dimen/dimen_5"
-            android:text="星座年龄"
             android:textSize="@dimen/text_size_11"
             android:textColor="@color/color_gray_999999"
             android:layout_centerVertical="true"
@@ -146,7 +150,6 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/dian_logo"
             android:drawablePadding="@dimen/dimen_5"
-            android:text="职业"
             android:textSize="@dimen/text_size_11"
             android:textColor="@color/color_gray_999999"
             android:layout_centerVertical="true"
@@ -168,7 +171,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/circular_gree_bt_shape_bg"
-        android:text="99"
         android:textSize="@dimen/text_size_9"
         android:textColor="@color/white"
         android:paddingTop="3dp"

@@ -326,7 +326,6 @@
                 android:layout_height="0.5dp"
                 android:background="@color/activity_grey_bg"/>
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_Blacklist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -337,7 +336,6 @@
                 android:paddingBottom="@dimen/dimen_12"
                 android:drawableRight="@mipmap/right_jiantou_logo"/>
             <View
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/activity_grey_bg"/>

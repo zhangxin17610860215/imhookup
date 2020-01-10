@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/dp_size_25">
 
@@ -9,11 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimen_15">
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_head"
             android:layout_width="@dimen/dp_72"
             android:layout_height="@dimen/dp_72"
             android:src="@mipmap/default_home_head"
+            app:riv_corner_radius="@dimen/dimen_5"
             android:scaleType="fitXY"/>
         <TextView
             android:id="@+id/tv_name"
@@ -30,6 +32,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/more_logo"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/dimen_15"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_Blacklist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消拉黑"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/theme_color"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:padding="@dimen/dimen_15"/>

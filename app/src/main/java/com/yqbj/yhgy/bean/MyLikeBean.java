@@ -2,13 +2,13 @@ package com.yqbj.yhgy.bean;
 
 import java.util.List;
 
-public class HomeDataBean {
+public class MyLikeBean {
 
     /**
      * total : 1
      * size : 20
      * current : 1
-     * records : [{"accid":"517044816","name":"女神范儿💋💋","gender":2,"headUrl":"https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==","birthday":"1993-06-04T16:00:00.000+0000","height":"173CM","weight":"55KG","job":"1604","cities":"110100","certification":0,"region":"北京市","labeltype":0,"online":1,"distance":14,"vipMember":0,"multimediaSize":0,"config":{"accid":"517044816","hidelocation":0,"hideonline":0,"privacystate":1,"desiredGoals":"关爱我/有趣/看感觉"}}]
+     * records : [{"accid":"517044816","name":"女神范儿💋💋","gender":2,"headUrl":"https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==","birthday":"1993-06-05","height":"173CM","weight":"55KG","job":"1604","cities":"110100","certification":0,"region":"北京市","labeltype":0,"online":1,"vipMember":0,"multimediaSize":0,"config":{"accid":"517044816","hidelocation":0,"hideonline":0,"privacystate":2,"currencyType":2,"viewphotofee":888,"desiredGoals":"关爱我/有趣/看感觉"}}]
      * pages : 1
      */
 
@@ -64,7 +64,7 @@ public class HomeDataBean {
          * name : 女神范儿💋💋
          * gender : 2
          * headUrl : https://nim-nosdn.netease.im/MTY3Njc1MDE=/bmltYV8xNTg4OTM1MDc0Ml8xNTc4Mjk5MDgwOTE3XzNiZDI5MGJmLTE0OGItNDNkNy1hMjNhLWYxNzQxMGQ1MGM0Zg==
-         * birthday : 1993-06-04T16:00:00.000+0000
+         * birthday : 1993-06-05
          * height : 173CM
          * weight : 55KG
          * job : 1604
@@ -73,10 +73,9 @@ public class HomeDataBean {
          * region : 北京市
          * labeltype : 0
          * online : 1
-         * distance : 14
          * vipMember : 0
          * multimediaSize : 0
-         * config : {"accid":"517044816","hidelocation":0,"hideonline":0,"privacystate":1,"desiredGoals":"关爱我/有趣/看感觉"}
+         * config : {"accid":"517044816","hidelocation":0,"hideonline":0,"privacystate":2,"currencyType":2,"viewphotofee":888,"desiredGoals":"关爱我/有趣/看感觉"}
          */
 
         private String accid;
@@ -93,10 +92,10 @@ public class HomeDataBean {
         private int labeltype;
         private int online;
         private int distance;
-        private int enjoyFlag;
-        private int blacklistFlag;
         private int vipMember;
+        private int enjoyFlag;
         private int multimediaSize;
+        private int blacklistFlag;
         private ConfigBean config;
 
         public int getBlacklistFlag() {
@@ -113,6 +112,14 @@ public class HomeDataBean {
 
         public void setEnjoyFlag(int enjoyFlag) {
             this.enjoyFlag = enjoyFlag;
+        }
+
+        public int getDistance() {
+            return distance;
+        }
+
+        public void setDistance(int distance) {
+            this.distance = distance;
         }
 
         public String getAccid() {
@@ -219,14 +226,6 @@ public class HomeDataBean {
             this.online = online;
         }
 
-        public int getDistance() {
-            return distance;
-        }
-
-        public void setDistance(int distance) {
-            this.distance = distance;
-        }
-
         public int getVipMember() {
             return vipMember;
         }
@@ -256,7 +255,9 @@ public class HomeDataBean {
              * accid : 517044816
              * hidelocation : 0
              * hideonline : 0
-             * privacystate : 1
+             * privacystate : 2
+             * currencyType : 2
+             * viewphotofee : 888
              * desiredGoals : 关爱我/有趣/看感觉
              */
 
@@ -264,6 +265,8 @@ public class HomeDataBean {
             private int hidelocation;
             private int hideonline;
             private int privacystate;
+            private int currencyType;
+            private int viewphotofee;
             private String desiredGoals;
 
             public String getAccid() {
@@ -296,6 +299,22 @@ public class HomeDataBean {
 
             public void setPrivacystate(int privacystate) {
                 this.privacystate = privacystate;
+            }
+
+            public int getCurrencyType() {
+                return currencyType;
+            }
+
+            public void setCurrencyType(int currencyType) {
+                this.currencyType = currencyType;
+            }
+
+            public int getViewphotofee() {
+                return viewphotofee;
+            }
+
+            public void setViewphotofee(int viewphotofee) {
+                this.viewphotofee = viewphotofee;
             }
 
             public String getDesiredGoals() {

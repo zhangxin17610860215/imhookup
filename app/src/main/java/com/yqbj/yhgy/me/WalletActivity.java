@@ -148,7 +148,7 @@ public class WalletActivity extends BaseActivity {
                 imgHeader.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DetailsActivity.start(mActivity,"","","","");
+                        DetailsActivity.start(mActivity,"");
                     }
                 });
             }

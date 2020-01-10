@@ -178,9 +178,54 @@ public class UserInfoBean {
         private String cities;
         private String loginTime;
         private String description;
+        private String region;
         private int certification;
         private int labeltype;
         private int vipMember;
+        private int online;
+        private int distance;
+        private int enjoyFlag;
+        private int blacklistFlag;
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public int getOnline() {
+            return online;
+        }
+
+        public void setOnline(int online) {
+            this.online = online;
+        }
+
+        public int getDistance() {
+            return distance;
+        }
+
+        public void setDistance(int distance) {
+            this.distance = distance;
+        }
+
+        public int getEnjoyFlag() {
+            return enjoyFlag;
+        }
+
+        public void setEnjoyFlag(int enjoyFlag) {
+            this.enjoyFlag = enjoyFlag;
+        }
+
+        public int getBlacklistFlag() {
+            return blacklistFlag;
+        }
+
+        public void setBlacklistFlag(int blacklistFlag) {
+            this.blacklistFlag = blacklistFlag;
+        }
 
         public String getDescription() {
             return description;

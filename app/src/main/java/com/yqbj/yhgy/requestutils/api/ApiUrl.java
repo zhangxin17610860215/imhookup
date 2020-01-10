@@ -30,4 +30,6 @@ public class ApiUrl {
     public static String EVALUALEUSER = BASE_URL_HEAD + SERVERDOMAIN + "/estimate/user";
     public static String OPERATORENJOY = BASE_URL_HEAD + SERVERDOMAIN + "/tendency/operator/enjoy";
     public static String GETENJOYLIST = BASE_URL_HEAD + SERVERDOMAIN + "/tendency/enjoy/list";
+    public static String OPERATORBLACKLIST= BASE_URL_HEAD + SERVERDOMAIN + "/tendency/operator/blacklist";
+    public static String GETBLACKLIST= BASE_URL_HEAD + SERVERDOMAIN + "/tendency/black/list";
 }

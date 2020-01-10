@@ -159,11 +159,9 @@ public class DetailsActivity extends BaseActivity {
     TextView tvNoPhoto;
 
     private Activity mActivity;
-    private int addLike = 1;                    //是否加入喜欢     1=不加入     2=加入
+    private int addLike = 2;                    //是否加入喜欢     1=移除     2=加入
+    private int addBlacklist = 2;               //是否加入黑名单     1=移除     2=加入
     private String accid = "";
-    private String region = "";
-    private String distance = "";
-    private String online = "";
     private String albumMoney = "";
     private UserInfoBean.UserDetailsBean userDetailsBean;
     private UserInfoBean.ConfigBean configBean;
@@ -173,12 +171,9 @@ public class DetailsActivity extends BaseActivity {
     private List<PhotoBean> photoList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
 
-    public static void start(Context context, String accid, String region, String distance, String online) {
+    public static void start(Context context, String accid) {
         Intent intent = new Intent(context, DetailsActivity.class);
         intent.putExtra("accid", accid);
-        intent.putExtra("region", region);
-        intent.putExtra("distance", distance);
-        intent.putExtra("online", online);
         context.startActivity(intent);
     }
 
@@ -189,9 +184,6 @@ public class DetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
         mActivity = this;
         accid = getIntent().getStringExtra("accid");
-        region = getIntent().getStringExtra("region");
-        distance = getIntent().getStringExtra("distance");
-        online = getIntent().getStringExtra("online");
         initView();
         initData();
     }
@@ -202,16 +194,17 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onRight(View view) {
                 //更多
-                new XPopup.Builder(mActivity).asBottomList(null, new String[]{"备注", "匿名举报"},
+                addBlacklist = addBlacklist == 1? 2:1;
+                new XPopup.Builder(mActivity).asBottomList(null, new String[]{addBlacklist==1?"加入黑名单":"移除黑名单", "匿名举报"},
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                toast("click " + text);
                                 if (position == 1) {
                                     //匿名举报
                                     AnonymousReportActivity.start(mActivity);
                                 } else {
-                                    //备注
+                                    //黑名单
+                                    operatorBlackList();
                                 }
                             }
                         })
@@ -219,6 +212,30 @@ public class DetailsActivity extends BaseActivity {
             }
         });
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity,4));
+    }
+
+    /**
+     * 操作黑名单
+     * */
+    private void operatorBlackList() {
+        showProgress(false);
+        UserApi.operatorBlackList(accid, addBlacklist, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     private void initData() {
@@ -359,9 +376,14 @@ public class DetailsActivity extends BaseActivity {
      * 加载页面详情信息
      * */
     private void loadDetails() {
+        addLike = userDetailsBean.getEnjoyFlag();
+        addBlacklist = userDetailsBean.getBlacklistFlag();
+        tvAddLike.setText(addLike==1?"取消喜欢":"加入喜欢");
+        tvAddLike.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(addLike==1?R.mipmap.yes_like_logo:R.mipmap.no_like_logo), null);
+
         Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
         tvName.setText(userDetailsBean.getName());
-        tvPlace.setText(region);
+        tvPlace.setText(userDetailsBean.getRegion());
         tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");
         CityBean occupationBean;
         String job = "";
@@ -395,8 +417,8 @@ public class DetailsActivity extends BaseActivity {
         tvAdoptZhenRen.setVisibility(userDetailsBean.getCertification() == 1 ? View.VISIBLE : View.GONE);
         tvAdoptNvShen.setVisibility(userDetailsBean.getGender() == 2 ? userDetailsBean.getLabeltype() == 1 ? View.VISIBLE : View.GONE : View.GONE);
         tvName.setCompoundDrawablesWithIntrinsicBounds(null, null, userDetailsBean.getGender() == 1 ? userDetailsBean.getVipMember() == 0 ? getResources().getDrawable(R.mipmap.vip_huangguan_logo) : null : null, null);
-        tvDistance.setText(distance + "m");
-        tvHomeOnline.setVisibility(online.equals("1") ? View.VISIBLE : View.GONE);
+        tvDistance.setText(userDetailsBean.getDistance() + "m");
+        tvHomeOnline.setVisibility(userDetailsBean.getOnline()==1 ? View.VISIBLE : View.GONE);
         tvHomePaidAlbum.setVisibility(configBean.getPrivacystate() == 2 ? View.VISIBLE : View.GONE);
         tvHeight.setText(userDetailsBean.getHeight());
         tvWeight.setText(userDetailsBean.getWeight());
@@ -497,7 +519,7 @@ public class DetailsActivity extends BaseActivity {
             case R.id.tv_addLike:
                 //添加喜欢
                 addLike = addLike == 1? 2:1;
-                operatorEnjoy(addLike);
+                operatorEnjoy();
                 break;
             case R.id.img_header:
                 //头像
@@ -554,7 +576,7 @@ public class DetailsActivity extends BaseActivity {
     /**
      * 添加移除收藏
      * */
-    private void operatorEnjoy(int addLike) {
+    private void operatorEnjoy() {
         showProgress(false);
         UserApi.operatorEnjoy(accid, addLike, mActivity, new RequestCallback() {
             @Override
