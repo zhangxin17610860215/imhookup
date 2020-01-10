@@ -13,6 +13,7 @@ import com.yqbj.yhgy.bean.MyLikeBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.bean.VipListInfoBean;
+import com.yqbj.yhgy.bean.WalletBalanceBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.BaseBean;
 import com.yqbj.yhgy.requestutils.RequestCallback;
@@ -775,6 +776,72 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "getBlackList--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取账户余额
+     * */
+    public static void getBalance(Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        RequestHelp.getRequest(ApiUrl.GETBALANCE, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getBalance--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        WalletBalanceBean walletBalanceBean = JSON.parseObject(JSON.toJSONString(data.get("wallet")), WalletBalanceBean.class);
+                        callback.onSuccess(bean.getCode(),walletBalanceBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getBalance--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 绑定支付宝账户
+     * */
+    public static void bindALiAccount(String aliAccount, String aliRealName, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("aliAccount",aliAccount);
+        map.put("aliRealName",aliRealName);
+        RequestHelp.postRequest(ApiUrl.BINDALIACCOUNT, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "bindALiAccount--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "bindALiAccount--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

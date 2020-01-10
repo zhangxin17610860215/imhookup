@@ -32,4 +32,6 @@ public class ApiUrl {
     public static String GETENJOYLIST = BASE_URL_HEAD + SERVERDOMAIN + "/tendency/enjoy/list";
     public static String OPERATORBLACKLIST= BASE_URL_HEAD + SERVERDOMAIN + "/tendency/operator/blacklist";
     public static String GETBLACKLIST= BASE_URL_HEAD + SERVERDOMAIN + "/tendency/black/list";
+    public static String GETBALANCE= BASE_URL_HEAD + SERVERDOMAIN + "/wallet/details";
+    public static String BINDALIACCOUNT= BASE_URL_HEAD + SERVERDOMAIN + "/wallet/binding/aliaccount";
 }

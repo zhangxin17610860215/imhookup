@@ -23,10 +23,13 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.CurrencyPriceBean;
+import com.yqbj.yhgy.bean.WalletBalanceBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.home.DetailsActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.NumberUtil;
+import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.view.BindAliPayDialog;
 import com.yqbj.yhgy.view.CurrencyRechargeDialog;
 import com.yqbj.yhgy.view.CurrencyWithdrawalDialog;
@@ -123,6 +126,39 @@ public class WalletActivity extends BaseActivity {
     }
 
     private void initData() {
+        showProgress(false);
+        UserApi.getBalance(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    WalletBalanceBean balanceBean = (WalletBalanceBean) object;
+                    if (type==1){
+                        tvCashTotal.setText(String.valueOf(NumberUtil.add(balanceBean.getMoney(),balanceBean.getUnassignableTotalMoney())));
+                        tvWithdrawalMoney.setText(balanceBean.getMoney());
+                    }else {
+                        tvCashTotal.setText(String.valueOf(NumberUtil.add(balanceBean.getCurrency()+"",balanceBean.getUnassignableTotalCurrency()+"")));
+                        tvWithdrawalMoney.setText(balanceBean.getCurrency()+"");
+                    }
+
+                    if (StringUtil.isNotEmpty(balanceBean.getAliAccount()) && StringUtil.isNotEmpty(balanceBean.getAliRealName())){
+                        alpayAccount = balanceBean.getAliAccount();
+                        alpayName = balanceBean.getAliRealName();
+                        tvBindAliPayCurrency.setText(alpayAccount + "(" + alpayName + ")");
+                        tvBindAliPayCash.setText(alpayAccount + "(" + alpayName + ")");
+                    }
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+
         list.add("1");
         list.add("2");
         list.add("3");
@@ -229,16 +265,40 @@ public class WalletActivity extends BaseActivity {
                         .dismissOnTouchOutside(false)
                         .asCustom(new BindAliPayDialog(mActivity, alpayAccount, alpayName, new BindAliPayDialog.ConfirmOnClickListener() {
                             @Override
-                            public void onClick(View v, String account, String Name) {
-                                alpayAccount = account;
-                                alpayName = Name;
-                                tvBindAliPayCurrency.setText(alpayAccount + "(" + alpayName + ")");
-                                tvBindAliPayCash.setText(alpayAccount + "(" + alpayName + ")");
+                            public void onClick(View v, String account, String name) {
+                                bindALiAccount(account,name);
                             }
                         }))
                         .show();
                 break;
         }
+    }
+
+    /**
+     * 绑定支付宝账户
+     * */
+    private void bindALiAccount(String account, String name) {
+        showProgress(false);
+        UserApi.bindALiAccount(account, name, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    alpayAccount = account;
+                    alpayName = name;
+                    tvBindAliPayCurrency.setText(alpayAccount + "(" + alpayName + ")");
+                    tvBindAliPayCash.setText(alpayAccount + "(" + alpayName + ")");
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     /**
