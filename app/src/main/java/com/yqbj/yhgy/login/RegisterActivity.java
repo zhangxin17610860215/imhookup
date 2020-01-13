@@ -193,7 +193,7 @@ public class RegisterActivity extends BaseActivity {
                 Constants.USER_ATTRIBUTE.WXHEADIMG = map.get("iconurl");
                 Constants.USER_ATTRIBUTE.SIGNUPTYPE = "2";
                 //拿到信息去绑定手机号
-                BindPhoneActivity.start(activity);
+                BindPhoneActivity.start(activity,"1");
             }
 
             @Override

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.lxj.xpopup.XPopup;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
@@ -42,7 +43,7 @@ public class PrivacySettingActivity extends BaseActivity {
     TextView tvHideAccount;
 
     private Activity mActivity;
-    private boolean publicSwitch;               //公开
+    private boolean publicSwitch = true;        //公开
     private boolean albumSwitch;                //相册付费
     private boolean verificationSwitch;         //查看前需通过我的验证
     private boolean listHideSwitch;             //在公园列表隐藏我
@@ -51,8 +52,13 @@ public class PrivacySettingActivity extends BaseActivity {
     private boolean hideAccountSwitch;          //对他人隐藏我的社交账号
     private String albumMoney = "";             //相册金额
 
-    public static void start(Context context) {
+    private UserInfoBean.ConfigBean configBean;
+    private String hideAccount = "";
+
+    public static void start(Context context, UserInfoBean.ConfigBean configBean, String hideAccount) {
         Intent intent = new Intent(context, PrivacySettingActivity.class);
+        intent.putExtra("configBean",configBean);
+        intent.putExtra("hideAccount",hideAccount);
         context.startActivity(intent);
     }
 
@@ -63,8 +69,8 @@ public class PrivacySettingActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         mActivity = this;
-        initView();
         initData();
+        initView();
     }
 
     private void initView() {
@@ -72,7 +78,22 @@ public class PrivacySettingActivity extends BaseActivity {
     }
 
     private void initData() {
-        publicSwitch = true;
+        configBean = (UserInfoBean.ConfigBean) getIntent().getSerializableExtra("configBean");
+        hideAccount = getIntent().getStringExtra("hideAccount");
+        if (null != configBean){
+            publicSwitch = configBean.getPrivacystate() == 1;
+            albumSwitch = configBean.getPrivacystate() == 2;
+            listHideSwitch = configBean.getInvisible() == 1;
+            hideDistanceSwitch = configBean.getHidelocation() == 1;
+            hideTimeSwitch = configBean.getHideonline() == 1;
+            hideAccountSwitch = hideAccount.endsWith("1");
+            tvPublic.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(publicSwitch?R.mipmap.selected_logo:R.mipmap.unselected_logo), null);
+            tvAlbum.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(albumSwitch?R.mipmap.selected_logo:R.mipmap.unselected_logo), null);
+            tvListHide.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(listHideSwitch ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+            tvHideDistance.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(hideDistanceSwitch ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+            tvHideTime.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(hideTimeSwitch ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+            tvHideAccount.setCompoundDrawablesWithIntrinsicBounds(null,null, getResources().getDrawable(hideAccountSwitch ? R.mipmap.isshow_open : R.mipmap.isshow_close), null);
+        }
     }
 
     @OnClick({R.id.tv_public, R.id.tv_Album, R.id.tv_Verification, R.id.tv_ListHide, R.id.tv_HideDistance, R.id.tv_HideTime, R.id.tv_HideAccount})
@@ -225,6 +246,8 @@ public class PrivacySettingActivity extends BaseActivity {
                         dismissProgress();
                         if (code != Constants.SUCCESS_CODE){
                             toast((String) object);
+                        }else {
+                            Constants.REFRESH = true;
                         }
                     }
 

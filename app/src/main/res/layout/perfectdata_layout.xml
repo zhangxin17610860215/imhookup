@@ -425,7 +425,7 @@
                     android:layout_marginLeft="@dimen/dimen_70"
                     android:hint="介绍一下我自己"
                     android:textSize="@dimen/text_size_15"
-                    android:textColor="@color/edit_hint_color"
+                    android:textColor="@color/black"
                     android:background="@color/white"/>
             </RelativeLayout>
             <View

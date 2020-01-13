@@ -155,7 +155,7 @@ public class GenderSelectionAct extends BaseActivity {
                 // 初始化消息提醒配置
                 initNotificationConfig();
                 //跳转完善资料
-                PerfectDataActivity.start(activity,"0");
+                PerfectDataActivity.start(activity,"0",null);
                 finish();
             }
 

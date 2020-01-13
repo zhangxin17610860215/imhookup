@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.yqbj.yhgy.config.Constants.ERROR_REQUEST_EXCEPTION_MESSAGE;
 import static com.yqbj.yhgy.config.Constants.ERROR_REQUEST_FAILED_MESSAGE;
@@ -63,6 +64,7 @@ public class UserApi {
                     if (bean.getCode() == Constants.SUCCESS_CODE){
                         Map<String, Object> data = bean.getData();
                         UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
+                        Preferences.saveServerDomain(userBean.getServerDomain());
                         userBean.setLoginType(signupType);
                         userBean.setPassword(password);
                         userBean.setWxToken(Constants.USER_ATTRIBUTE.WXTOKEN);
@@ -184,6 +186,7 @@ public class UserApi {
                     if (bean.getCode() == Constants.SUCCESS_CODE){
                         Map<String, Object> data = bean.getData();
                         UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
+                        Preferences.saveServerDomain(userBean.getServerDomain());
                         userBean.setLoginType(loginType);
                         userBean.setPassword(password);
                         userBean.setWxToken(wxtoken);
@@ -199,7 +202,6 @@ public class UserApi {
                         if (StringUtil.isNotEmpty(longitude) && StringUtil.isNotEmpty(latitude)){
                             updateLocation(latitude,longitude,city,object);
                         }
-
                         callback.onSuccess(bean.getCode(),userBean);
                     } else {
                         callback.onFailed(bean.getMsg());
@@ -842,6 +844,107 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "bindALiAccount--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 网关服获取短信验证码
+     * */
+    public static void getMobileCode(String smsCodeType, String mobile, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("smsCodeType",smsCodeType);
+        map.put("mobile",mobile);
+        RequestHelp.postRequest(ApiUrl.GETMOBILECODE, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getMobileCode--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getMobileCode--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 修改手机号
+     * */
+    public static void changeAccount(String smsCodeType, String mobile, String smsCode, String passsword, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("smsCodeType",smsCodeType);
+        map.put("mobile",mobile);
+        map.put("smsCode",smsCode);
+        map.put("passsword",passsword);
+        RequestHelp.postRequest(ApiUrl.CHANGEACCOUNT, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "changeAccount--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "changeAccount--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 重置密码
+     * */
+    public static void resetPassword(String oldPasssword, String passsword, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("oldPasssword",oldPasssword);
+        map.put("passsword",passsword);
+        RequestHelp.postRequest(ApiUrl.RESETPASSWORD, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "resetPassword--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "resetPassword--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

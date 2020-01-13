@@ -50,7 +50,6 @@ public class Preferences {
             return getBoolean(KEY_USER_PAY_PASS_SET + "_" + NimUIKit.getAccount());
         }
 
-
     }
 
     public static void saveUserData(UserBean userBean) {
@@ -80,6 +79,18 @@ public class Preferences {
 
     public static void saveCity(String city){
         saveString(KEY_CITY,city);
+    }
+
+    public static void saveServerDomain(String serverDomain){
+        saveString(KEY_SERVERDOMAIN,serverDomain);
+    }
+
+    public static void saveUserAccount(String userAccount){
+        saveString(KEY_USERACCOUNT,userAccount);
+    }
+
+    public static void savePsw(String psw){
+        saveString(KEY_PSW,psw);
     }
 
     public static String getServerDomain() {

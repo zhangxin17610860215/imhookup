@@ -16,6 +16,7 @@ import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.me.GenderSelectionAct;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import butterknife.BindView;
@@ -31,6 +32,8 @@ public class BindPhoneActivity extends BaseActivity {
     EditText etPhone;
     @BindView(R.id.tv_sendVerCode)
     TextView tvSendVerCode;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
     @BindView(R.id.et_verCode)
     EditText etVerCode;
     @BindView(R.id.et_psw)
@@ -42,9 +45,11 @@ public class BindPhoneActivity extends BaseActivity {
     private String phone = "";
     private String vfCode = "";
     private String psw = "";
+    private String type = "";       //type=1   绑定手机号      type=2   修改手机号
 
-    public static void start(Context context) {
+    public static void start(Context context, String type) {
         Intent intent = new Intent(context, BindPhoneActivity.class);
+        intent.putExtra("type",type);
         context.startActivity(intent);
     }
 
@@ -60,6 +65,8 @@ public class BindPhoneActivity extends BaseActivity {
 
     private void initView() {
         setToolbar(activity, 0, "");
+        type = getIntent().getStringExtra("type");
+        tvTitle.setText(type.equals("1")?"绑定手机号":"更换手机号");
     }
 
     private void countDown() {
@@ -98,7 +105,11 @@ public class BindPhoneActivity extends BaseActivity {
                     if (StringUtil.isEmpty(phone)){
                         toast("请先输入手机号");
                     }else {
-                        getVfCode();
+                        if (type.equals("1")){
+                            getVfCode();
+                        }else if (type.equals("2")){
+                            getMobileCode();
+                        }
                     }
                 }
                 break;
@@ -118,16 +129,70 @@ public class BindPhoneActivity extends BaseActivity {
                     toast("请输入密码");
                     return;
                 }
-                Constants.USER_ATTRIBUTE.PHONE = phone;
-                Constants.USER_ATTRIBUTE.VFCODE = vfCode;
-                Constants.USER_ATTRIBUTE.PSW = psw;
-                GenderSelectionAct.start(activity);
+                if (type.equals("1")){
+                    Constants.USER_ATTRIBUTE.PHONE = phone;
+                    Constants.USER_ATTRIBUTE.VFCODE = vfCode;
+                    Constants.USER_ATTRIBUTE.PSW = psw;
+                    GenderSelectionAct.start(activity);
+                }else if (type.equals("2")){
+                    changeAccount();
+                }
                 break;
         }
     }
 
     /**
-     * 获取验证码
+     * 修改手机号
+     * */
+    private void changeAccount() {
+        showProgress(false);
+        UserApi.changeAccount("3", phone, vfCode, psw, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    toast("手机号修改成功");
+                    Preferences.saveUserAccount(phone);
+                    finish();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 获取验证码(网关服)
+     * */
+    private void getMobileCode() {
+        showProgress(false);
+        UserApi.getMobileCode("3", phone, activity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    countDown();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 获取验证码(登录服)
      * */
     private void getVfCode() {
         showProgress(false);

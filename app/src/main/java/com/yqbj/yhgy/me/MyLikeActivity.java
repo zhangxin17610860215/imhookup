@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -52,6 +53,10 @@ public class MyLikeActivity extends BaseActivity {
     RecyclerView mRecyclerView;
     @BindView(R.id.refresh_layout)
     MyRefreshLayout refreshLayout;
+    @BindView(R.id.tv_noData_content)
+    TextView tvNoDataContent;
+    @BindView(R.id.ll_nodata)
+    LinearLayout llNodata;
 
     private Activity mActivity;
     private EasyRVAdapter mAdapter;
@@ -141,6 +146,14 @@ public class MyLikeActivity extends BaseActivity {
     }
 
     private void loadData() {
+        if (null == list || list.size() <= 0){
+            llNodata.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+            tvNoDataContent.setText("没有数据");
+        }else {
+            llNodata.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
         mAdapter = new EasyRVAdapter(mActivity,list,R.layout.item_home_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, int position, Object item) {

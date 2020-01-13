@@ -30,6 +30,7 @@ import com.netease.nimlib.sdk.uinfo.UserService;
 import com.netease.nimlib.sdk.uinfo.constant.UserInfoFieldEnum;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
@@ -116,10 +117,12 @@ public class PerfectDataActivity extends BaseActivity {
     private String headUrl,nikeName,city,birthday,job,desiredGoals,qq,weChat,hidecontactinfo,
                     height,weight,description;
     private String type = "";//type == 0,未登录   type == 1,已登录
+    private UserInfoBean userInfoBean;
 
-    public static void start(Context context,String type) {
+    public static void start(Context context, String type, UserInfoBean userInfoBean) {
         Intent intent = new Intent(context, PerfectDataActivity.class);
         intent.putExtra("type",type);
+        intent.putExtra("userInfoBean",userInfoBean);
         context.startActivity(intent);
     }
 
@@ -140,37 +143,94 @@ public class PerfectDataActivity extends BaseActivity {
 
     private void initData() {
         type = getIntent().getStringExtra("type");
-//        imgUpHead.setIsRect(true);
-        headUrl = Preferences.getHeadImag();
-        nikeName = Preferences.getNikename();
+        if (type.equals("1")){
+            userInfoBean = (UserInfoBean) getIntent().getSerializableExtra("userInfoBean");
+            headUrl = userInfoBean.getUserDetails().getHeadUrl();
+            nikeName = userInfoBean.getUserDetails().getName();
+            String cities = userInfoBean.getUserDetails().getCities();
+            if (StringUtil.isNotEmpty(cities)){
+                //选中城市
+                selCityValueList.clear();
+                selCityTextList.clear();
+                String onCity = "";
+                CityBean cityBean;
+                for (int i = 0; i < CITYBEANLIST.size(); i++) {
+                    cityBean = CITYBEANLIST.get(i);
+                    for (int j = 0; j < cityBean.getChild().size(); j++) {
+                        List<CityBean.ChildBeanX> city = CITYBEANLIST.get(i).getChild();
+                        if (userInfoBean.getUserDetails().getCities().contains(city.get(j).getValue())) {
+                            selCityTextList.add(city.get(j).getText());
+                            selCityValueList.add(city.get(j).getValue());
+                            onCity = onCity + city.get(j).getText() + "/";
+                        }
+                    }
+                }
+                if (onCity.contains("/")) {
+                    onCity=onCity.substring(0, onCity.length() - 1);
+                }
+                if (StringUtil.isNotEmpty(onCity)){
+                    tvSelecteCity.setText(onCity);
+                    tvSelecteCity.setTextColor(getResources().getColor(R.color.color_333333));
+                }
+
+            }
+
+            String job = userInfoBean.getUserDetails().getJob();
+            if (StringUtil.isNotEmpty(job)){
+                //选中职业
+                selOccupationValueList.clear();
+                selOccupationValueList.add(job);
+                selOccupationTextList.clear();
+
+                CityBean occupationBean;
+                for (int i = 0; i < OCCUPATIONBEANLIST.size(); i++) {
+                    occupationBean = OCCUPATIONBEANLIST.get(i);
+                    for (int j = 0; j < occupationBean.getChild().size(); j++) {
+                        List<CityBean.ChildBeanX> occupation = OCCUPATIONBEANLIST.get(i).getChild();
+                        if (job.equals(occupation.get(j).getValue())) {
+                            selOccupationTextList.add(occupation.get(j).getText());
+                        }
+                    }
+                }
+
+                if (selOccupationTextList.size()>0){
+                    tvOccupation.setText(selOccupationTextList.get(0));
+                    tvOccupation.setTextColor(getResources().getColor(R.color.color_333333));
+                }
+            }
+
+            tvBirthday.setText(userInfoBean.getUserDetails().getBirthday());
+            tvBirthday.setTextColor(getResources().getColor(R.color.black));
+            tvExpect.setText(userInfoBean.getConfig().getDesiredGoals());
+            tvExpect.setTextColor(getResources().getColor(R.color.black));
+            if (StringUtil.isNotEmpty(userInfoBean.getContactInfo().getWeChat())){
+                etWechat.setText(userInfoBean.getContactInfo().getWeChat());
+            }
+            if (StringUtil.isNotEmpty(userInfoBean.getContactInfo().getQq())){
+                etQQ.setText(userInfoBean.getContactInfo().getQq());
+            }
+            isHideAccounts = userInfoBean.getContactInfo().getHidecontactinfo() == 1;
+            tvIsShow.setBackgroundResource(isHideAccounts ? R.mipmap.isshow_open : R.mipmap.isshow_close);
+            if (StringUtil.isNotEmpty(userInfoBean.getUserDetails().getHeight())){
+                tvHeight.setText(userInfoBean.getUserDetails().getHeight());
+                tvHeight.setTextColor(getResources().getColor(R.color.black));
+            }
+            if (StringUtil.isNotEmpty(userInfoBean.getUserDetails().getWeight())){
+                tvWeight.setText(userInfoBean.getUserDetails().getWeight());
+                tvWeight.setTextColor(getResources().getColor(R.color.black));
+            }
+            if (StringUtil.isNotEmpty(userInfoBean.getUserDetails().getDescription())){
+                etIntroduce.setText(userInfoBean.getUserDetails().getDescription());
+            }
+
+        }else {
+            headUrl = Preferences.getHeadImag();
+            nikeName = Preferences.getNikename();
+        }
         Glide.with(activity).load(headUrl).error(R.mipmap.default_head_logo).into(imgUpHead);
         if (StringUtil.isNotEmpty(nikeName)){
             etName.setText(nikeName);
         }
-        //默认选中城市
-        selCityValueList.clear();
-        selCityValueList.add("140800");
-        selCityValueList.add("110100");
-        selCityTextList.clear();
-        selCityTextList.add("运城市");
-        selCityTextList.add("北京市");
-        String cityText = "";
-        for (int i = 0; i < selCityTextList.size(); i++){
-            cityText = cityText + selCityTextList.get(i) + "/";
-        }
-        if (cityText.contains("/")){
-            cityText = cityText.substring(0,cityText.length()-1);
-        }
-        tvSelecteCity.setText(cityText);
-        tvSelecteCity.setTextColor(getResources().getColor(R.color.color_333333));
-
-        //默认选中职业
-        selOccupationValueList.clear();
-        selOccupationValueList.add("1002");
-        selOccupationTextList.clear();
-        selOccupationTextList.add("IT");
-        tvOccupation.setText(selOccupationTextList.get(0));
-        tvOccupation.setTextColor(getResources().getColor(R.color.color_333333));
     }
 
     /**

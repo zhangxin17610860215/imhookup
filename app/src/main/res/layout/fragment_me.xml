@@ -207,7 +207,7 @@
                 android:id="@+id/tv_PrivacySetting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="隐私与连麦设置"
+                android:text="隐私设置"
                 android:textSize="@dimen/text_size_12"
                 android:textColor="@color/black"
                 android:paddingTop="@dimen/dimen_12"

@@ -97,12 +97,12 @@ public class MeFragment extends BaseFragment {
     @BindView(R.id.ll_noData)
     LinearLayout llNoData;
 
+    private UserInfoBean userInfoBean;
     private UserInfoBean.UserDetailsBean userDetailsBean;
     private UserInfoBean.ConfigBean configBean;
     private UserInfoBean.ContactInfoBean contactInfoBean;
     private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean;
     private UserInfoBean.WalletBean walletBean;
-    private List<PhotoBean> burnAfterReadingList = new ArrayList<>();
     private List<PhotoBean> list = new ArrayList<>();
     private List<PhotoBean> photoList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
@@ -163,7 +163,7 @@ public class MeFragment extends BaseFragment {
                 dismissProgress();
                 if (code == Constants.SUCCESS_CODE){
                     Constants.REFRESH = false;
-                    UserInfoBean userInfoBean = (UserInfoBean) object;
+                    userInfoBean = (UserInfoBean) object;
                     userDetailsBean = userInfoBean.getUserDetails();
                     configBean = userInfoBean.getConfig();
                     contactInfoBean = userInfoBean.getContactInfo();
@@ -191,11 +191,11 @@ public class MeFragment extends BaseFragment {
                     list.clear();
                     for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
                         PhotoBean photoBean = new PhotoBean();
-                        photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1 ? true : false);
-                        photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1? true : false);
+                        photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1);
+                        photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
                         photoBean.setPhotoUrl(albumBean.getUrl());
                         photoBean.setFee(albumBean.getFee()+"");
-                        photoBean.setOneself(albumBean.getSelfFlag()==1? true : false);
+                        photoBean.setOneself(albumBean.getSelfFlag()==1);
                         list.add(photoBean);
                     }
                     initData();
@@ -319,7 +319,7 @@ public class MeFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.img_editingmaterials:
                 //编辑资料
-                PerfectDataActivity.start(mActivity,"1");
+                PerfectDataActivity.start(mActivity,"1",userInfoBean);
                 break;
             case R.id.img_header:
                 //头像
@@ -338,8 +338,8 @@ public class MeFragment extends BaseFragment {
                 WalletActivity.start(mActivity);
                 break;
             case R.id.tv_PrivacySetting:
-                //隐私与连麦设置
-                PrivacySettingActivity.start(mActivity);
+                //隐私设置
+                PrivacySettingActivity.start(mActivity,configBean,contactInfoBean.getHidecontactinfo()+"");
                 break;
             case R.id.tv_dynamic:
                 //我的动态

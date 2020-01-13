@@ -10,7 +10,7 @@ public class ApiUrl {
     public static boolean isDebug = true;                        //是否是测试环境
 
     public static String BASE_URL_HEAD = "http://";
-    public static String BASE_URL = "192.168.1.110:7075";
+    public static String BASE_URL = "192.168.1.119:7075";
     public static String SERVERDOMAIN = Preferences.getServerDomain();
 
     public static String USER_LOGIN = BASE_URL_HEAD + BASE_URL + "/user/login";
@@ -34,4 +34,7 @@ public class ApiUrl {
     public static String GETBLACKLIST= BASE_URL_HEAD + SERVERDOMAIN + "/tendency/black/list";
     public static String GETBALANCE= BASE_URL_HEAD + SERVERDOMAIN + "/wallet/details";
     public static String BINDALIACCOUNT= BASE_URL_HEAD + SERVERDOMAIN + "/wallet/binding/aliaccount";
+    public static String GETMOBILECODE= BASE_URL_HEAD + SERVERDOMAIN + "/mobile/send/code";
+    public static String CHANGEACCOUNT= BASE_URL_HEAD + SERVERDOMAIN + "/user/change/account";
+    public static String RESETPASSWORD= BASE_URL_HEAD + SERVERDOMAIN + "/user/reset/password";
 }

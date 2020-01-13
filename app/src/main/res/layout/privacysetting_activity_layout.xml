@@ -68,6 +68,7 @@
                 android:layout_height="0.5dp"
                 android:background="@color/activity_grey_bg"/>
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_Verification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

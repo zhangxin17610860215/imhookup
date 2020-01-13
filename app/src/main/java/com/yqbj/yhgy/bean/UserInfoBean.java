@@ -1,8 +1,9 @@
 package com.yqbj.yhgy.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserInfoBean {
+public class UserInfoBean implements Serializable {
 
     /**
      * wallet : {"currency":0,"money":0,"unassignableTotalCurrency":0,"unassignableTotalMoney":0}
@@ -58,7 +59,7 @@ public class UserInfoBean {
         this.photoAlbum = photoAlbum;
     }
 
-    public static class WalletBean {
+    public static class WalletBean implements Serializable{
         /**
          * currency : 0
          * money : 0.0
@@ -104,7 +105,7 @@ public class UserInfoBean {
         }
     }
 
-    public static class ContactInfoBean {
+    public static class ContactInfoBean implements Serializable {
         /**
          * accid : 144742596
          * hidecontactinfo : 0
@@ -149,7 +150,7 @@ public class UserInfoBean {
         }
     }
 
-    public static class UserDetailsBean {
+    public static class UserDetailsBean implements Serializable {
         /**
          * accid : 144742596
          * name : 😂 😚 😌 xgv
@@ -348,7 +349,7 @@ public class UserInfoBean {
         }
     }
 
-    public static class ConfigBean {
+    public static class ConfigBean implements Serializable {
         /**
          * accid : 144742596
          * hidelocation : 0
@@ -440,7 +441,7 @@ public class UserInfoBean {
         }
     }
 
-    public static class PhotoAlbumBean {
+    public static class PhotoAlbumBean implements Serializable {
         /**
          * id : 1
          * type : 1

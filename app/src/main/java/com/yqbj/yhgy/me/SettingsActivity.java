@@ -24,6 +24,7 @@ import com.yqbj.yhgy.login.ModifyPasswordActivity;
 import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.utils.AppManager;
 import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.GlideCacheUtil;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.view.EasyAlertDialogHelper;
 import com.yqbj.yhgy.view.MiddleDialog;
@@ -65,10 +66,17 @@ public class SettingsActivity extends BaseActivity {
 
     private void initView() {
         setToolbar(mActivity, 0, "");
+        tvCacheSize.setText(GlideCacheUtil.getInstance().getCacheSize(mActivity) + "M");
     }
 
     private void initData() {
         getSDKDirCacheSize();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvPhone.setText(Preferences.getAccount());
     }
 
     @OnClick({R.id.tv_MessageNotification, R.id.rl_Phone, R.id.tv_SetPassword, R.id.tv_Standard, R.id.tv_Privacy, R.id.tv_Agreement, R.id.rl_ClearCache, R.id.tv_Logout})
@@ -84,7 +92,7 @@ public class SettingsActivity extends BaseActivity {
                         .asCustom(new MiddleDialog(mActivity, "", "你想修改绑定的手机号吗?", new MiddleDialog.Listener() {
                             @Override
                             public void onConfirmClickListener() {
-                                BindPhoneActivity.start(mActivity);
+                                BindPhoneActivity.start(mActivity,"2");
                             }
 
                             @Override
@@ -147,6 +155,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void clearSDKDirCache() {
+        showProgress(false);
         List<DirCacheFileType> types = new ArrayList<>();
         types.add(DirCacheFileType.AUDIO);
         types.add(DirCacheFileType.THUMB);
@@ -157,8 +166,8 @@ public class SettingsActivity extends BaseActivity {
         NIMClient.getService(MiscService.class).clearDirCache(types, 0, 0).setCallback(new RequestCallbackWrapper<Void>() {
             @Override
             public void onResult(int code, Void result, Throwable exception) {
-//                clearSDKDirCacheItem.setDetail("0.00 M");
-//                adapter.notifyDataSetChanged();
+                dismissProgress();
+                GlideCacheUtil.getInstance().clearImageAllCache(mActivity);
             }
         });
     }
@@ -171,7 +180,7 @@ public class SettingsActivity extends BaseActivity {
         NimUIKit.logout();
         NIMClient.getService(AuthService.class).logout();
         SplashActivity.start(mActivity,null);
-        AppManager.getAppManager().finishActivity(MainActivity.class);
+        AppManager.getAppManager().finishAllActivity();
     }
 
 }
