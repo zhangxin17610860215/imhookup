@@ -21,10 +21,7 @@ import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.login.BindPhoneActivity;
 import com.yqbj.yhgy.login.ModifyPasswordActivity;
-import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.utils.AppManager;
-import com.yqbj.yhgy.utils.DemoCache;
-import com.yqbj.yhgy.utils.GlideCacheUtil;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.view.EasyAlertDialogHelper;
 import com.yqbj.yhgy.view.MiddleDialog;
@@ -66,7 +63,6 @@ public class SettingsActivity extends BaseActivity {
 
     private void initView() {
         setToolbar(mActivity, 0, "");
-        tvCacheSize.setText(GlideCacheUtil.getInstance().getCacheSize(mActivity) + "M");
     }
 
     private void initData() {
@@ -141,11 +137,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void getSDKDirCacheSize() {
         List<DirCacheFileType> types = new ArrayList<>();
-        types.add(DirCacheFileType.AUDIO);
-        types.add(DirCacheFileType.THUMB);
         types.add(DirCacheFileType.IMAGE);
-        types.add(DirCacheFileType.VIDEO);
-        types.add(DirCacheFileType.OTHER);
         NIMClient.getService(MiscService.class).getSizeOfDirCache(types, 0, 0).setCallback(new RequestCallbackWrapper<Long>() {
             @Override
             public void onResult(int code, Long result, Throwable exception) {
@@ -157,17 +149,14 @@ public class SettingsActivity extends BaseActivity {
     private void clearSDKDirCache() {
         showProgress(false);
         List<DirCacheFileType> types = new ArrayList<>();
-        types.add(DirCacheFileType.AUDIO);
-        types.add(DirCacheFileType.THUMB);
         types.add(DirCacheFileType.IMAGE);
-        types.add(DirCacheFileType.VIDEO);
-        types.add(DirCacheFileType.OTHER);
 
         NIMClient.getService(MiscService.class).clearDirCache(types, 0, 0).setCallback(new RequestCallbackWrapper<Void>() {
             @Override
             public void onResult(int code, Void result, Throwable exception) {
                 dismissProgress();
-                GlideCacheUtil.getInstance().clearImageAllCache(mActivity);
+                toast("清理成功");
+                tvCacheSize.setText(String.format("%.2f M", 0.0));
             }
         });
     }
