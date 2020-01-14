@@ -272,11 +272,11 @@ public class DetailsActivity extends BaseActivity {
         list.clear();
         for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
             PhotoBean photoBean = new PhotoBean();
-            photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1 ? true : false);
-            photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1? true : false);
+            photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1);
+            photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
             photoBean.setPhotoUrl(albumBean.getUrl());
             photoBean.setFee(albumBean.getFee()+"");
-            photoBean.setOneself(albumBean.getSelfFlag()==1? true : false);
+            photoBean.setOneself(albumBean.getLabelFlag()>0);
             list.add(photoBean);
         }
         photoList.clear();

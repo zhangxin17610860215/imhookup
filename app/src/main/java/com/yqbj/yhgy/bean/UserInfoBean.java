@@ -459,7 +459,7 @@ public class UserInfoBean implements Serializable {
         private int checkFlag;
         private int currencyType;
         private int fee;
-        private int selfFlag;
+        private int labelFlag;
         private int paidFlag;
         private int setOnFire;
 
@@ -479,12 +479,12 @@ public class UserInfoBean implements Serializable {
             this.setOnFire = setOnFire;
         }
 
-        public int getSelfFlag() {
-            return selfFlag;
+        public int getLabelFlag() {
+            return labelFlag;
         }
 
-        public void setSelfFlag(int selfFlag) {
-            this.selfFlag = selfFlag;
+        public void setLabelFlag(int selfFlag) {
+            this.labelFlag = selfFlag;
         }
 
         public int getFee() {

@@ -196,7 +196,7 @@ public class MeFragment extends BaseFragment {
                         photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
                         photoBean.setPhotoUrl(albumBean.getUrl());
                         photoBean.setFee(albumBean.getFee()+"");
-                        photoBean.setOneself(albumBean.getSelfFlag()==1);
+                        photoBean.setOneself(albumBean.getLabelFlag()>0);
                         list.add(photoBean);
                     }
                     initData();
