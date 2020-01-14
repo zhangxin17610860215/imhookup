@@ -37,4 +37,5 @@ public class ApiUrl {
     public static String GETMOBILECODE= BASE_URL_HEAD + SERVERDOMAIN + "/mobile/send/code";
     public static String CHANGEACCOUNT= BASE_URL_HEAD + SERVERDOMAIN + "/user/change/account";
     public static String RESETPASSWORD= BASE_URL_HEAD + SERVERDOMAIN + "/user/reset/password";
+    public static String UPLOADPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/info/upload";
 }

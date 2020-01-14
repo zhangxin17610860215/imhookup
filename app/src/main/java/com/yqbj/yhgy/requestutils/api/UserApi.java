@@ -200,9 +200,18 @@ public class UserApi {
                         String latitude = Preferences.getLatitude();
                         String city = Preferences.getCity();
                         if (StringUtil.isNotEmpty(longitude) && StringUtil.isNotEmpty(latitude)){
-                            updateLocation(latitude,longitude,city,object);
+                            updateLocation(latitude, longitude, city, object, new RequestCallback() {
+                                @Override
+                                public void onSuccess(int code, Object object) {
+                                    callback.onSuccess(code,bean);
+                                }
+
+                                @Override
+                                public void onFailed(String errMessage) {
+                                    callback.onSuccess(bean.getCode(),bean);
+                                }
+                            });
                         }
-                        callback.onSuccess(bean.getCode(),userBean);
                     } else {
                         callback.onFailed(bean.getMsg());
                     }
@@ -224,7 +233,8 @@ public class UserApi {
     /**
      * 更新经纬度
      * */
-    public static void updateLocation(String latitude,String longitude,String city, Object object){
+    public static void updateLocation(String latitude,String longitude,String city, Object object,
+                                      RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("latitude",latitude);
         map.put("longitude",longitude);
@@ -233,12 +243,24 @@ public class UserApi {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "updateLocation--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
             }
 
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "updateLocation--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });
     }
@@ -311,9 +333,18 @@ public class UserApi {
                         String latitude = Preferences.getLatitude();
                         String city = Preferences.getCity();
                         if (StringUtil.isNotEmpty(longitude) && StringUtil.isNotEmpty(latitude)){
-                            updateLocation(latitude,longitude,city,object);
+                            updateLocation(latitude, longitude, city, object, new RequestCallback() {
+                                @Override
+                                public void onSuccess(int code, Object object) {
+                                    callback.onSuccess(code,bean);
+                                }
+
+                                @Override
+                                public void onFailed(String errMessage) {
+                                    callback.onSuccess(bean.getCode(),bean);
+                                }
+                            });
                         }
-                        callback.onSuccess(bean.getCode(),bean);
                     } else {
                         callback.onFailed(bean.getMsg());
                     }
@@ -945,6 +976,38 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "resetPassword--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 上传照片
+     * */
+    public static void upLoadPhoto(String multimediaeInfo, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("multimediaeInfo",multimediaeInfo);
+        RequestHelp.postRequest(ApiUrl.UPLOADPHOTO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "upLoadPhoto--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "upLoadPhoto--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

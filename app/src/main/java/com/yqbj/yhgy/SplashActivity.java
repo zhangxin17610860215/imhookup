@@ -249,6 +249,10 @@ public class SplashActivity extends BaseActivity {
                 dismissProgress();
                 if (code == Constants.SUCCESS_CODE){
                     yunXinLogin();
+                } else if (code == Constants.RESPONSE_CODE.CODE_20015){
+                    toast((String) object);
+                    GetReadyLoginActivity.start(activity);
+                    finish();
                 }else {
                     toast((String) object);
                 }

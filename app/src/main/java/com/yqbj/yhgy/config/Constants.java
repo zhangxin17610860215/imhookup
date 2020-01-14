@@ -31,6 +31,9 @@ public class Constants {
     //自定义Token失效
     public static final String TOKEN_INCALID = "TokenInvalid";
 
+    //是否显示个人介绍提示框
+    public static boolean ISSHOWINTRODUCEDIALOG = true;
+
     /**
      * 用户相关的属性
      */

@@ -47,6 +47,7 @@ import com.yqbj.yhgy.utils.UMShareUtil;
 import com.yqbj.yhgy.utils.ZodiacUtil;
 import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.view.EvaluateDialog;
+import com.yqbj.yhgy.view.MiddleDialog;
 import com.yqbj.yhgy.wxapi.WXUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
@@ -97,12 +98,12 @@ public class MeFragment extends BaseFragment {
     @BindView(R.id.ll_noData)
     LinearLayout llNoData;
 
-    private UserInfoBean userInfoBean;
-    private UserInfoBean.UserDetailsBean userDetailsBean;
-    private UserInfoBean.ConfigBean configBean;
-    private UserInfoBean.ContactInfoBean contactInfoBean;
-    private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean;
-    private UserInfoBean.WalletBean walletBean;
+    private UserInfoBean userInfoBean = new UserInfoBean();
+    private UserInfoBean.UserDetailsBean userDetailsBean = new UserInfoBean.UserDetailsBean();
+    private UserInfoBean.ConfigBean configBean = new UserInfoBean.ConfigBean();
+    private UserInfoBean.ContactInfoBean contactInfoBean = new UserInfoBean.ContactInfoBean();
+    private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean = new ArrayList<>();
+    private UserInfoBean.WalletBean walletBean = new UserInfoBean.WalletBean();
     private List<PhotoBean> list = new ArrayList<>();
     private List<PhotoBean> photoList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
@@ -199,6 +200,24 @@ public class MeFragment extends BaseFragment {
                         list.add(photoBean);
                     }
                     initData();
+                    if (StringUtil.isEmpty(userDetailsBean.getDescription()) && Constants.ISSHOWINTRODUCEDIALOG){
+                        new XPopup.Builder(mActivity)
+                                .dismissOnTouchOutside(false)
+                                .asCustom(new MiddleDialog(mActivity, "温馨提示", "你还没填写个人介绍，吸引人的个人介绍对交友成功率影响很大哦，你要补充一下吗?", new MiddleDialog.Listener() {
+                                    @Override
+                                    public void onConfirmClickListener() {
+                                        PerfectDataActivity.start(mActivity,"1",userInfoBean);
+                                        Constants.ISSHOWINTRODUCEDIALOG = false;
+                                    }
+
+                                    @Override
+                                    public void onCloseClickListener() {
+
+                                    }
+                                }))
+                                .show();
+                        return;
+                    }
                 }else {
                     toast((String) object);
                 }
@@ -227,6 +246,10 @@ public class MeFragment extends BaseFragment {
             for (int i = 0; list.size() > 8 ? i < 8 : i < list.size(); i ++){
                 photoList.add(list.get(i));
             }
+        }
+        if (null != mAdapter){
+            mAdapter.notifyDataSetChanged();
+            return;
         }
         mAdapter = new EasyRVAdapter(mActivity,photoList,R.layout.item_mephoto_layout) {
             @Override
@@ -441,9 +464,34 @@ public class MeFragment extends BaseFragment {
                         photoList.add(list.get(i));
                     }
                 }
-                mAdapter.notifyDataSetChanged();
+                initData();
                 break;
         }
+    }
+
+    /**
+     * 上传照片
+     * */
+    private void upLoadPhoto() {
+        showProgress(false);
+        String multimediaeInfo = "";
+        UserApi.upLoadPhoto(multimediaeInfo, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     /**

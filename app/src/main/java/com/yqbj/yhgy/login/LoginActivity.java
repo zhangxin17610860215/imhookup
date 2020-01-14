@@ -21,6 +21,7 @@ import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.main.MainActivity;
+import com.yqbj.yhgy.me.PerfectDataActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.DemoCache;
@@ -150,6 +151,9 @@ public class LoginActivity extends BaseActivity {
                         dismissProgress();
                         if (code == Constants.SUCCESS_CODE){
                             yunXinLogin();
+                        }else if (code == Constants.RESPONSE_CODE.CODE_20015){
+                            toast((String) object);
+                            PerfectDataActivity.start(activity,"0",null);
                         }else {
                             toast((String) object);
                         }
