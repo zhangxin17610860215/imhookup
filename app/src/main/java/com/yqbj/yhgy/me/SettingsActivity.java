@@ -21,6 +21,7 @@ import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.login.BindPhoneActivity;
 import com.yqbj.yhgy.login.ModifyPasswordActivity;
+import com.yqbj.yhgy.main.MainActivity;
 import com.yqbj.yhgy.utils.AppManager;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.view.EasyAlertDialogHelper;
@@ -165,11 +166,9 @@ public class SettingsActivity extends BaseActivity {
      * 注销
      */
     private void logout() {
-        Preferences.saveUserData(new UserBean());
-        NimUIKit.logout();
         NIMClient.getService(AuthService.class).logout();
-        SplashActivity.start(mActivity,null);
-        AppManager.getAppManager().finishAllActivity();
+        MainActivity.logout(mActivity, true);
+//        AppManager.getAppManager().finishAllActivity();
     }
 
 }

@@ -16,8 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.netease.nim.uikit.api.NimUIKit;
 import com.netease.nim.uikit.api.model.main.LoginSyncDataStatusObserver;
 import com.netease.nim.uikit.common.ModuleUIComFn;
+import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.reminder.ReminderItem;
 import com.netease.nim.uikit.common.reminder.ReminderManager;
 import com.netease.nim.uikit.common.reminder.ReminderSettings;
@@ -28,18 +30,25 @@ import com.netease.nim.uikit.common.ui.drop.DropManager;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.RequestCallback;
+import com.netease.nimlib.sdk.StatusCode;
+import com.netease.nimlib.sdk.auth.AuthServiceObserver;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.SystemMessageObserver;
 import com.netease.nimlib.sdk.msg.SystemMessageService;
 import com.netease.nimlib.sdk.msg.model.RecentContact;
 import com.netease.nimlib.sdk.msg.model.SystemMessage;
 import com.yqbj.yhgy.R;
+import com.yqbj.yhgy.SplashActivity;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.home.AnonymousReportActivity;
 import com.yqbj.yhgy.home.HomeFragment;
 import com.yqbj.yhgy.me.MeFragment;
 import com.yqbj.yhgy.message.NewMessageFragment;
 import com.yqbj.yhgy.radio.RadioFragment;
+import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.LogUtil;
+import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StatusBarsUtil;
 import com.yqbj.yhgy.view.MyNoScrollViewPager;
 
@@ -120,12 +129,14 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
         activity = this;
         initStatusBars();
 
+        registerObservers(true);
         observerSyncDataComplete();
         initView();
         initModuleComFn();
         initUnreadCover();
         registerMsgUnreadInfoObserver(true);
         registerSystemMessageObservers(true);
+
         requestSystemMessageUnreadCount();
         initData();
 
@@ -198,7 +209,15 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
         super.onDestroy();
         registerMsgUnreadInfoObserver(false);
         registerSystemMessageObservers(false);
+        registerObservers(false);
         DropManager.getInstance().destroy();
+    }
+
+    /**
+     * 注册用户是否在线观察者
+     * */
+    private void registerObservers(boolean register) {
+        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(userStatusObserver, register);
     }
 
     /**
@@ -241,6 +260,40 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
     private void initData() {
 
     }
+
+    private void kickOut(StatusCode code) {
+        Preferences.saveUserData(new UserBean());
+
+        if (code == StatusCode.PWD_ERROR) {
+            LogUtil.e("Auth", "user password error");
+            toast("帐号或密码错误");
+        } else {
+            LogUtil.i("Auth", "Kicked!");
+        }
+        onLogout();
+    }
+
+    // 注销
+    private void onLogout() {
+        // 清理缓存&注销监听&清除状态
+        NimUIKit.logout();
+        SplashActivity.start(activity,null);
+        toast("你的帐号被踢出下线，请注意帐号信息安全");
+        activity.finish();
+    }
+
+    /**
+     * 用户状态变化
+     */
+    Observer<StatusCode> userStatusObserver = new Observer<StatusCode>() {
+
+        @Override
+        public void onEvent(StatusCode code) {
+            if (code.wontAutoLogin()) {
+                kickOut(code);
+            }
+        }
+    };
 
     private Observer<Integer> sysMsgUnreadCountChangedObserver = new Observer<Integer>() {
         @Override
