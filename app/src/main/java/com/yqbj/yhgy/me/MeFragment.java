@@ -170,6 +170,7 @@ public class MeFragment extends BaseFragment {
                     contactInfoBean = userInfoBean.getContactInfo();
                     photoAlbumBean = userInfoBean.getPhotoAlbum();
                     walletBean = userInfoBean.getWallet();
+                    Preferences.saveVipMember(userDetailsBean.getVipMember());
                     Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
                     tvPlace.setText(Preferences.getCity());
                     tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");

@@ -33,6 +33,7 @@ public class Preferences {
     private static final String KEY_LONGITUDE = "longitude";           // 经度
     private static final String KEY_LATITUDE = "latitude";             // 纬度
     private static final String KEY_CITY = "city";                     // 市区
+    private static final String KEY_VIPMEMBER = "vipMember";           // 是否是VIP
 
     private static void saveUserPayPassSet(boolean flag){
         if(TextUtils.isEmpty(NimUIKit.getAccount())){
@@ -79,6 +80,14 @@ public class Preferences {
 
     public static void saveCity(String city){
         saveString(KEY_CITY,city);
+    }
+
+    public static boolean getVipMember() {
+        return getBoolean(KEY_VIPMEMBER);
+    }
+
+    public static void saveVipMember(int vipMember){
+        saveBoolean(KEY_VIPMEMBER,vipMember == 1);
     }
 
     public static void saveServerDomain(String serverDomain){

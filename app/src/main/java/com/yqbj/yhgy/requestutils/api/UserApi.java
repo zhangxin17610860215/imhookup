@@ -187,6 +187,7 @@ public class UserApi {
                         Map<String, Object> data = bean.getData();
                         UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
                         Preferences.saveServerDomain(userBean.getServerDomain());
+                        LogUtil.e(TAG, "ServerDomain--------->" + Preferences.getServerDomain());
                         userBean.setLoginType(loginType);
                         userBean.setPassword(password);
                         userBean.setWxToken(wxtoken);

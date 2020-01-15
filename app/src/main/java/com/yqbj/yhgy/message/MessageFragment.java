@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.netease.nim.uikit.business.contact.core.item.ContactItem;
+import com.netease.nim.uikit.impl.NimUIKitImpl;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -166,8 +168,8 @@ public class MessageFragment extends BaseFragment {
         mAdapter.setOnItemClickListener(new EasyRVAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, Object item) {
-//                NimUIKitImpl.getContactEventListener().onItemClick(getActivity(), (((ContactItem) item).getContact()).getContactId());
-                SessionHelper.startP2PSession(mActivity, "123123");
+                NimUIKitImpl.getContactEventListener().onItemClick(getActivity(), (((ContactItem) item).getContact()).getContactId());
+//                SessionHelper.startP2PSession(mActivity, "123123");
             }
         });
     }
