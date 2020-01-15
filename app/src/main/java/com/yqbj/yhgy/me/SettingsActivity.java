@@ -166,9 +166,11 @@ public class SettingsActivity extends BaseActivity {
      * 注销
      */
     private void logout() {
+        Preferences.saveUserData(new UserBean());
+        NimUIKit.logout();
         NIMClient.getService(AuthService.class).logout();
-        MainActivity.logout(mActivity, true);
-//        AppManager.getAppManager().finishAllActivity();
+        SplashActivity.start(mActivity,null);
+        AppManager.getAppManager().finishAllActivity();
     }
 
 }

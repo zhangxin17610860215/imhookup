@@ -46,6 +46,7 @@ import com.yqbj.yhgy.home.HomeFragment;
 import com.yqbj.yhgy.me.MeFragment;
 import com.yqbj.yhgy.message.NewMessageFragment;
 import com.yqbj.yhgy.radio.RadioFragment;
+import com.yqbj.yhgy.utils.AppManager;
 import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.Preferences;
@@ -279,7 +280,7 @@ public class MainActivity extends BaseActivity implements ReminderManager.Unread
         NimUIKit.logout();
         SplashActivity.start(activity,null);
         toast("你的帐号被踢出下线，请注意帐号信息安全");
-        activity.finish();
+        AppManager.getAppManager().finishAllActivity();
     }
 
     /**
