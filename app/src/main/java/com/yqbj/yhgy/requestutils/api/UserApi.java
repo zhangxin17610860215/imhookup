@@ -9,6 +9,7 @@ import com.lzy.okgo.model.Response;
 import com.yqbj.yhgy.bean.CurrencyPriceBean;
 import com.yqbj.yhgy.bean.EvaluateDataBean;
 import com.yqbj.yhgy.bean.HomeDataBean;
+import com.yqbj.yhgy.bean.MyAlbumBean;
 import com.yqbj.yhgy.bean.MyLikeBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
@@ -1009,6 +1010,109 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "upLoadPhoto--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 更新修改照片
+     * */
+    public static void updatePhoto(String multimediaeInfo, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("multimediaeInfo",multimediaeInfo);
+        RequestHelp.postRequest(ApiUrl.UPDATEPHOTO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "updatePhoto--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "updatePhoto--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 删除照片
+     * */
+    public static void deletePhoto(String multimediaeIds, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("multimediaeIds",multimediaeIds);
+        RequestHelp.postRequest(ApiUrl.DELETEPHOTO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "deletePhoto--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "deletePhoto--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取我的相册
+     * */
+    public static void getMyAlbum(Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        RequestHelp.getRequest(ApiUrl.GETMYALBUM, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getMyAlbum--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        String photoAlbum = JSON.toJSONString(data.get("photoAlbum"));
+                        List<MyAlbumBean> albumBeanList;
+                        if (photoAlbum.equals("\"[]\"")){
+                            albumBeanList = new ArrayList<>();
+                        }else {
+                            albumBeanList = JSON.parseObject(photoAlbum, new TypeReference<ArrayList<MyAlbumBean>>(){});
+                        }
+                        callback.onSuccess(bean.getCode(),albumBeanList);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getMyAlbum--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

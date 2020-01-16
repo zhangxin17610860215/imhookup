@@ -8,6 +8,7 @@
     tools:ignore="MissingDefaultResource">
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_RedEnvelopePhotos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,6 +23,7 @@
         android:drawablePadding="@dimen/dp_10"
         android:layout_alignParentBottom="true"/>
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_BurnAfterReading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

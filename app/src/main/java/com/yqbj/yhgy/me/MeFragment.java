@@ -15,10 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.business.session.actions.PickImageAction;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
@@ -27,10 +29,18 @@ import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
 import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.common.util.CityBean;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.RequestCallbackWrapper;
+import com.netease.nimlib.sdk.ResponseCode;
+import com.netease.nimlib.sdk.nos.NosService;
+import com.netease.nimlib.sdk.uinfo.UserService;
+import com.netease.nimlib.sdk.uinfo.constant.UserInfoFieldEnum;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
 import com.yqbj.yhgy.bean.EvaluateDataBean;
+import com.yqbj.yhgy.bean.MyAlbumBean;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.bean.UpLoadPhotoBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.login.VipCoreActivity;
@@ -40,6 +50,7 @@ import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.EventBusUtils;
 import com.yqbj.yhgy.utils.ImageFilter;
+import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.TimeUtils;
@@ -57,7 +68,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,6 +118,7 @@ public class MeFragment extends BaseFragment {
     private List<UserInfoBean.PhotoAlbumBean> photoAlbumBean = new ArrayList<>();
     private UserInfoBean.WalletBean walletBean = new UserInfoBean.WalletBean();
     private List<PhotoBean> list = new ArrayList<>();
+    private List<PhotoBean> choiceList = new ArrayList<>();
     private List<PhotoBean> photoList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
     private int sendImageNum = 0;
@@ -193,6 +207,8 @@ public class MeFragment extends BaseFragment {
                     list.clear();
                     for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
                         PhotoBean photoBean = new PhotoBean();
+                        photoBean.setId(albumBean.getId());
+                        photoBean.setYellowish(albumBean.getCheckFlag() == 0);
                         photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1);
                         photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
                         photoBean.setPhotoUrl(albumBean.getUrl());
@@ -264,43 +280,48 @@ public class MeFragment extends BaseFragment {
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
-                if (photoBean.isBurnAfterReading()){
-                    if (photoBean.isBurnedDown()){
-                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
-                        tvBurnedDown.setText("已焚毁");
-                        tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
-                        tvBurnedDown.setText("阅后即焚");
-                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
+                if (photoBean.isYellowish()){
+                    Glide.with(mActivity).load(R.mipmap.shehuang_bg).into(imgHead);
                 }else {
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                }
+                    if (photoBean.isBurnAfterReading()){
+                        if (photoBean.isBurnedDown()){
+                            rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
+                            tvBurnedDown.setText("已焚毁");
+                            tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
+                            tvBurnedDown.setText("阅后即焚");
+                            tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        }
+                    }
 
-                if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
-                    //阅后即焚的红包照片
-                    if (photoBean.isBurnedDown()){
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
-                        tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
+                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+
+                    if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
+                        //阅后即焚的红包照片
+                        if (photoBean.isBurnedDown()){
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                            tvRedEnvelopePhotos.setText("已焚毁");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                            tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        }
+                    }else if (photoBean.isRedEnvelopePhotos()){
+                        //只是红包照片
                         rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
+                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
                         tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
                     }
-                }else if (photoBean.isRedEnvelopePhotos()){
-                    //只是红包照片
-                    rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                    tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
-                    tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+
+                    tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
+                    tvMengceng.setText("+" + (list.size() - 8));
+                    rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+                    rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+                    tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
                 }
 
-                tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
-                tvMengceng.setText("+" + (list.size() - 8));
-                rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
-                rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
-                tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
                 tvMengceng.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -324,6 +345,7 @@ public class MeFragment extends BaseFragment {
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
                         intent.putExtra("isShowButton",true);
+                        intent.putExtra("isRequest",true);
                         startActivityForResult(intent, 10);
                     }
                 });
@@ -371,6 +393,7 @@ public class MeFragment extends BaseFragment {
                 break;
             case R.id.tv_myAlbum:
                 //我的相册
+                choiceList.clear();
                 showSelector(R.string.input_panel_photo, 100, true, 9);
                 break;
             case R.id.tv_evaluate:
@@ -452,19 +475,29 @@ public class MeFragment extends BaseFragment {
                 onPickImageActivityResult(requestCode, data);
                 break;
             case 10:
-            case 20:
-                list = (List<PhotoBean>) data.getSerializableExtra("photoList");
-                if (list.size() <= 0){
-                    llNoData.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
-                }else {
-                    llNoData.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    photoList.clear();
-                    for (int i = 0; list.size() > 8 ? i < 8 : i < list.size(); i ++){
-                        photoList.add(list.get(i));
-                    }
+                //查看图片
+                choiceList = (List<PhotoBean>) data.getSerializableExtra("photoList");
+                String type = data.getStringExtra("type");
+                if (StringUtil.isEmpty(type)){
+                    return;
                 }
+                if (type.equals("1")){
+                    if (choiceList.size() < 1){
+                        return;
+                    }
+                    for (PhotoBean photoBean : list){
+                        if (photoBean.getPhotoUrl().equals(choiceList.get(0).getPhotoUrl())){
+                            return;
+                        }
+                    }
+                    upLoadPhoto();
+                }else if (type.equals("2")){
+                    getMyAlbum();
+                }
+                break;
+            case 20:
+                //查看相册
+                list = (List<PhotoBean>) data.getSerializableExtra("photoList");
                 initData();
                 break;
         }
@@ -475,13 +508,61 @@ public class MeFragment extends BaseFragment {
      * */
     private void upLoadPhoto() {
         showProgress(false);
-        String multimediaeInfo = "";
+        List<UpLoadPhotoBean> upLoadPhotoBeans = new ArrayList<>();
+        for (PhotoBean photoBean : choiceList){
+            UpLoadPhotoBean bean = new UpLoadPhotoBean();
+            bean.setType(1);
+            bean.setRedPacketFee(photoBean.isRedEnvelopePhotos()?1:0);
+            bean.setStatusFlag(photoBean.isBurnAfterReading()?1:0);
+            bean.setUrl(photoBean.getPhotoUrl());
+            upLoadPhotoBeans.add(bean);
+        }
+        String multimediaeInfo = JSON.toJSONString(upLoadPhotoBeans);
         UserApi.upLoadPhoto(multimediaeInfo, mActivity, new RequestCallback() {
             @Override
             public void onSuccess(int code, Object object) {
                 dismissProgress();
                 if (code == Constants.SUCCESS_CODE){
+                    list.addAll(choiceList);
+                    initData();
+                    getMyAlbum();
+                }else {
+                    toast((String) object);
+                }
+            }
 
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 获取我的相册
+     * */
+    private void getMyAlbum() {
+        showProgress(false);
+        UserApi.getMyAlbum(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    List<MyAlbumBean> albumBeanList = (List<MyAlbumBean>) object;
+                    list.clear();
+                    for (MyAlbumBean albumBean : albumBeanList){
+                        PhotoBean photoBean = new PhotoBean();
+                        photoBean.setId(albumBean.getId());
+                        photoBean.setYellowish(albumBean.getCheckFlag() == 0);
+                        photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1);
+                        photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
+                        photoBean.setPhotoUrl(albumBean.getUrl());
+                        photoBean.setFee(albumBean.getFee()+"");
+                        photoBean.setOneself(albumBean.getLabelFlag()>0);
+                        list.add(photoBean);
+                    }
+                    initData();
                 }else {
                     toast((String) object);
                 }
@@ -514,21 +595,7 @@ public class MeFragment extends BaseFragment {
         SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
             @Override
             public void sendImage(File file, boolean isOrig, int imgListSize) {
-                sendImageNum++;
-                PhotoBean photoBean = new PhotoBean();
-                photoBean.setBurnAfterReading(false);
-                photoBean.setPhotoUrl(file.getPath());
-                list.add(photoBean);
-                if (sendImageNum == imgListSize){
-                    Intent intent = new Intent();
-                    intent.setClass(mActivity, LookPhotoActivity.class);
-                    intent.putExtra("position", 0);
-                    intent.putExtra("photoList", (Serializable) list);
-                    intent.putExtra("accId",NimUIKit.getAccount());
-                    intent.putExtra("type","1");
-                    intent.putExtra("isShowButton",true);
-                    startActivityForResult(intent, 10);
-                }
+                fileToUrl(file,imgListSize);
             }
         });
     }
@@ -537,6 +604,41 @@ public class MeFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         EventBusUtils.unregister(this);
+    }
+
+    /**
+     * 将file转换成URL
+     * */
+    private void fileToUrl(File file,int imgListSize) {
+        if (file == null) {
+            return;
+        }
+        NIMClient.getService(NosService.class).upload(file, PickImageAction.MIME_JPEG).setCallback(new RequestCallbackWrapper<String>() {
+            @Override
+            public void onResult(int i, final String url, Throwable throwable) {
+                if (i != ResponseCode.RES_SUCCESS){
+                    toast("图片上传失败，请稍后重试");
+                    return;
+                }
+                sendImageNum++;
+                PhotoBean photoBean = new PhotoBean();
+                photoBean.setBurnAfterReading(false);
+                photoBean.setPhotoUrl(url);
+                choiceList.add(photoBean);
+                if (sendImageNum == imgListSize){
+//                    upLoadPhoto();
+                    Intent intent = new Intent();
+                    intent.setClass(mActivity, LookPhotoActivity.class);
+                    intent.putExtra("position", 0);
+                    intent.putExtra("photoList", (Serializable) choiceList);
+                    intent.putExtra("accId",NimUIKit.getAccount());
+                    intent.putExtra("type","1");
+                    intent.putExtra("isShowButton",true);
+                    intent.putExtra("isRequest",false);
+                    startActivityForResult(intent, 10);
+                }
+            }
+        });
     }
 
     /**

@@ -13,9 +13,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.business.session.actions.PickImageAction;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
@@ -23,9 +25,20 @@ import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerO
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
 import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.RequestCallbackWrapper;
+import com.netease.nimlib.sdk.ResponseCode;
+import com.netease.nimlib.sdk.nos.NosService;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.MyAlbumBean;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.bean.UpLoadPhotoBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.LogUtil;
+import com.yqbj.yhgy.utils.StringUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -52,7 +65,7 @@ public class MyPhotoActivity extends BaseActivity {
 
     private Activity mActivity;
     private List<PhotoBean> photoList = new ArrayList<>();
-    private List<PhotoBean> sendImageList = new ArrayList<>();
+    private List<PhotoBean> choiceList = new ArrayList<>();
     private EasyRVAdapter mAdapter;
     private int sendImageNum = 0;
     private String gender = "";
@@ -88,6 +101,10 @@ public class MyPhotoActivity extends BaseActivity {
     }
 
     private void initData() {
+        if (null != mAdapter){
+            mAdapter.notifyDataSetChanged();
+            return;
+        }
         mAdapter = new EasyRVAdapter(mActivity,photoList,R.layout.item_mephoto_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
@@ -98,61 +115,72 @@ public class MyPhotoActivity extends BaseActivity {
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvBurnedDown = viewHolder.getView(R.id.tv_BurnedDown);
                 TextView tvIsBenRen = viewHolder.getView(R.id.tv_isBenRen);
-                if (photoBean.isBurnAfterReading()){
-                    if (!isShowButton){
-                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    }
-                    if (photoBean.isBurnedDown()){
-                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
-                        tvBurnedDown.setText("已焚毁");
-                        tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
-                        tvBurnedDown.setText("阅后即焚");
-                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
-                }else {
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                }
 
-                if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
-                    //阅后即焚的红包照片
-                    if (!isShowButton){
-                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    }
-                    if (photoBean.isBurnedDown()){
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
-                        tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
-                }else if (photoBean.isRedEnvelopePhotos()){
-                    //只是红包照片
-                    //处理得到模糊效果的图
-                    if (!isShowButton){
-                        if (photoBean.isRedEnvelopePhotosPaid()){
-                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                        }else {
+                if (photoBean.isYellowish()){
+                    Glide.with(mActivity).load(R.mipmap.shehuang_bg).into(imgHead);
+                }else {
+                    if (photoBean.isBurnAfterReading()){
+                        //阅后即焚
+                        if (!isShowButton){
                             Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }else {
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }
+                        if (photoBean.isBurnedDown()){
+                            rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
+                            tvBurnedDown.setText("已焚毁");
+                            tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
+                            tvBurnedDown.setText("阅后即焚");
+                            tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        }
+                    }else {
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }
+
+                    if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
+                        //阅后即焚的红包照片
+                        if (!isShowButton){
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }else {
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }
+                        if (photoBean.isBurnedDown()){
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                            tvRedEnvelopePhotos.setText("已焚毁");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                            tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        }
+                    }else if (photoBean.isRedEnvelopePhotos()){
+                        //只是红包照片
+                        if (!isShowButton){
+                            if (photoBean.isRedEnvelopePhotosPaid()){
+                                Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                            }else {
+                                Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                            }
+                        }else {
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }
+                        if (photoBean.isBurnedDown()){
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                            tvRedEnvelopePhotos.setText("已焚毁");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                            tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
                         }
                     }
-                    if (photoBean.isBurnedDown()){
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
-                        tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
-                }
 
-                rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
-                rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
-                tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
+                    rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+                    rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+                    tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
+                }
                 imgHead.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -164,6 +192,7 @@ public class MyPhotoActivity extends BaseActivity {
                         intent.putExtra("accId",NimUIKit.getAccount());
                         intent.putExtra("type","2");
                         intent.putExtra("isShowButton",isShowButton);
+                        intent.putExtra("isRequest",true);
                         mActivity.startActivityForResult(intent, 10);
                     }
                 });
@@ -179,7 +208,7 @@ public class MyPhotoActivity extends BaseActivity {
                 onFinish();
                 break;
             case R.id.tv_UpPhoto:
-                sendImageList.clear();
+                choiceList.clear();
                 showSelector(R.string.input_panel_photo, 100, true, 9);
                 break;
         }
@@ -202,16 +231,110 @@ public class MyPhotoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 10){
-            photoList.clear();
-            photoList.addAll((List<PhotoBean>) data.getSerializableExtra("photoList"));
-            if (photoList.size() <= 0){
-                onFinish();
-            }else {
-                mAdapter.notifyDataSetChanged();
+//            photoList.clear();
+//            photoList.addAll((List<PhotoBean>) data.getSerializableExtra("photoList"));
+//            if (photoList.size() <= 0){
+//                onFinish();
+//            }else {
+//                upLoadPhoto();
+//            }
+            choiceList = (List<PhotoBean>) data.getSerializableExtra("photoList");
+            String type = data.getStringExtra("type");
+            if (StringUtil.isEmpty(type)){
+                return;
+            }
+            if (type.equals("1")){
+                if (photoList.size() < 1 && choiceList.size() < 1){
+                    onFinish();
+                }
+                if (choiceList.size() < 1){
+                    return;
+                }
+                for (PhotoBean photoBean : photoList){
+                    if (photoBean.getPhotoUrl().equals(choiceList.get(0).getPhotoUrl())){
+                        return;
+                    }
+                }
+                upLoadPhoto();
+            }else if (type.equals("2")){
+                getMyAlbum();
             }
         }else if (requestCode == 100){
             onPickImageActivityResult(requestCode, data);
         }
+    }
+
+    /**
+     * 上传照片
+     * */
+    private void upLoadPhoto() {
+        showProgress(false);
+        List<UpLoadPhotoBean> upLoadPhotoBeans = new ArrayList<>();
+        for (PhotoBean photoBean : choiceList){
+            UpLoadPhotoBean bean = new UpLoadPhotoBean();
+            bean.setType(1);
+            bean.setRedPacketFee(photoBean.isRedEnvelopePhotos()?1:0);
+            bean.setStatusFlag(photoBean.isBurnAfterReading()?1:0);
+            bean.setUrl(photoBean.getPhotoUrl());
+            upLoadPhotoBeans.add(bean);
+        }
+        String multimediaeInfo = JSON.toJSONString(upLoadPhotoBeans);
+        UserApi.upLoadPhoto(multimediaeInfo, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    photoList.addAll(choiceList);
+                    initData();
+                    getMyAlbum();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 获取我的相册
+     * */
+    private void getMyAlbum() {
+        showProgress(false);
+        UserApi.getMyAlbum(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    List<MyAlbumBean> albumBeanList = (List<MyAlbumBean>) object;
+                    photoList.clear();
+                    for (MyAlbumBean albumBean : albumBeanList){
+                        PhotoBean photoBean = new PhotoBean();
+                        photoBean.setId(albumBean.getId());
+                        photoBean.setYellowish(albumBean.getCheckFlag() == 0);
+                        photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1);
+                        photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
+                        photoBean.setPhotoUrl(albumBean.getUrl());
+                        photoBean.setFee(albumBean.getFee()+"");
+                        photoBean.setOneself(albumBean.getLabelFlag()>0);
+                        photoList.add(photoBean);
+                    }
+                    initData();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     /**
@@ -234,21 +357,38 @@ public class MyPhotoActivity extends BaseActivity {
 
             @Override
             public void sendImage(File file, boolean isOrig, int imgListSize) {
+                fileToUrl(file,imgListSize);
+            }
+        });
+    }
+
+    private void fileToUrl(File file, int imgListSize) {
+
+        if (file == null) {
+            return;
+        }
+        NIMClient.getService(NosService.class).upload(file, PickImageAction.MIME_JPEG).setCallback(new RequestCallbackWrapper<String>() {
+            @Override
+            public void onResult(int i, final String url, Throwable throwable) {
+                if (i != ResponseCode.RES_SUCCESS){
+                    toast("图片上传失败，请稍后重试");
+                    return;
+                }
                 sendImageNum++;
                 PhotoBean photoBean = new PhotoBean();
                 photoBean.setBurnAfterReading(false);
                 photoBean.setPhotoUrl(file.getPath());
-                sendImageList.add(photoBean);
+                choiceList.add(photoBean);
 
                 if (sendImageNum == imgListSize){
-                    photoList.addAll(sendImageList);
                     Intent intent = new Intent();
                     intent.setClass(mActivity, LookPhotoActivity.class);
                     intent.putExtra("position", 0);
-                    intent.putExtra("photoList", (Serializable) photoList);
+                    intent.putExtra("photoList", (Serializable) choiceList);
                     intent.putExtra("accId",NimUIKit.getAccount());
                     intent.putExtra("type","1");
                     intent.putExtra("isShowButton",true);
+                    intent.putExtra("isRequest",false);
                     startActivityForResult(intent, 10);
                 }
             }

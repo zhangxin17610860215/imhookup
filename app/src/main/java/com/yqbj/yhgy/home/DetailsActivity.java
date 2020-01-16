@@ -273,6 +273,7 @@ public class DetailsActivity extends BaseActivity {
             photoBean.setBurnAfterReading(albumBean.getStatusFlag()==1);
             photoBean.setRedEnvelopePhotos(albumBean.getPayFlag()==1);
             photoBean.setPhotoUrl(albumBean.getUrl());
+            photoBean.setYellowish(albumBean.getCheckFlag() == 0);
             photoBean.setFee(albumBean.getFee()+"");
             photoBean.setOneself(albumBean.getLabelFlag()>0);
             list.add(photoBean);

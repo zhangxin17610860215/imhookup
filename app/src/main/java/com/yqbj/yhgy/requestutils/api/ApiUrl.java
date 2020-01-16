@@ -38,4 +38,7 @@ public class ApiUrl {
     public static String CHANGEACCOUNT= BASE_URL_HEAD + SERVERDOMAIN + "/user/change/account";
     public static String RESETPASSWORD= BASE_URL_HEAD + SERVERDOMAIN + "/user/reset/password";
     public static String UPLOADPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/info/upload";
+    public static String GETMYALBUM= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/self/photo/album";
+    public static String UPDATEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/info/update";
+    public static String DELETEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/delete";
 }

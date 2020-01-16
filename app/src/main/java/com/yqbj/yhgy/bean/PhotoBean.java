@@ -9,7 +9,25 @@ public class PhotoBean implements Serializable {
     private boolean burnedDown;             //阅后即焚是否已焚毁
     private boolean redEnvelopePhotosPaid;  //红包照片是否支付过
     private boolean oneself;                //本人
+    private boolean yellowish;              //涉黄
     private String fee;                     //需要支付的金额
+    private int id;
+
+    public boolean isYellowish() {
+        return yellowish;
+    }
+
+    public void setYellowish(boolean yellowish) {
+        this.yellowish = yellowish;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public boolean isOneself() {
         return oneself;

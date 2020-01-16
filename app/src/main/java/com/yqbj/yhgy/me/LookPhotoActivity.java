@@ -3,8 +3,6 @@ package com.yqbj.yhgy.me;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -17,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.api.NimUIKit;
@@ -25,7 +24,11 @@ import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.PhotoBean;
+import com.yqbj.yhgy.bean.UpdateAlbumBean;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.login.VipCoreActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.view.MiddleDialog;
 import com.yqbj.yhgy.view.PaySelect;
 
@@ -55,6 +58,7 @@ public class LookPhotoActivity extends BaseActivity {
     private int position;
     private String accId = "";
     private boolean isShowButton;       //是否显示底部阅后即焚和红包相册按钮(相当于是否是本人进来此页面)
+    private boolean isRequest;          //是否需要调用更新修改照片的接口
     /**
      * type == 1   右上角显示    确定
      * type == 2   右上角显示    删除
@@ -97,6 +101,7 @@ public class LookPhotoActivity extends BaseActivity {
         photoList = (List<PhotoBean>) getIntent().getSerializableExtra("photoList");
         accId = getIntent().getStringExtra("accId");
         isShowButton = getIntent().getBooleanExtra("isShowButton",false);
+        isRequest = getIntent().getBooleanExtra("isRequest",false);
         type = getIntent().getStringExtra("type");
         pagerAdapter = new MyPagerAdapter(mActivity,photoList);
         mViewPager.setAdapter(pagerAdapter);
@@ -142,12 +147,7 @@ public class LookPhotoActivity extends BaseActivity {
                             .asCustom(new MiddleDialog(mActivity, "提示", "确定要删除这张吗?", new MiddleDialog.Listener() {
                                 @Override
                                 public void onConfirmClickListener() {
-                                    photoList.remove(mViewPager.getCurrentItem());
-                                    pagerAdapter.notifyDataSetChanged();
-                                    tvTitle.setText(mViewPager.getCurrentItem() + 1 + "/" + photoList.size());
-                                    if (photoList.size() <= 0){
-                                        onFinish();
-                                    }
+                                    deletePhoto();
                                 }
 
                                 @Override
@@ -159,6 +159,39 @@ public class LookPhotoActivity extends BaseActivity {
                 }
                 break;
         }
+    }
+
+    /**
+     * 删除照片
+     * */
+    private void deletePhoto() {
+        showProgress(false);
+        List<Integer> beans = new ArrayList<>();
+        PhotoBean photoBean = photoList.get(mViewPager.getCurrentItem());
+        beans.add(photoBean.getId());
+        String multimediaeIds = JSON.toJSONString(beans);
+        UserApi.deletePhoto(multimediaeIds, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    photoList.remove(mViewPager.getCurrentItem());
+                    pagerAdapter.notifyDataSetChanged();
+                    tvTitle.setText(mViewPager.getCurrentItem() + 1 + "/" + photoList.size());
+                    if (photoList.size() <= 0){
+                        onFinish();
+                    }
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     public class MyPagerAdapter extends PagerAdapter {
@@ -188,114 +221,126 @@ public class LookPhotoActivity extends BaseActivity {
             TextView tv_Watermark = view.findViewById(R.id.tv_watermark);
             final TextView tvBurnAfterReading = view.findViewById(R.id.tv_BurnAfterReading);
             final TextView tvRedEnvelopePhotos = view.findViewById(R.id.tv_RedEnvelopePhotos);
-            tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
-            tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
-            rl_redenvelopephotos_View.setVisibility(!isShowButton && photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
 
-            if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
-                if (isShowButton){
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
-                }else {
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
-                }
-                tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
-                if (photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
-                    //红包照片而且已付过费
-                    Glide.with(mContext).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
-                    tv_Watermark.setVisibility(View.VISIBLE);
-                    rl_redenvelopephotos_View.setVisibility(View.GONE);
-                }
+            if (photoBean.isYellowish()){
+                Glide.with(mActivity).load(R.mipmap.shehuang_bg).into(img);
             }else {
-                Glide.with(mContext).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
-                tv_Watermark.setVisibility(View.VISIBLE);
-            }
-            if (photoBean.isBurnedDown()){
-                if (photoBean.isBurnAfterReading() && photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
-                    //阅后即焚而且是红包照片而且已付过费而且没有被焚毁
+                tvBurnAfterReading.setVisibility(isShowButton ? NimUIKit.getAccount().equals(accId) ? View.VISIBLE : View.GONE : View.GONE);
+                tvRedEnvelopePhotos.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
+                rl_redenvelopephotos_View.setVisibility(!isShowButton && photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+                if (photoBean.isBurnAfterReading() || photoBean.isRedEnvelopePhotos()){
                     if (isShowButton){
                         Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
                     }else {
                         Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
                     }
                     tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
-                    rl_redenvelopephotos_View.setVisibility(View.GONE);
+                    if (photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
+                        //红包照片而且已付过费
+                        Glide.with(mContext).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                        tv_Watermark.setVisibility(View.VISIBLE);
+                        rl_redenvelopephotos_View.setVisibility(View.GONE);
+                    }
+                }else {
+                    Glide.with(mContext).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                    tv_Watermark.setVisibility(View.VISIBLE);
                 }
-                ll_burnedDown.setVisibility(!isShowButton ? View.VISIBLE : View.GONE);
-                tv_goVIP.setOnClickListener(new View.OnClickListener() {
+                if (photoBean.isBurnedDown()){
+                    if (photoBean.isBurnAfterReading() && photoBean.isRedEnvelopePhotos() && photoBean.isRedEnvelopePhotosPaid()){
+                        //阅后即焚而且是红包照片而且已付过费而且没有被焚毁
+                        if (isShowButton){
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                        }else {
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
+                        }
+                        tv_Watermark.setVisibility(isShowButton ? View.VISIBLE : View.GONE);
+                        rl_redenvelopephotos_View.setVisibility(View.GONE);
+                    }
+                    ll_burnedDown.setVisibility(!isShowButton ? View.VISIBLE : View.GONE);
+                    tv_goVIP.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            VipCoreActivity.start(mActivity);
+                        }
+                    });
+                }
+                tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
+                tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isRedEnvelopePhotos() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
+
+                tv_sendRedPackage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        VipCoreActivity.start(mActivity);
-                    }
-                });
-            }
-            tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isBurnAfterReading() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
-            tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(photoBean.isRedEnvelopePhotos() ? R.mipmap.selected_logo : R.mipmap.unselected_logo), null, null, null);
-
-            tv_sendRedPackage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imgHeader = img;
-                    rlRedenvelopephotosView = rl_redenvelopephotos_View;
-                    llBurnedDown = ll_burnedDown;
-                    tvGoVIP = tv_goVIP;
-                    tvWatermark = tv_Watermark;
-                    bean = photoBean;
-                    showPayMode(view,"3.00");
-                }
-            });
-
-            tvBurnAfterReading.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (photoBean.isBurnAfterReading()){
-                        photoBean.setBurnAfterReading(false);
-                        tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
-                    }else {
-                        photoBean.setBurnAfterReading(true);
-                        tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
-                    }
-                }
-            });
-            tvRedEnvelopePhotos.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (photoBean.isRedEnvelopePhotos()){
-                        photoBean.setRedEnvelopePhotos(false);
-                        tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
-                    }else {
-                        photoBean.setRedEnvelopePhotos(true);
-                        tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
-                    }
-                }
-            });
-            view.findViewById(R.id.mRl).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (type.equals("2")){
-                        onFinish();
-                    }
-                }
-            });
-            img.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if (!isShowButton && photoBean.isBurnAfterReading()){
-                        if (photoBean.isBurnedDown()){
-                            return false;
-                        }
                         imgHeader = img;
+                        rlRedenvelopephotosView = rl_redenvelopephotos_View;
                         llBurnedDown = ll_burnedDown;
                         tvGoVIP = tv_goVIP;
                         tvWatermark = tv_Watermark;
                         bean = photoBean;
-                        showProgress(false);
-                        readyHandler.postDelayed(readyShow, 2000);
-                        return true;
-                    }else {
-                        return false;
+                        showPayMode(view,"3.00");
                     }
-                }
-            });
+                });
+
+                tvBurnAfterReading.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!isRequest){
+                            if (photoBean.isBurnAfterReading()){
+                                photoBean.setBurnAfterReading(false);
+                                tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
+                            }else {
+                                photoBean.setBurnAfterReading(true);
+                                tvBurnAfterReading.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
+                            }
+                        }else {
+                            updatePhoto(!photoBean.isBurnAfterReading(),photoBean.isRedEnvelopePhotos(),1,tvBurnAfterReading,photoBean);
+                        }
+                    }
+                });
+                tvRedEnvelopePhotos.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!isRequest){
+                            if (photoBean.isRedEnvelopePhotos()){
+                                photoBean.setRedEnvelopePhotos(false);
+                                tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
+                            }else {
+                                photoBean.setRedEnvelopePhotos(true);
+                                tvRedEnvelopePhotos.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
+                            }
+                        }else {
+                            updatePhoto(photoBean.isBurnAfterReading(),!photoBean.isRedEnvelopePhotos(),2,tvRedEnvelopePhotos,photoBean);
+                        }
+                    }
+                });
+                view.findViewById(R.id.mRl).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (type.equals("2")){
+                            onFinish();
+                        }
+                    }
+                });
+                img.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        if (!isShowButton && photoBean.isBurnAfterReading()){
+                            if (photoBean.isBurnedDown()){
+                                return false;
+                            }
+                            imgHeader = img;
+                            llBurnedDown = ll_burnedDown;
+                            tvGoVIP = tv_goVIP;
+                            tvWatermark = tv_Watermark;
+                            bean = photoBean;
+                            showProgress(false);
+                            readyHandler.postDelayed(readyShow, 2000);
+                            return true;
+                        }else {
+                            return false;
+                        }
+                    }
+                });
+            }
 
             container.addView(view);
             return view;
@@ -317,6 +362,54 @@ public class LookPhotoActivity extends BaseActivity {
             //增加此函数为了支持ViewPager的刷新功能
             return POSITION_NONE;
         }
+    }
+
+    /**
+     * 修改照片
+     * photoType ==1修改阅后即焚   ==2修改红包照片
+     * */
+    private void updatePhoto(boolean burnAfterReading, boolean redEnvelopePhotos, int photoType, TextView textView, PhotoBean photoBean){
+        showProgress(false);
+        UpdateAlbumBean albumBean = new UpdateAlbumBean();
+        albumBean.setId(photoBean.getId());
+        albumBean.setRedPacketFee(redEnvelopePhotos ? 1 : 0);
+        albumBean.setStatusFlag(burnAfterReading ? 1 : 0);
+        List<UpdateAlbumBean> beans = new ArrayList<>();
+        beans.add(albumBean);
+        String multimediaeInfo = JSON.toJSONString(beans);
+        UserApi.updatePhoto(multimediaeInfo, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    if (photoType == 1){
+                        if (photoBean.isBurnAfterReading()){
+                            photoBean.setBurnAfterReading(false);
+                            textView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
+                        }else {
+                            photoBean.setBurnAfterReading(true);
+                            textView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
+                        }
+                    }else {
+                        if (photoBean.isRedEnvelopePhotos()){
+                            photoBean.setRedEnvelopePhotos(false);
+                            textView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.unselected_logo), null, null, null);
+                        }else {
+                            photoBean.setRedEnvelopePhotos(true);
+                            textView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.selected_logo), null, null, null);
+                        }
+                    }
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     /**
@@ -379,6 +472,7 @@ public class LookPhotoActivity extends BaseActivity {
     private void onFinish(){
         Intent intent = new Intent();
         intent.putExtra("photoList", (Serializable) photoList);
+        intent.putExtra("type", type);
         setResult(RESULT_OK, intent);
         finish();
     }
