@@ -117,6 +117,8 @@ public class MyPhotoActivity extends BaseActivity {
                 TextView tvIsBenRen = viewHolder.getView(R.id.tv_isBenRen);
 
                 if (photoBean.isYellowish()){
+                    rlBurnAfterReading.setVisibility(View.GONE);
+                    rlRedEnvelopePhotos.setVisibility(View.GONE);
                     Glide.with(mActivity).load(R.mipmap.shehuang_bg).into(imgHead);
                 }else {
                     if (photoBean.isBurnAfterReading()){
@@ -256,7 +258,7 @@ public class MyPhotoActivity extends BaseActivity {
                     }
                 }
                 upLoadPhoto();
-            }else if (type.equals("2")){
+            }else if (type.equals("2") && isShowButton){
                 getMyAlbum();
             }
         }else if (requestCode == 100){
@@ -377,7 +379,7 @@ public class MyPhotoActivity extends BaseActivity {
                 sendImageNum++;
                 PhotoBean photoBean = new PhotoBean();
                 photoBean.setBurnAfterReading(false);
-                photoBean.setPhotoUrl(file.getPath());
+                photoBean.setPhotoUrl(url);
                 choiceList.add(photoBean);
 
                 if (sendImageNum == imgListSize){

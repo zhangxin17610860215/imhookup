@@ -280,7 +280,12 @@ public class MeFragment extends BaseFragment {
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
 
+                tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
+                tvMengceng.setText("+" + (list.size() - 8));
+
                 if (photoBean.isYellowish()){
+                    rlBurnAfterReading.setVisibility(View.GONE);
+                    rlRedEnvelopePhotos.setVisibility(View.GONE);
                     Glide.with(mActivity).load(R.mipmap.shehuang_bg).into(imgHead);
                 }else {
                     if (photoBean.isBurnAfterReading()){
@@ -315,8 +320,6 @@ public class MeFragment extends BaseFragment {
                         tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
                     }
 
-                    tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
-                    tvMengceng.setText("+" + (list.size() - 8));
                     rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
                     rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
                     tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);

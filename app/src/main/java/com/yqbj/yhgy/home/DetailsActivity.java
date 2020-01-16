@@ -294,52 +294,57 @@ public class DetailsActivity extends BaseActivity {
                 RelativeLayout rlRedEnvelopePhotos = viewHolder.getView(R.id.rl_RedEnvelopePhotos);
                 TextView tvRedEnvelopePhotos = viewHolder.getView(R.id.tv_RedEnvelopePhotos);
                 TextView tvMengceng = viewHolder.getView(R.id.tv_mengceng);
-
-                if (photoBean.isBurnAfterReading()){
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    if (photoBean.isBurnedDown()){
-                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
-                        tvBurnedDown.setText("已焚毁");
-                        tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
-                        tvBurnedDown.setText("阅后即焚");
-                        tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
-                }else {
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                }
-
-                if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
-                    //阅后即焚的红包照片
-                    Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    if (photoBean.isBurnedDown()){
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
-                        tvRedEnvelopePhotos.setText("已焚毁");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
-                    }else {
-                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
-                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                    }
-                }else if (photoBean.isRedEnvelopePhotos()){
-                    //只是红包照片
-                    if (photoBean.isRedEnvelopePhotosPaid()){
-                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    }else {
-                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
-                    }
-
-                    rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
-                    tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
-                    tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
-                }
-
                 tvMengceng.setVisibility((list.size() - 8) > 0 && position == 7 ? View.VISIBLE : View.GONE);
                 tvMengceng.setText("+" + (list.size() - 8));
-                rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
-                rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
-                tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
+                if (photoBean.isYellowish()){
+                    rlBurnAfterReading.setVisibility(View.GONE);
+                    rlRedEnvelopePhotos.setVisibility(View.GONE);
+                    Glide.with(mActivity).load(R.mipmap.shehuang_bg).into(imgHead);
+                }else {
+                    if (photoBean.isBurnAfterReading()){
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        if (photoBean.isBurnedDown()){
+                            rlBurnAfterReading.setBackgroundResource(R.mipmap.burneddown_bg_logo);
+                            tvBurnedDown.setText("已焚毁");
+                            tvBurnedDown.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlBurnAfterReading.setBackgroundResource(R.mipmap.burnafterreading_bg_logo);
+                            tvBurnedDown.setText("阅后即焚");
+                            tvBurnedDown.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        }
+                    }else {
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                    }
+
+                    if (photoBean.isRedEnvelopePhotos() && photoBean.isBurnAfterReading()){
+                        //阅后即焚的红包照片
+                        Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        if (photoBean.isBurnedDown()){
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redburneddown_bg_logo);
+                            tvRedEnvelopePhotos.setText("已焚毁");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.drawable.burneddown_bg_shape);
+                        }else {
+                            rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                            tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "阅后即焚的红包照片");
+                            tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                        }
+                    }else if (photoBean.isRedEnvelopePhotos()){
+                        //只是红包照片
+                        if (photoBean.isRedEnvelopePhotosPaid()){
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }else {
+                            Glide.with(mActivity).load(photoBean.getPhotoUrl()).optionalTransform(new BlurTransformation(mActivity, 25)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgHead);
+                        }
+
+                        rlRedEnvelopePhotos.setBackgroundResource(R.mipmap.redenvelopephotos_bg_logo);
+                        tvRedEnvelopePhotos.setText(photoBean.isRedEnvelopePhotosPaid() ? "已付费" : "红包照片");
+                        tvRedEnvelopePhotos.setBackgroundResource(R.mipmap.burnafterreading_logo);
+                    }
+
+                    rlBurnAfterReading.setVisibility(photoBean.isBurnAfterReading() ? View.VISIBLE : View.GONE);
+                    rlRedEnvelopePhotos.setVisibility(photoBean.isRedEnvelopePhotos() ? View.VISIBLE : View.GONE);
+                    tvIsBenRen.setVisibility(photoBean.isOneself() ? View.VISIBLE : View.GONE);
+                }
                 tvMengceng.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
