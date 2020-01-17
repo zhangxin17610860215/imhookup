@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.impl.cache.ConfigConstants;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.msg.MsgService;
@@ -31,6 +34,9 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
     private ImageView thumbnailImageView;
 
     protected View progressCover;
+    private TextView downSee;
+    private TextView tips;
+    private RoundedImageView roundedImageView;
     private TextView progressLabel;
     private boolean isLongClick = false;
     private Map<String, Object> localExtension;
@@ -102,11 +108,12 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
                     // 删除这条消息，当然你也可以将其标记为已读，同时删除附件内容，然后不让再查看
                     if (isLongClick && message.getAttachStatus() == AttachStatusEnum.transferred) {
                         // 物理删除
-                        NIMClient.getService(MsgService.class).deleteChattingHistory(message);
-                        AttachmentStore.delete(((SnapChatAttachment) message.getAttachment()).getPath());
-                        AttachmentStore.delete(((SnapChatAttachment) message.getAttachment()).getThumbPath());
-
-                        getMsgAdapter().deleteItem(message, true);
+//                        NIMClient.getService(MsgService.class).deleteChattingHistory(message);
+//                        AttachmentStore.delete(((SnapChatAttachment) message.getAttachment()).getPath());
+//                        AttachmentStore.delete(((SnapChatAttachment) message.getAttachment()).getThumbPath());
+                        downSee.setText("已焚毁");
+                        tips.setText("");
+//                        getMsgAdapter().deleteItem(message, true);
                         isLongClick = false;
                     }
                     break;
@@ -150,29 +157,34 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
 
     @Override
     protected int leftBackground() {
-        return R.drawable.message_view_holder_left_snapchat;
+        return 0;
     }
 
     @Override
     protected int rightBackground() {
-        return R.drawable.message_view_holder_right_snapchat;
+        return 0;
     }
 
     private void layoutByDirection() {
         View body = findViewById(R.id.message_item_snap_chat_body);
         View tipsLayout = findViewById(R.id.message_item_tips_layout);
-        View tips = findViewById(R.id.message_item_snap_chat_tips_label);
+        downSee = findViewById(R.id.message_item_snap_chat_tips_label);
+        tips = findViewById(R.id.message_item_snap_chat_tips);
+        roundedImageView = findViewById(R.id.message_item_snap_chat_imagePhoto);
         View readed = findViewById(R.id.message_item_snap_chat_readed);
         ViewGroup container = (ViewGroup) body.getParent();
         container.removeView(tipsLayout);
+        Glide.with(context).load(((SnapChatAttachment) message.getAttachment()).getPath()).optionalTransform(new BlurTransformation(context, 50)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(roundedImageView);
         if (isReceivedMessage()) {
             container.addView(tipsLayout, 1);
         } else {
             container.addView(tipsLayout, 0);
         }
         if (message.getStatus() == MsgStatusEnum.success) {
+            downSee.setVisibility(View.VISIBLE);
             tips.setVisibility(View.VISIBLE);
         } else {
+            downSee.setVisibility(View.GONE);
             tips.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(getMsgAdapter().getUuid()) && message.getUuid().equals(getMsgAdapter().getUuid())) {

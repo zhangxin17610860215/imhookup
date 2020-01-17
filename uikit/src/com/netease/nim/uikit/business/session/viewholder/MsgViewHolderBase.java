@@ -257,7 +257,6 @@ public abstract class MsgViewHolderBase extends RecyclerViewHolder<BaseMultiItem
         HeadImageView show = isReceivedMessage() ? avatarLeft : avatarRight;
         HeadImageView hide = isReceivedMessage() ? avatarRight : avatarLeft;
         hide.setVisibility(View.GONE);
-        show.setIsNoHandler(true);
         if (!isShowHeadImage()) {
             show.setVisibility(View.GONE);
             return;
@@ -266,7 +265,7 @@ public abstract class MsgViewHolderBase extends RecyclerViewHolder<BaseMultiItem
             show.setVisibility(View.GONE);
         } else {
             show.setVisibility(View.VISIBLE);
-            show.loadBuddyAvatar(isReceivedMessage() ? "" : "");
+            show.loadBuddyAvatar(message);
         }
 
     }
