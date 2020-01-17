@@ -74,7 +74,19 @@ public class SeePictureActivity extends BaseActivity {
 
     private void initView() {
         alertDialog = new CustomAlertDialog(this);
+        setToolbar(mActivity, 0, "");
+        setRightImg(mActivity, R.mipmap.more_icon, new onToolBarRightImgListener() {
+            @Override
+            public void onRight(View view) {
+                pos = mViewPager.getCurrentItem();
+                if (null != urlList || urlList.size() > 0){
+                    String url = urlList.get(pos);
+                    onLongClickAction(url);
+                }
+            }
+        });
         mViewPager = (ViewPager) findViewById(R.id.mViewPager);
+
         for (String url : urlList){
             if (StringUtil.isNotEmpty(url) && url.equals("add")){
                 urlList.remove(urlList.size() - 1);
@@ -83,17 +95,6 @@ public class SeePictureActivity extends BaseActivity {
         pagerAdapter = new MyPagerAdapter(mActivity,urlList);
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setCurrentItem(position);
-
-        findViewById(R.id.img_more).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pos = mViewPager.getCurrentItem();
-                if (null != urlList || urlList.size() > 0){
-                    String url = urlList.get(pos);
-                    onLongClickAction(url);
-                }
-            }
-        });
     }
 
     public class MyPagerAdapter extends PagerAdapter {

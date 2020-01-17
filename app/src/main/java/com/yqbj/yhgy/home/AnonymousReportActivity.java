@@ -14,11 +14,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.netease.nim.uikit.business.session.actions.PickImageAction;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
+import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePickerLauncher;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
+import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.RequestCallbackWrapper;
+import com.netease.nimlib.sdk.ResponseCode;
+import com.netease.nimlib.sdk.nos.NosService;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.main.SeePictureActivity;
@@ -102,7 +109,7 @@ public class AnonymousReportActivity extends BaseActivity {
                     imageView.setImageResource(R.mipmap.add_img_icon);
                     imgDeletePictures.setVisibility(View.GONE);
                 }else {
-                    Glide.with(mActivity).load(list.get(position)).into(imageView);
+                    Glide.with(mActivity).load(list.get(position)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imageView);
                     imgDeletePictures.setVisibility(View.VISIBLE);
                 }
                 imgDeletePictures.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +152,10 @@ public class AnonymousReportActivity extends BaseActivity {
         ImagePickerOption option = DefaultImagePickerOption.getInstance().setShowCamera(true).setPickType(
                 ImagePickerOption.PickType.Image).setMultiMode(multiSelect).setSelectMax(number);
         option.setSaveRectangle(true);
-        ImagePickerLauncher.selectImage(mActivity, requestCode, option, titleId);
+//        ImagePickerLauncher.selectImage(mActivity, requestCode, option, titleId);
+        ImagePicker.getInstance().setOption(option);
+        Intent intent = new Intent(mActivity, ImageGridActivity.class);
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -177,12 +187,31 @@ public class AnonymousReportActivity extends BaseActivity {
 
             @Override
             public void sendImage(File file, boolean isOrig, int imageListSize) {
+                fileToUrl(file,imageListSize);
+            }
+        });
+    }
+
+    /**
+     * 将file转换成URL
+     * */
+    private void fileToUrl(File file,int imgListSize) {
+        if (file == null) {
+            return;
+        }
+        NIMClient.getService(NosService.class).upload(file, PickImageAction.MIME_JPEG).setCallback(new RequestCallbackWrapper<String>() {
+            @Override
+            public void onResult(int i, final String url, Throwable throwable) {
+                if (i != ResponseCode.RES_SUCCESS){
+                    toast("图片上传失败，请稍后重试");
+                    return;
+                }
                 sendImageNum++;
-                list.add(list.size() - 1,file.getPath());
+                list.add(list.size() - 1,url);
                 if (list.size() > 5){
                     list.remove(list.size() -1);
                 }
-                if (sendImageNum == imageListSize){
+                if (sendImageNum == imgListSize){
                     mAdapter.notifyDataSetChanged();
                 }
             }

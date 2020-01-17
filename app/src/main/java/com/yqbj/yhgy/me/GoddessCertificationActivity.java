@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.netease.nim.uikit.business.session.constant.RequestCode;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
@@ -31,7 +32,7 @@ import butterknife.OnClick;
 public class GoddessCertificationActivity extends BaseActivity {
 
     @BindView(R.id.img_upPhotos)
-    ImageView imgUpPhotos;
+    RoundedImageView imgUpPhotos;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.tv_Tips)

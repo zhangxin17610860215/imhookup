@@ -41,4 +41,5 @@ public class ApiUrl {
     public static String GETMYALBUM= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/self/photo/album";
     public static String UPDATEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/info/update";
     public static String DELETEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/delete";
+    public static String GETVFTOKEN= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/real/person/token";
 }

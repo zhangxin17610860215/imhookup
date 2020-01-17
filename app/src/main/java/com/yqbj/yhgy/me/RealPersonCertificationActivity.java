@@ -11,15 +11,35 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.netease.nim.uikit.business.session.actions.PickImageAction;
 import com.netease.nim.uikit.business.session.constant.RequestCode;
 import com.netease.nim.uikit.business.session.helper.SendImageHelper;
 import com.netease.nim.uikit.common.ToastHelper;
+import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
 import com.netease.nim.uikit.common.media.imagepicker.ImagePickerLauncher;
+import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
+import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
+import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
+import com.netease.nimlib.sdk.NIMClient;
+import com.netease.nimlib.sdk.RequestCallbackWrapper;
+import com.netease.nimlib.sdk.ResponseCode;
+import com.netease.nimlib.sdk.nos.NosService;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.UpLoadPhotoBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.main.SeePictureActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.DemoCache;
+import com.yqbj.yhgy.utils.StringUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +57,7 @@ public class RealPersonCertificationActivity extends BaseActivity {
     @BindView(R.id.tv_stageThree)
     TextView tvStageThree;
     @BindView(R.id.img_upPhotos)
-    ImageView imgUpPhotos;
+    RoundedImageView imgUpPhotos;
     @BindView(R.id.ll_stageOne_describe)
     LinearLayout llStageOneDescribe;
     @BindView(R.id.ll_stageTwo_describe)
@@ -54,6 +74,8 @@ public class RealPersonCertificationActivity extends BaseActivity {
      * 记录进度
      * */
     private int progress = 1;
+
+    private String headerUrl = "";
 
     public static void start(Context context) {
         Intent intent = new Intent(context, RealPersonCertificationActivity.class);
@@ -73,7 +95,6 @@ public class RealPersonCertificationActivity extends BaseActivity {
 
     private void initView() {
         setToolbar(mActivity, 0, "");
-        tvNext.setClickable(false);
     }
 
     private void initData() {
@@ -84,15 +105,78 @@ public class RealPersonCertificationActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_upPhotos:
-                ImagePickerLauncher.pickImage(mActivity, RequestCode.PICK_IMAGE, R.string.input_panel_photo);
+                if (StringUtil.isEmpty(headerUrl)){
+                    showSelector(R.string.input_panel_photo, RequestCode.PICK_IMAGE, true, 1);
+                }else {
+                    List<String> list = new ArrayList<>();
+                    list.add(headerUrl);
+                    SeePictureActivity.start(mActivity,0,list,DemoCache.getAccount());
+                }
                 break;
             case R.id.tv_Next:
-                if (progress < 4){
-                    progress ++ ;
+                if (StringUtil.isEmpty(headerUrl)){
+                    toast("请先上传本人照片");
+                    return;
                 }
-                progressTag();
+                if (progress == 2){
+                    getVfToken();
+                    return;
+                }else {
+                    if (progress < 4){
+                        progress ++ ;
+                    }
+                    progressTag();
+                }
                 break;
         }
+    }
+
+    /**
+     * 获取活体人脸认证TOKEN
+     * */
+    private void getVfToken() {
+        showProgress(false);
+        List<UpLoadPhotoBean> upLoadPhotoBeans = new ArrayList<>();
+        UpLoadPhotoBean bean = new UpLoadPhotoBean();
+        bean.setUrl(headerUrl);
+        bean.setStatusFlag(0);
+        bean.setRedPacketFee(0);
+        bean.setType(1);
+        upLoadPhotoBeans.add(bean);
+        String multimediaeInfo = JSON.toJSONString(upLoadPhotoBeans);
+        UserApi.getVfToken("2", multimediaeInfo, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    if (progress < 4){
+                        progress ++ ;
+                    }
+                    progressTag();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    /**
+     * 打开图片选择器
+     */
+    private void showSelector(int titleId, int requestCode, boolean multiSelect, int number) {
+        ImagePickerOption option = DefaultImagePickerOption.getInstance().setShowCamera(true).setPickType(
+                ImagePickerOption.PickType.Image).setMultiMode(multiSelect).setSelectMax(number);
+        option.setSaveRectangle(true);
+//        ImagePickerLauncher.selectImage(mActivity, requestCode, option, titleId);
+        ImagePicker.getInstance().setOption(option);
+        Intent intent = new Intent(mActivity, ImageGridActivity.class);
+        startActivityForResult(intent, requestCode);
     }
 
     private void progressTag() {
@@ -160,10 +244,30 @@ public class RealPersonCertificationActivity extends BaseActivity {
         SendImageHelper.sendImageAfterSelfImagePicker(mActivity, data, new SendImageHelper.Callback() {
             @Override
             public void sendImage(File file, boolean isOrig, int imgListSize) {
-                Glide.with(mActivity).load(file.getPath()).into(imgUpPhotos);
-                imgUpPhotos.setClickable(false);
-                tvNext.setClickable(true);
+                fileToUrl(file,imgListSize);
             }
         });
     }
+
+    /**
+     * 将file转换成URL
+     * */
+    private void fileToUrl(File file,int imgListSize) {
+        if (file == null) {
+            return;
+        }
+        NIMClient.getService(NosService.class).upload(file, PickImageAction.MIME_JPEG).setCallback(new RequestCallbackWrapper<String>() {
+            @Override
+            public void onResult(int i, final String url, Throwable throwable) {
+                if (i != ResponseCode.RES_SUCCESS){
+                    toast("图片上传失败，请稍后重试");
+                    return;
+                }
+                headerUrl = url;
+                Glide.with(mActivity).load(url).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(imgUpPhotos);
+//                imgUpPhotos.setClickable(false);
+            }
+        });
+    }
+
 }

@@ -1118,4 +1118,47 @@ public class UserApi {
         });
     }
 
+    /**
+     * 获取活体人脸认证TOKEN
+     * */
+    public static void getVfToken(String useType, String multimediaeInfo, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("useType",useType);
+        if (useType.equals("2")){
+            map.put("multimediaeInfo",multimediaeInfo);
+        }
+        RequestHelp.postRequest(ApiUrl.GETVFTOKEN, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getVfToken--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+//                        Map<String, Object> data = bean.getData();
+//                        String photoAlbum = JSON.toJSONString(data.get("photoAlbum"));
+//                        List<MyAlbumBean> albumBeanList;
+//                        if (photoAlbum.equals("\"[]\"")){
+//                            albumBeanList = new ArrayList<>();
+//                        }else {
+//                            albumBeanList = JSON.parseObject(photoAlbum, new TypeReference<ArrayList<MyAlbumBean>>(){});
+//                        }
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getVfToken--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
 }
