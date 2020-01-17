@@ -6,6 +6,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.netease.nimlib.sdk.msg.attachment.MsgAttachment;
 import com.netease.nimlib.sdk.msg.attachment.MsgAttachmentParser;
+import com.yqbj.yhgy.action.SnapChatAttachment;
+import com.yqbj.yhgy.attachment.DefaultCustomAttachment;
+import com.yqbj.yhgy.attachment.RedPacketAttachment;
+import com.yqbj.yhgy.attachment.RedPacketOpenedAttachment;
+import com.yqbj.yhgy.attachment.StickerAttachment;
 import com.yqbj.yhgy.utils.Base64;
 
 /**
@@ -41,24 +46,24 @@ public class CustomAttachParser implements MsgAttachmentParser {
                 data = object.getJSONObject(KEY_DATA);
             }
 
-//            switch (type) {
+            switch (type) {
 //                case CustomAttachmentType.Guess:
 //                    attachment = new GuessAttachment();
 //                    break;
-//                case CustomAttachmentType.SnapChat:
-//                    return new SnapChatAttachment(data);
-//                case CustomAttachmentType.Sticker:
-//                    attachment = new StickerAttachment();
-//                    break;
+                case CustomAttachmentType.SnapChat:
+                    return new SnapChatAttachment(data);
+                case CustomAttachmentType.Sticker:
+                    attachment = new StickerAttachment();
+                    break;
 //                case CustomAttachmentType.RTS:
 //                    attachment = new RTSAttachment();
 //                    break;
-//                case CustomAttachmentType.RedPacket:
-//                    attachment = new RedPacketAttachment();
-//                    break;
-//                case CustomAttachmentType.OpenedRedPacket:
-//                    attachment = new RedPacketOpenedAttachment();
-//                    break;
+                case CustomAttachmentType.RedPacket:
+                    attachment = new RedPacketAttachment();
+                    break;
+                case CustomAttachmentType.OpenedRedPacket:
+                    attachment = new RedPacketOpenedAttachment();
+                    break;
 //                case CustomAttachmentType.ShareImage:
 //                    return new ShareImageAttachment(data);
 //                case CustomAttachmentType.ShareCard:
@@ -70,10 +75,10 @@ public class CustomAttachParser implements MsgAttachmentParser {
 //                case CustomAttachmentType.teamRobot:
 //                    attachment = new TeamRobotNotifyAttachment();
 //                    break;
-//                default:
-//                    attachment = new DefaultCustomAttachment();
-//                    break;
-//            }
+                default:
+                    attachment = new DefaultCustomAttachment();
+                    break;
+            }
 
             if (null != attachment) {
                 attachment.fromJson(data);

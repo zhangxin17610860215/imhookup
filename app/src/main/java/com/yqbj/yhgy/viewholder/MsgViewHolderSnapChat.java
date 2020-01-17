@@ -147,7 +147,7 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
      * 获取本地字段
      * */
     private void getLocalExtension() {
-        localExtension = message.getRemoteExtension();
+        localExtension = message.getLocalExtension();
         if (null != localExtension && !localExtension.isEmpty() && localExtension.size() > 0){
             ownWhetherSee = (boolean) localExtension.get(ConfigConstants.MESSAGE_ATTRIBUTE.ownWhetherSee);
         }else {
@@ -183,6 +183,8 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
         if (message.getStatus() == MsgStatusEnum.success) {
             downSee.setVisibility(View.VISIBLE);
             tips.setVisibility(View.VISIBLE);
+            downSee.setText("按住查看");
+            tips.setText("阅后即焚的照片");
         } else {
             downSee.setVisibility(View.GONE);
             tips.setVisibility(View.GONE);

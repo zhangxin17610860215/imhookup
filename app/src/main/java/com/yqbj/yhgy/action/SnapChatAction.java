@@ -8,6 +8,7 @@ import com.netease.nimlib.sdk.msg.model.CustomMessageConfig;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,9 +30,9 @@ public class SnapChatAction extends PickImageAction {
         config.enableRoaming = false;
         config.enableSelfSync = false;
         IMMessage stickerMessage = MessageBuilder.createCustomMessage(getAccount(), getSessionType(), "阅后即焚消息", snapChatAttachment, config);
-//        Map<String, Object> remoteExtension = stickerMessage.getRemoteExtension();
-//        remoteExtension.put(ConfigConstants.MESSAGE_ATTRIBUTE.ownWhetherSee,false);
-//        stickerMessage.setRemoteExtension(remoteExtension);
+        Map<String, Object> remoteExtension = new HashMap<>();
+        remoteExtension.put(ConfigConstants.MESSAGE_ATTRIBUTE.ownWhetherSee,false);
+        stickerMessage.setLocalExtension(remoteExtension);
         sendMessage(stickerMessage);
     }
 
