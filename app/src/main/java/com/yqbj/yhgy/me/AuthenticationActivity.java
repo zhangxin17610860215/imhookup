@@ -83,26 +83,26 @@ public class AuthenticationActivity extends BaseActivity {
                         toast("该功能仅对女性开放");
                         return;
                     }
-                    if (Preferences.getCertification().equals("0")){
-                        //未真人认证
-                        new XPopup.Builder(mActivity)
-                                .dismissOnTouchOutside(false)
-                                .asCustom(new MiddleTwoBtDialog(mActivity, "", "只有真人认证之后才可以进行女神认证，是否要前往真人认证？", "真人认证", "取消认证",
-                                        new MiddleTwoBtDialog.ClickListener() {
-                                            @Override
-                                            public void determine() {
-                                                type = 1;
-                                                toggleSearchType();
-                                            }
-
-                                            @Override
-                                            public void cancel() {
-                                                finish();
-                                            }
-                                        }))
-                                .show();
-                        return;
-                    }
+//                    if (Preferences.getCertification().equals("0")){
+//                        //未真人认证
+//                        new XPopup.Builder(mActivity)
+//                                .dismissOnTouchOutside(false)
+//                                .asCustom(new MiddleTwoBtDialog(mActivity, "", "只有真人认证之后才可以进行女神认证，是否要前往真人认证？", "真人认证", "取消认证",
+//                                        new MiddleTwoBtDialog.ClickListener() {
+//                                            @Override
+//                                            public void determine() {
+//                                                type = 1;
+//                                                toggleSearchType();
+//                                            }
+//
+//                                            @Override
+//                                            public void cancel() {
+//                                                finish();
+//                                            }
+//                                        }))
+//                                .show();
+//                        return;
+//                    }
                     GoddessCertificationActivity.start(mActivity);
                     finish();
                 }else if (type == 1){

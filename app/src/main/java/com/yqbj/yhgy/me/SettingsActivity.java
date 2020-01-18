@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.api.NimUIKit;
+import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.auth.AuthService;
@@ -78,61 +79,63 @@ public class SettingsActivity extends BaseActivity {
 
     @OnClick({R.id.tv_MessageNotification, R.id.rl_Phone, R.id.tv_SetPassword, R.id.tv_Standard, R.id.tv_Privacy, R.id.tv_Agreement, R.id.rl_ClearCache, R.id.tv_Logout})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.tv_MessageNotification:
-                //新消息通知
-                break;
-            case R.id.rl_Phone:
-                //手机号码
-                new XPopup.Builder(mActivity)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new MiddleDialog(mActivity, "", "你想修改绑定的手机号吗?", new MiddleDialog.Listener() {
-                            @Override
-                            public void onConfirmClickListener() {
-                                BindPhoneActivity.start(mActivity,"2");
-                            }
+        if (!NoDoubleClickUtils.isDoubleClick(500)) {
+            switch (view.getId()) {
+                case R.id.tv_MessageNotification:
+                    //新消息通知
+                    break;
+                case R.id.rl_Phone:
+                    //手机号码
+                    new XPopup.Builder(mActivity)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new MiddleDialog(mActivity, "", "你想修改绑定的手机号吗?", new MiddleDialog.Listener() {
+                                @Override
+                                public void onConfirmClickListener() {
+                                    BindPhoneActivity.start(mActivity, "2");
+                                }
 
-                            @Override
-                            public void onCloseClickListener() {
+                                @Override
+                                public void onCloseClickListener() {
 
-                            }
-                        }))
-                        .show();
-                break;
-            case R.id.tv_SetPassword:
-                //修改密码
-                ModifyPasswordActivity.start(mActivity);
-                break;
-            case R.id.tv_Standard:
-                //平台使用规范
-                AgreementActivity.start(mActivity,"1");
-                break;
-            case R.id.tv_Agreement:
-                //用户使用协议
-                AgreementActivity.start(mActivity,"2");
-                break;
-            case R.id.tv_Privacy:
-                //用户隐私政策
-                AgreementActivity.start(mActivity,"3");
-                break;
-            case R.id.rl_ClearCache:
-                //清理缓存
-                clearSDKDirCache();
-                break;
-            case R.id.tv_Logout:
-                //退出登录
-                EasyAlertDialogHelper.showCommonDialog(SettingsActivity.this, null, "确定要退出吗？", "确定", "取消", true, new EasyAlertDialogHelper.OnDialogActionListener() {
-                    @Override
-                    public void doCancelAction() {
+                                }
+                            }))
+                            .show();
+                    break;
+                case R.id.tv_SetPassword:
+                    //修改密码
+                    ModifyPasswordActivity.start(mActivity);
+                    break;
+                case R.id.tv_Standard:
+                    //平台使用规范
+                    AgreementActivity.start(mActivity, "1");
+                    break;
+                case R.id.tv_Agreement:
+                    //用户使用协议
+                    AgreementActivity.start(mActivity, "2");
+                    break;
+                case R.id.tv_Privacy:
+                    //用户隐私政策
+                    AgreementActivity.start(mActivity, "3");
+                    break;
+                case R.id.rl_ClearCache:
+                    //清理缓存
+                    clearSDKDirCache();
+                    break;
+                case R.id.tv_Logout:
+                    //退出登录
+                    EasyAlertDialogHelper.showCommonDialog(SettingsActivity.this, null, "确定要退出吗？", "确定", "取消", true, new EasyAlertDialogHelper.OnDialogActionListener() {
+                        @Override
+                        public void doCancelAction() {
 
-                    }
+                        }
 
-                    @Override
-                    public void doOkAction() {
-                        logout();
-                    }
-                }).show();
-                break;
+                        @Override
+                        public void doOkAction() {
+                            logout();
+                        }
+                    }).show();
+                    break;
+            }
         }
     }
 

@@ -42,4 +42,6 @@ public class ApiUrl {
     public static String UPDATEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/info/update";
     public static String DELETEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/delete";
     public static String GETVFTOKEN= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/real/person/token";
+    public static String AUTHENTICATIONPASS= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/real/person/verify";
+    public static String GODDESSPASS= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/goddess";
 }

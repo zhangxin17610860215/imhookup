@@ -174,6 +174,14 @@ public class Preferences {
         return getString(KEY_LABELTYPE);
     }
 
+    public static void saveLabeltype(String labeltype){
+        saveString(KEY_LABELTYPE,labeltype);
+    }
+
+    public static void saveCertification(String certification){
+        saveString(KEY_CERTIFICATION,certification);
+    }
+
     public static String getCertification() {
         return getString(KEY_CERTIFICATION);
     }

@@ -13,6 +13,7 @@ import com.yqbj.yhgy.bean.MyAlbumBean;
 import com.yqbj.yhgy.bean.MyLikeBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
+import com.yqbj.yhgy.bean.VfTokenBean;
 import com.yqbj.yhgy.bean.VipListInfoBean;
 import com.yqbj.yhgy.bean.WalletBalanceBean;
 import com.yqbj.yhgy.config.Constants;
@@ -1134,15 +1135,17 @@ public class UserApi {
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
                     if (bean.getCode() == Constants.SUCCESS_CODE){
-//                        Map<String, Object> data = bean.getData();
-//                        String photoAlbum = JSON.toJSONString(data.get("photoAlbum"));
-//                        List<MyAlbumBean> albumBeanList;
-//                        if (photoAlbum.equals("\"[]\"")){
-//                            albumBeanList = new ArrayList<>();
-//                        }else {
-//                            albumBeanList = JSON.parseObject(photoAlbum, new TypeReference<ArrayList<MyAlbumBean>>(){});
-//                        }
-                        callback.onSuccess(bean.getCode(),bean);
+                        Map<String, Object> data = bean.getData();
+                        String verifyToken = (String) data.get("verifyToken");
+                        String taskId = (String) data.get("taskId");
+                        if (StringUtil.isNotEmpty(verifyToken)){
+                            VfTokenBean vfTokenBean = new VfTokenBean();
+                            vfTokenBean.setVerifyToken(verifyToken);
+                            vfTokenBean.setTaskId(taskId);
+                            callback.onSuccess(bean.getCode(),vfTokenBean);
+                        }else {
+                            callback.onFailed(bean.getMsg());
+                        }
                     } else {
                         callback.onFailed(bean.getMsg());
                     }
@@ -1156,6 +1159,71 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "getVfToken--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 真人认证通过通知服务端
+     * */
+    public static void authenticationPass(String useType, String taskId, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("useType",useType);
+        map.put("taskId",taskId);
+        RequestHelp.postRequest(ApiUrl.AUTHENTICATIONPASS, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "authenticationPass--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "authenticationPass--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 女神认证通过通知服务端
+     * */
+    public static void goddessPass(String multimediaeInfo, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("multimediaeInfo",multimediaeInfo);
+        RequestHelp.postRequest(ApiUrl.GODDESSPASS, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "goddessPass--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "goddessPass--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

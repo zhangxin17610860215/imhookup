@@ -199,4 +199,15 @@
         android:background="@drawable/circular_bt_shape_bg"
         android:gravity="center"/>
 
+    <TextView
+        android:id="@+id/tv_Tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="若你变好看了，记得告诉我们"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/color_gray_666666"
+        android:layout_marginTop="@dimen/dimen_18"
+        android:visibility="gone"/>
+
 </LinearLayout>

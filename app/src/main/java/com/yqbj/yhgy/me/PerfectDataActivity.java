@@ -20,6 +20,7 @@ import com.netease.nim.uikit.common.media.imagepicker.ImagePickerLauncher;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.util.CityBean;
+import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.netease.nimlib.sdk.AbortableFuture;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
@@ -297,75 +298,77 @@ public class PerfectDataActivity extends BaseActivity {
 
     @OnClick({R.id.img_upHead, R.id.tv_selecteCity, R.id.tv_Birthday, R.id.tv_Occupation, R.id.tv_Expect, R.id.tv_height, R.id.tv_weight, R.id.tv_isShow, R.id.tv_Submission})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.img_upHead:
-                //上传头像
-                showSelector(R.string.input_panel_photo, 100, true, 1);
-                break;
-            case R.id.tv_selecteCity:
-                //选择城市
-                if (options1Text.size() > 0 && options2Text.size() > 0){
-                    initPopupWindow(CITYBEANLIST,selCityValueList,selCityTextList,1,4);
-                }
-                break;
-            case R.id.tv_Birthday:
-                //选择生日
-                DatePicker();
-                break;
-            case R.id.tv_Occupation:
-                //选择职业
-                if (occupation1Text.size() > 0 &&occupation2Text.size() > 0){
-                    initPopupWindow(OCCUPATIONBEANLIST,selOccupationValueList,selOccupationTextList,2,1);
-                }
-                break;
-            case R.id.tv_Expect:
-                //期望对象
-                new XPopup.Builder(activity)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new MiddleListDialog(activity, 1, new MiddleListDialog.OnClickListener() {
-                            @Override
-                            public void onClick(String text) {
-                                tvExpect.setText(text);
-                                tvExpect.setTextColor(getResources().getColor(R.color.black));
-                            }
-                        }))
-                        .show();
-                break;
-            case R.id.tv_height:
-                //身高
-                new XPopup.Builder(activity)
-                        .dismissOnTouchOutside(true)
-                        .asCustom(new MiddleListDialog(activity, 2, new MiddleListDialog.OnClickListener() {
-                            @Override
-                            public void onClick(String text) {
-                                tvHeight.setText(text);
-                                tvHeight.setTextColor(getResources().getColor(R.color.black));
-                            }
-                        }))
-                        .show();
-                break;
-            case R.id.tv_weight:
-                //体重
-                new XPopup.Builder(activity)
-                        .dismissOnTouchOutside(true)
-                        .asCustom(new MiddleListDialog(activity, 3, new MiddleListDialog.OnClickListener() {
-                            @Override
-                            public void onClick(String text) {
-                                tvWeight.setText(text);
-                                tvWeight.setTextColor(getResources().getColor(R.color.black));
-                            }
-                        }))
-                        .show();
-                break;
-            case R.id.tv_isShow:
-                //是否隐藏社交账号
-                isHideAccounts = !isHideAccounts;
-                hideAccounts();
-                break;
-            case R.id.tv_Submission:
-                //提交
-                readyData();
-                break;
+        if (!NoDoubleClickUtils.isDoubleClick(500)) {
+            switch (view.getId()) {
+                case R.id.img_upHead:
+                    //上传头像
+                    showSelector(R.string.input_panel_photo, 100, true, 1);
+                    break;
+                case R.id.tv_selecteCity:
+                    //选择城市
+                    if (options1Text.size() > 0 && options2Text.size() > 0) {
+                        initPopupWindow(CITYBEANLIST, selCityValueList, selCityTextList, 1, 4);
+                    }
+                    break;
+                case R.id.tv_Birthday:
+                    //选择生日
+                    DatePicker();
+                    break;
+                case R.id.tv_Occupation:
+                    //选择职业
+                    if (occupation1Text.size() > 0 && occupation2Text.size() > 0) {
+                        initPopupWindow(OCCUPATIONBEANLIST, selOccupationValueList, selOccupationTextList, 2, 1);
+                    }
+                    break;
+                case R.id.tv_Expect:
+                    //期望对象
+                    new XPopup.Builder(activity)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new MiddleListDialog(activity, 1, new MiddleListDialog.OnClickListener() {
+                                @Override
+                                public void onClick(String text) {
+                                    tvExpect.setText(text);
+                                    tvExpect.setTextColor(getResources().getColor(R.color.black));
+                                }
+                            }))
+                            .show();
+                    break;
+                case R.id.tv_height:
+                    //身高
+                    new XPopup.Builder(activity)
+                            .dismissOnTouchOutside(true)
+                            .asCustom(new MiddleListDialog(activity, 2, new MiddleListDialog.OnClickListener() {
+                                @Override
+                                public void onClick(String text) {
+                                    tvHeight.setText(text);
+                                    tvHeight.setTextColor(getResources().getColor(R.color.black));
+                                }
+                            }))
+                            .show();
+                    break;
+                case R.id.tv_weight:
+                    //体重
+                    new XPopup.Builder(activity)
+                            .dismissOnTouchOutside(true)
+                            .asCustom(new MiddleListDialog(activity, 3, new MiddleListDialog.OnClickListener() {
+                                @Override
+                                public void onClick(String text) {
+                                    tvWeight.setText(text);
+                                    tvWeight.setTextColor(getResources().getColor(R.color.black));
+                                }
+                            }))
+                            .show();
+                    break;
+                case R.id.tv_isShow:
+                    //是否隐藏社交账号
+                    isHideAccounts = !isHideAccounts;
+                    hideAccounts();
+                    break;
+                case R.id.tv_Submission:
+                    //提交
+                    readyData();
+                    break;
+            }
         }
     }
 

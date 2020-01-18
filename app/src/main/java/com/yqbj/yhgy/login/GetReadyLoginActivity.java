@@ -75,26 +75,6 @@ public class GetReadyLoginActivity extends BaseActivity {
         }
     }
 
-    private void authentication() {
-        RPSDK.startVerifyByNative("verifyToken", activity, new RPSDK.RPCompletedListener() {
-            @Override
-            public void onAuditResult(RPSDK.AUDIT audit, String code) {
-//                Toast.makeText(activity, audit + "", Toast.LENGTH_SHORT).show();
-
-                if (audit == RPSDK.AUDIT.AUDIT_PASS) {
-                    // 认证通过。建议接入方调用实人认证服务端接口DescribeVerifyResult来获取最终的认证状态，并以此为准进行业务上的判断和处理
-                    // do something
-                } else if(audit == RPSDK.AUDIT.AUDIT_FAIL) {
-                    // 认证不通过。建议接入方调用实人认证服务端接口DescribeVerifyResult来获取最终的认证状态，并以此为准进行业务上的判断和处理
-                    // do something
-                } else if(audit == RPSDK.AUDIT.AUDIT_NOT) {
-                    // 未认证，具体原因可通过code来区分（code取值参见下方表格），通常是用户主动退出或者姓名身份证号实名校验不匹配等原因，导致未完成认证流程
-                    // do something
-                }
-            }
-        });
-    }
-
     /**
      * 系统的"返回键"按下的时间戳。用来实现连点2次退出应用
      */

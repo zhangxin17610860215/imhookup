@@ -29,6 +29,7 @@ import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
 import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.common.util.CityBean;
+import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.ResponseCode;
@@ -185,6 +186,8 @@ public class MeFragment extends BaseFragment {
                     photoAlbumBean = userInfoBean.getPhotoAlbum();
                     walletBean = userInfoBean.getWallet();
                     Preferences.saveVipMember(userDetailsBean.getVipMember());
+                    Preferences.saveCertification(userDetailsBean.getCertification()+"");
+                    Preferences.saveLabeltype(userDetailsBean.getLabeltype()+"");
                     Glide.with(mActivity).load(userDetailsBean.getHeadUrl()).placeholder(R.mipmap.default_head_logo).error(R.mipmap.default_head_logo).into(imgHeader);
                     tvPlace.setText(Preferences.getCity());
                     tvAge.setText(ZodiacUtil.date2Constellation(userDetailsBean.getBirthday()) + "-" + TimeUtils.getAgeFromBirthTime(userDetailsBean.getBirthday()) + "岁");
@@ -365,95 +368,107 @@ public class MeFragment extends BaseFragment {
 
     @OnClick({R.id.img_editingmaterials, R.id.tv_wallet, R.id.img_header, R.id.tv_addVIP, R.id.tv_Authentication, R.id.tv_PrivacySetting, R.id.tv_dynamic, R.id.tv_myAlbum, R.id.tv_evaluate, R.id.tv_myLike, R.id.tv_Blacklist, R.id.tv_recovery, R.id.tv_Setting, R.id.tv_Share, R.id.tv_Help})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.img_editingmaterials:
-                //编辑资料
-                PerfectDataActivity.start(mActivity,"1",userInfoBean);
-                break;
-            case R.id.img_header:
-                //头像
-                WXUtil.weiChatPay(mActivity);
-                break;
-            case R.id.tv_addVIP:
-                //立即加入
-                VipCoreActivity.start(mActivity);
-                break;
-            case R.id.tv_Authentication:
-                //真人认证
-                AuthenticationActivity.start(mActivity);
-                break;
-            case R.id.tv_wallet:
-                //钱包
-                WalletActivity.start(mActivity);
-                break;
-            case R.id.tv_PrivacySetting:
-                //隐私设置
-                PrivacySettingActivity.start(mActivity,configBean,contactInfoBean.getHidecontactinfo()+"");
-                break;
-            case R.id.tv_dynamic:
-                //我的动态
-                MyDynamicsActivity.start(mActivity);
-                break;
-            case R.id.tv_myAlbum:
-                //我的相册
-                choiceList.clear();
-                showSelector(R.string.input_panel_photo, 100, true, 9);
-                break;
-            case R.id.tv_evaluate:
-                //我的评价
-                showEvaluateDialog();
-                break;
-            case R.id.tv_myLike:
-                //我喜欢的
-                MyLikeActivity.start(mActivity);
-                break;
-            case R.id.tv_Blacklist:
-                //黑名单
-                BlacklistActivity.start(mActivity);
-                break;
-            case R.id.tv_recovery:
-                //一键恢复
-                final MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
-                MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID)
-                        .setMoney("12")       //设置金额
-                        .setTitle("杭州吾乐玩网络科技有限公司")     //设置商品信息
-                        .setBody("杭州吾乐玩网络科技有限公司")       //设置商品信息描述
-                        .setOrderTradeId("123123132")   //设置订单ID
-                        .setNotifyUrl(ApiUrl.BASE_URL_HEAD + ApiUrl.BASE_URL + "/notify/alipay") //服务器异步通知页面路径
-                        .build();
-                myALipayUtils.goAliPay("112",mActivity);
-                break;
-            case R.id.tv_Setting:
-                //设置
-                SettingsActivity.start(mActivity);
-                break;
-            case R.id.tv_Share:
-                //分享
-                UMShareUtil.shareText(mActivity, "http://baidu.com", "这是标题", R.mipmap.icon, "这是内容", new UMShareUtil.ShareListener() {
-                    @Override
-                    public void onStart() {
-                        Log.e("TAG","开始分享");
+        if (!NoDoubleClickUtils.isDoubleClick(500)) {
+            switch (view.getId()) {
+                case R.id.img_editingmaterials:
+                    //编辑资料
+                    PerfectDataActivity.start(mActivity, "1", userInfoBean);
+                    break;
+                case R.id.img_header:
+                    //头像
+//                    WXUtil.weiChatPay(mActivity);
+                    break;
+                case R.id.tv_addVIP:
+                    //立即加入
+                    VipCoreActivity.start(mActivity);
+                    break;
+                case R.id.tv_Authentication:
+                    //真人认证
+                    if (userDetailsBean.getGender() == 1) {
+                        if (Preferences.getCertification().equals("1")) {
+                            //男号已通过真人认证
+                            RealPersonCertificationActivity.start(mActivity);
+                        } else {
+                            //男号未通过真人认证
+                            AuthenticationActivity.start(mActivity);
+                        }
+                    } else {
+                        AuthenticationActivity.start(mActivity);
                     }
+                    break;
+                case R.id.tv_wallet:
+                    //钱包
+                    WalletActivity.start(mActivity);
+                    break;
+                case R.id.tv_PrivacySetting:
+                    //隐私设置
+                    PrivacySettingActivity.start(mActivity, configBean, contactInfoBean.getHidecontactinfo() + "");
+                    break;
+                case R.id.tv_dynamic:
+                    //我的动态
+                    MyDynamicsActivity.start(mActivity);
+                    break;
+                case R.id.tv_myAlbum:
+                    //我的相册
+                    choiceList.clear();
+                    showSelector(R.string.input_panel_photo, 100, true, 9);
+                    break;
+                case R.id.tv_evaluate:
+                    //我的评价
+                    showEvaluateDialog();
+                    break;
+                case R.id.tv_myLike:
+                    //我喜欢的
+                    MyLikeActivity.start(mActivity);
+                    break;
+                case R.id.tv_Blacklist:
+                    //黑名单
+                    BlacklistActivity.start(mActivity);
+                    break;
+                case R.id.tv_recovery:
+                    //一键恢复
+                    final MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
+                    MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID)
+                            .setMoney("12")       //设置金额
+                            .setTitle("杭州吾乐玩网络科技有限公司")     //设置商品信息
+                            .setBody("杭州吾乐玩网络科技有限公司")       //设置商品信息描述
+                            .setOrderTradeId("123123132")   //设置订单ID
+                            .setNotifyUrl(ApiUrl.BASE_URL_HEAD + ApiUrl.BASE_URL + "/notify/alipay") //服务器异步通知页面路径
+                            .build();
+                    myALipayUtils.goAliPay("112", mActivity);
+                    break;
+                case R.id.tv_Setting:
+                    //设置
+                    SettingsActivity.start(mActivity);
+                    break;
+                case R.id.tv_Share:
+                    //分享
+                    UMShareUtil.shareText(mActivity, "http://baidu.com", "这是标题", R.mipmap.icon, "这是内容", new UMShareUtil.ShareListener() {
+                        @Override
+                        public void onStart() {
+                            Log.e("TAG", "开始分享");
+                        }
 
-                    @Override
-                    public void onResult() {
-                        Log.e("TAG","分享成功");
-                    }
+                        @Override
+                        public void onResult() {
+                            Log.e("TAG", "分享成功");
+                        }
 
-                    @Override
-                    public void onError() {
-                        Log.e("TAG","分享失败");
-                    }
+                        @Override
+                        public void onError() {
+                            Log.e("TAG", "分享失败");
+                        }
 
-                    @Override
-                    public void onCancel() {
-                        Log.e("TAG","取消分享");
-                    }
-                });
-                break;
-            case R.id.tv_Help:
-                //客服帮助
-                break;
+                        @Override
+                        public void onCancel() {
+                            Log.e("TAG", "取消分享");
+                        }
+                    });
+                    break;
+                case R.id.tv_Help:
+                    //客服帮助
+                    break;
+            }
         }
     }
 
