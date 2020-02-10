@@ -65,6 +65,7 @@ public class GoddessCertificationActivity extends BaseActivity {
     private Activity mActivity;
     private int selectorNumber = 4;
     private int sendImageNum = 0;
+    private UpLoadPhotoBean addBean;
     private List<UpLoadPhotoBean> list = new ArrayList<>();
 
     public static void start(Context context) {
@@ -89,12 +90,12 @@ public class GoddessCertificationActivity extends BaseActivity {
     }
 
     private void initData() {
-        UpLoadPhotoBean photoBean = new UpLoadPhotoBean();
-        photoBean.setStatusFlag(0);
-        photoBean.setUrl("add");
-        photoBean.setRedPacketFee(0);
-        photoBean.setType(1);
-        list.add(photoBean);
+        addBean = new UpLoadPhotoBean();
+        addBean.setStatusFlag(0);
+        addBean.setUrl("add");
+        addBean.setRedPacketFee(0);
+        addBean.setType(1);
+        list.add(addBean);
         mAdapter = new EasyRVAdapter(mActivity,list,R.layout.dynamic_grid_item_layout) {
             @Override
             protected void onBindData(EasyRVHolder viewHolder, final int position, Object item) {
@@ -115,14 +116,15 @@ public class GoddessCertificationActivity extends BaseActivity {
                 imgDeletePictures.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        //删除已上传的图片
                         boolean isShowAdd = false;
                         list.remove(bean);
 
                         for (UpLoadPhotoBean loadPhotoBean : list){
-                            isShowAdd = loadPhotoBean.getUrl().equals("add");
+                            isShowAdd = loadPhotoBean.getUrl().equals("add") ? false : true;
                         }
-                        if (isShowAdd){
-                            list.add(bean);
+                        if (isShowAdd || list.size() < 1){
+                            list.add(addBean);
                         }
 
                         mAdapter.notifyDataSetChanged();

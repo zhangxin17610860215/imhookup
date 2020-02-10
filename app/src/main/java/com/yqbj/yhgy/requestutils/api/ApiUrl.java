@@ -10,7 +10,7 @@ public class ApiUrl {
     public static boolean isDebug = true;                        //是否是测试环境
 
     public static String BASE_URL_HEAD = "http://";
-    public static String BASE_URL = "192.168.1.119:7075";
+    public static String BASE_URL = "139.196.106.67:7075";
     public static String SERVERDOMAIN = Preferences.getServerDomain();
 
     public static String USER_LOGIN = BASE_URL_HEAD + BASE_URL + "/user/login";
