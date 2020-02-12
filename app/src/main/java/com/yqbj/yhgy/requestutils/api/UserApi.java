@@ -408,6 +408,42 @@ public class UserApi {
     }
 
     /**
+     * 根据昵称模糊搜索
+     * */
+    public static void search(String keyword,String pageNum,String pageSize,Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("keyword",keyword);
+        map.put("pageNum",pageNum);
+        map.put("pageSize",pageSize);
+        RequestHelp.postRequest(ApiUrl.HOME_SEARCH, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "search--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        HomeDataBean homeDataBean = JSON.parseObject(JSON.toJSONString(data.get("PageResult")),HomeDataBean.class);
+                        callback.onSuccess(bean.getCode(),homeDataBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "search--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
      * 更新隐私设置
      * */
     public static void upPrivacySetting(String hidelocation,String hideonline,String privacystate,

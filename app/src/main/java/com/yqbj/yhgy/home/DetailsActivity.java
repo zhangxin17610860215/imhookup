@@ -458,6 +458,7 @@ public class DetailsActivity extends BaseActivity {
         }else {
             tvNoPhoto.setVisibility(View.GONE);
             llAlbumlock.setVisibility(configBean.getPrivacystate()==2 ? View.VISIBLE : View.GONE);
+            mRecyclerView.setVisibility(configBean.getPrivacystate()==1 ? View.VISIBLE : View.GONE);
             int payNum = 0;
             for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
                 if (albumBean.getPayFlag() == 1){

@@ -115,7 +115,7 @@ public class SeePictureActivity extends BaseActivity {
         public Object instantiateItem(ViewGroup container, final int position) {
             View view = View.inflate(mContext, R.layout.album_detail_item_layout,null);
             ImageView img = (ImageView) view.findViewById(R.id.img_album_detail_item);
-            Glide.with(mContext).load(mData.get(position)).into(img);
+            Glide.with(mContext).load(mData.get(position)).placeholder(R.mipmap.zhanwei_logo).error(R.mipmap.zhanwei_logo).into(img);
 
             img.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

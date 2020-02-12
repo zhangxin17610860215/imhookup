@@ -36,16 +36,21 @@
             android:layout_toLeftOf="@+id/img_delete"
             android:background="@null"
             android:layout_marginLeft="@dimen/dimen_15"
-            android:hint="输入关键字"
+            android:hint="输入对方昵称关键字"
             android:textSize="@dimen/text_size_12"
             android:textColor="@color/black"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/mRecyclerView"
+    <com.yqbj.yhgy.view.MyRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_10"/>
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_10"/>
+    </com.yqbj.yhgy.view.MyRefreshLayout>
 
 </LinearLayout>
