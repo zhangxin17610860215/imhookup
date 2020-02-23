@@ -109,6 +109,21 @@ public class Constants {
         public static final int CODE_20013 = 20013;            // 币种类型异常
         public static final int CODE_20014 = 20014;            // 未解锁用户信息
         public static final int CODE_20015 = 20015;            // 用户信息不完善
+        public static final int CODE_20016 = 20016;            // 您不能对此用户重复评价
+        public static final int CODE_20017 = 20017;            // 原密码错误
+        public static final int CODE_20018 = 20018;            // 只有女性才能认真女神
+        public static final int CODE_20019 = 20019;            // 重复真人认证
+        public static final int CODE_20020 = 20020;            // 重复认证女神
+        public static final int CODE_20021 = 20021;            // 认证多媒体数量超限
+        public static final int CODE_20022 = 20022;            // 不能查看同性资料
+        public static final int CODE_20023 = 20023;            // 普通用户每天最多只能看10个用户
+        public static final int CODE_20024 = 20024;            // 真人认证失败
+        public static final int CODE_20025 = 20025;            // 需要付费才可查阅
+        public static final int CODE_20026 = 20026;            // 付费解锁相册
+        public static final int CODE_20027 = 20027;            // 付费解锁用户资料
+        public static final int CODE_20028 = 20028;            // 用户钱包异常
+        public static final int CODE_20029 = 20029;            // 红包已领取
+        public static final int CODE_20030 = 20030;            // 红包超时回退
     }
 
 }

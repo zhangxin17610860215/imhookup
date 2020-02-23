@@ -23,6 +23,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.CurrencyPriceBean;
+import com.yqbj.yhgy.bean.PayInfoBean;
 import com.yqbj.yhgy.bean.WalletBalanceBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.home.DetailsActivity;
@@ -30,6 +31,7 @@ import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.view.BindAliPayDialog;
 import com.yqbj.yhgy.view.CurrencyRechargeDialog;
 import com.yqbj.yhgy.view.CurrencyWithdrawalDialog;
@@ -44,6 +46,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.yqbj.yhgy.MyApplication.ALIPAY_APPID;
 
 /**
  * 钱包
@@ -86,7 +90,13 @@ public class WalletActivity extends BaseActivity {
     private Activity mActivity;
     private String alpayAccount = "";
     private String alpayName = "";
+    private String currencyWithdrawal = "";
+    private String currencyTotal = "";
+    private String cashTotal = "";
+    private String cashWithdrawal = "";
     private int type = 1;//类型    1=现金   2=约会币
+    private int pageNum = 1;
+    private int pageSize = 20;
     private EasyRVAdapter mAdapter;
     private List<String> list = new ArrayList<>();
 
@@ -103,6 +113,7 @@ public class WalletActivity extends BaseActivity {
 
         mActivity = this;
         initView();
+        initData();
     }
 
     private void initView() {
@@ -130,16 +141,17 @@ public class WalletActivity extends BaseActivity {
         UserApi.getBalance(mActivity, new RequestCallback() {
             @Override
             public void onSuccess(int code, Object object) {
-                dismissProgress();
                 if (code == Constants.SUCCESS_CODE){
                     WalletBalanceBean balanceBean = (WalletBalanceBean) object;
-                    if (type==1){
-                        tvCashTotal.setText(String.valueOf(NumberUtil.add(balanceBean.getMoney(),balanceBean.getUnassignableTotalMoney())));
-                        tvWithdrawalMoney.setText(balanceBean.getMoney());
-                    }else {
-                        tvCashTotal.setText(String.valueOf(NumberUtil.add(balanceBean.getCurrency()+"",balanceBean.getUnassignableTotalCurrency()+"")));
-                        tvWithdrawalMoney.setText(balanceBean.getCurrency()+"");
-                    }
+                    currencyTotal = balanceBean.getUnassignableTotalCurrency()+"";
+                    currencyWithdrawal = balanceBean.getCurrency()+"";
+                    cashWithdrawal  = balanceBean.getMoney();
+                    cashTotal = balanceBean.getUnassignableTotalMoney();
+
+                    tvCashTotal.setText(String.valueOf(NumberUtil.add(cashWithdrawal,cashTotal)));
+                    tvWithdrawalMoney.setText(cashWithdrawal);
+                    tvCurrencyTotal.setText(String.valueOf(NumberUtil.add(currencyWithdrawal,currencyTotal)));
+                    tvWithdrawalCurrency.setText(currencyWithdrawal);
 
                     if (StringUtil.isNotEmpty(balanceBean.getAliAccount()) && StringUtil.isNotEmpty(balanceBean.getAliRealName())){
                         alpayAccount = balanceBean.getAliAccount();
@@ -154,11 +166,28 @@ public class WalletActivity extends BaseActivity {
 
             @Override
             public void onFailed(String errMessage) {
-                dismissProgress();
                 toast(errMessage);
             }
         });
 
+        UserApi.getOrderList(type, pageNum, pageSize, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    lodeData();
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void lodeData() {
         list.add("1");
         list.add("2");
         list.add("3");
@@ -231,6 +260,11 @@ public class WalletActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_CashWithdrawal:
                 //现金提现
+                if (!NumberUtil.compareGreater(cashWithdrawal,"0")){
+                    toast("可提现的余额不足");
+                    return;
+                }
+                withdrawDeposit();
                 break;
             case R.id.tv_CurrencyRecharge:
                 //约会币充值
@@ -238,10 +272,26 @@ public class WalletActivity extends BaseActivity {
                 break;
             case R.id.tv_CurrencyWithdrawal:
                 //约会币提现
-                new XPopup.Builder(mActivity)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new CurrencyWithdrawalDialog(mActivity,"40","2","19","1"))
-                        .show();
+                try {
+                    if (!NumberUtil.compareGreater(currencyWithdrawal,"20")){
+                        toast("可提现的约会币数量不足");
+                        return;
+                    }
+                    String str = NumberUtil.div_Intercept(currencyWithdrawal, "20", 0);
+                    int surplus = NumberUtil.toInt(currencyWithdrawal) % 20;
+                    new XPopup.Builder(mActivity)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new CurrencyWithdrawalDialog(mActivity, currencyWithdrawal, str, surplus + "", "1", new CurrencyWithdrawalDialog.WithdrawDepositCallback() {
+                                @Override
+                                public void onCallback() {
+                                    pageNum = 1;
+                                    initData();
+                                }
+                            }))
+                            .show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.tv_cash:
                 //现金
@@ -272,6 +322,22 @@ public class WalletActivity extends BaseActivity {
                         .show();
                 break;
         }
+    }
+
+    private void withdrawDeposit() {
+        showProgress(false);
+        UserApi.withdrawDeposit("9", tvWithdrawalMoney.getText().toString(), "2", "2", mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
     }
 
     /**
@@ -316,8 +382,8 @@ public class WalletActivity extends BaseActivity {
                             .dismissOnTouchOutside(false)
                             .asCustom(new CurrencyRechargeDialog(mActivity, priceList, "99", new CurrencyRechargeDialog.GoPayListener() {
                                 @Override
-                                public void goPay(String money) {
-                                    showPayMode(money,view);
+                                public void goPay(String money,String id) {
+                                    showPayMode(money,id,view);
                                 }
                             }))
                             .show();
@@ -337,7 +403,7 @@ public class WalletActivity extends BaseActivity {
     /**
      * 显示支付方式弹窗
      * */
-    private void showPayMode(String money, View v) {
+    private void showPayMode(String money, String id, View v) {
         final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,2);
         new XPopup.Builder(mActivity)
                 .atView(v)
@@ -346,28 +412,61 @@ public class WalletActivity extends BaseActivity {
         paySelect.setOnClickListenerOnSure(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //立即支付
-                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
-                int payType = 1;
-                switch (type) {
-                    case ALI:
-                        //支付宝支付
-                        payType = 3;
-                        break;
-                    case WCHAT:
-                        //微信支付
-                        payType = 2;
-                        break;
-                    case WALLET:
-                        //钱包支付
-                        payType = 1;
-                        break;
-                }
                 if (!NoDoubleClickUtils.isDoubleClick(2000)){
-//                    getRedPageId(amount,payType);
-                    ToastHelper.showToast(mActivity,payType == 3 ? "支付宝支付" : "微信支付");
-                    paySelect.dismiss();
+                    //立即支付
+                    PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
+                    switch (type) {
+                        case ALI:
+                            //支付宝支付
+                            recharge("2",money,id);
+                            break;
+                        case WCHAT:
+                            //微信支付
+                            recharge("1",money,id);
+                            break;
+                        case WALLET:
+                            //钱包支付
+                            recharge("4",money,id);
+                            break;
+                    }
                 }
+                paySelect.dismiss();
+            }
+        });
+    }
+
+    private void recharge(String payType, String money, String id) {
+        showProgress(false);
+        UserApi.recharge("8", id, "2", payType, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    PayInfoBean payInfoBean = (PayInfoBean) object;
+                    aliPay(payInfoBean.getPayInfo());
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void aliPay(String payInfo) {
+        MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
+        MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID).build();
+        myALipayUtils.goAliPay(payInfo, mActivity, new MyALipayUtils.AlipayListener() {
+            @Override
+            public void onPaySuccess() {
+                initData();
+            }
+
+            @Override
+            public void onPayFailed() {
+
             }
         });
     }

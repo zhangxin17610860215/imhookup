@@ -11,6 +11,8 @@ import com.yqbj.yhgy.bean.EvaluateDataBean;
 import com.yqbj.yhgy.bean.HomeDataBean;
 import com.yqbj.yhgy.bean.MyAlbumBean;
 import com.yqbj.yhgy.bean.MyLikeBean;
+import com.yqbj.yhgy.bean.PayInfoBean;
+import com.yqbj.yhgy.bean.RedpacketDetailsBean;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.bean.VfTokenBean;
@@ -1260,6 +1262,373 @@ public class UserApi {
             public void onError(Response<String> response) {
                 super.onError(response);
                 LogUtil.e(TAG, "goddessPass--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 解锁相册
+     * */
+    public static void unLockAlbum(String tradeType, String value, String currencyType, String payType, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("tradeType",tradeType);
+        map.put("value",value);
+        map.put("currencyType",currencyType);
+        map.put("payType",payType);
+        RequestHelp.postRequest(ApiUrl.UNLOCKALBUM, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "unLockAlbum--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        String payInfo = (String) data.get("payInfo");
+                        PayInfoBean payInfoBean = new PayInfoBean();
+                        payInfoBean.setPayInfo(payInfo);
+                        callback.onSuccess(bean.getCode(),payInfoBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "unLockAlbum--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 检查是否需要解锁相册
+     * */
+    public static void checkShowAlbum(String targetUid, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("targetUid",targetUid);
+        RequestHelp.postRequest(ApiUrl.CHECKSHOWALBUM, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "checkShowAlbum--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "checkShowAlbum--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 解锁用户信息
+     * */
+    public static void unLockUserInfo(String tradeType, String value, String currencyType, String payType, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("tradeType",tradeType);
+        map.put("value",value);
+        map.put("currencyType",currencyType);
+        map.put("payType",payType);
+        RequestHelp.postRequest(ApiUrl.UNLOCKUSERINFO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "unLockUserInfo--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "unLockUserInfo--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 收费照片
+     * */
+    public static void chargePhoto(String tradeType, String value, String currencyType, String payType, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("tradeType",tradeType);
+        map.put("value",value);
+        map.put("currencyType",currencyType);
+        map.put("payType",payType);
+        RequestHelp.postRequest(ApiUrl.CHARGEPHOTO, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "chargePhoto--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "chargePhoto--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 充值
+     * */
+    public static void recharge(String tradeType, String value, String currencyType, String payType, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("tradeType",tradeType);
+        map.put("value",value);
+        map.put("currencyType",currencyType);
+        map.put("payType",payType);
+        RequestHelp.postRequest(ApiUrl.RECHARGE, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "recharge--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        if (payType.equals("2")){
+                            //支付宝支付
+                            String payInfo = (String) data.get("payInfo");
+                            PayInfoBean payInfoBean = new PayInfoBean();
+                            payInfoBean.setPayInfo(payInfo);
+                            callback.onSuccess(bean.getCode(),payInfoBean);
+                        }else {
+                            callback.onSuccess(bean.getCode(),bean);
+                        }
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "recharge--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 提现
+     * */
+    public static void withdrawDeposit(String tradeType, String value, String currencyType, String payType, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("tradeType",tradeType);
+        map.put("value",value);
+        map.put("currencyType",currencyType);
+        map.put("payType",payType);
+        RequestHelp.postRequest(ApiUrl.WITHDRAWDEPOSIT, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "withdrawDeposit--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "withdrawDeposit--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 发送红包
+     * */
+    public static void sendPacket(String name, String money, String currencyType, String payType, String targetId, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("targetType","1");
+        map.put("name",name);
+        map.put("money",money);
+        map.put("currencyType",currencyType);
+        map.put("payType",payType);
+        map.put("number","1");
+        map.put("targetId",targetId);
+        RequestHelp.postRequest(ApiUrl.SENDREDPACKET, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "sendPacket--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        if (payType.equals("2")){
+                            //支付宝支付
+                            String payInfo = (String) data.get("payInfo");
+                            PayInfoBean payInfoBean = new PayInfoBean();
+                            payInfoBean.setPayInfo(payInfo);
+                            callback.onSuccess(bean.getCode(),payInfoBean);
+                        }else {
+                            callback.onSuccess(bean.getCode(),bean);
+                        }
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "sendPacket--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 领取红包
+     * */
+    public static void getRedPacket(String rid, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("rid",rid);
+        RequestHelp.postRequest(ApiUrl.GETREDPACKET, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getRedPacket--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getRedPacket--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取红包详情
+     * */
+    public static void getRedPacketDetails(String rid, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("rid",rid);
+        RequestHelp.postRequest(ApiUrl.GETREDPACKETDETAILS, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getRedPacketDetails--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        Map<String, Object> data = bean.getData();
+                        RedpacketDetailsBean detailsBean = JSON.parseObject(JSON.toJSONString(data.get("redpacketDetails")), RedpacketDetailsBean.class);
+                        callback.onSuccess(bean.getCode(),detailsBean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getRedPacketDetails--------->onError" + response.body());
+                callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
+            }
+        });
+    }
+
+    /**
+     * 获取订单列表
+     * */
+    public static void getOrderList(int currencyType, int pageNum, int pageSize, Object object, final RequestCallback callback){
+        Map<String,String> map = new HashMap<>();
+        map.put("currencyType",currencyType+"");
+        map.put("pageNum",pageNum+"");
+        map.put("pageSize",pageSize+"");
+        RequestHelp.postRequest(ApiUrl.GETORDERLIST, object, map, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtil.e(TAG, "getOrderList--------->onSuccess" + response.body());
+                try {
+                    BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
+                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                        callback.onSuccess(bean.getCode(),bean);
+                    } else {
+                        callback.onFailed(bean.getMsg());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onFailed(ERROR_REQUEST_FAILED_MESSAGE);
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                LogUtil.e(TAG, "getOrderList--------->onError" + response.body());
                 callback.onFailed(ERROR_REQUEST_EXCEPTION_MESSAGE);
             }
         });

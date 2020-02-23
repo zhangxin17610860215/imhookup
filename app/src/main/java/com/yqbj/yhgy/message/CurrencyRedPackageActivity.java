@@ -16,12 +16,14 @@ import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.CurrencyPriceBean;
+import com.yqbj.yhgy.bean.PayInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.requestutils.RequestCallback;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.RedPacketTextWatcher;
 import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.view.CurrencyPayDialog;
 import com.yqbj.yhgy.view.CurrencyRechargeDialog;
 import com.yqbj.yhgy.view.PaySelect;
@@ -31,6 +33,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.yqbj.yhgy.MyApplication.ALIPAY_APPID;
 
 /**
  * 虚拟币红包
@@ -46,10 +50,12 @@ public class CurrencyRedPackageActivity extends BaseActivity {
 
     private Activity mActivity;
     private String money = "";
+    private String targetId = "";
+    private String redName = "";
 
-    public static void start(Activity context, int requestCode) {
+    public static void start(Activity context, int requestCode, String targetId) {
         Intent intent = new Intent(context, CurrencyRedPackageActivity.class);
-//        context.startActivity(intent);
+        intent.putExtra("targetId",targetId);
         context.startActivityForResult(intent,requestCode);
     }
 
@@ -59,6 +65,7 @@ public class CurrencyRedPackageActivity extends BaseActivity {
         setContentView(R.layout.currencyredpackage_activity_layout);
         ButterKnife.bind(this);
         mActivity = this;
+        targetId = getIntent().getStringExtra("targetId");
         initView();
         initData();
     }
@@ -104,29 +111,27 @@ public class CurrencyRedPackageActivity extends BaseActivity {
 
     @OnClick({R.id.tv_back, R.id.tv_sendRedPackage})
     public void onViewClicked(View view) {
-        if (!NoDoubleClickUtils.isDoubleClick(500)){
-            switch (view.getId()) {
-                case R.id.tv_back:
-                    //取消
-                    finish();
-                    break;
-                case R.id.tv_sendRedPackage:
-                    //赛钱进红包
-                    if (StringUtil.isEmpty(money)){
-                        toast("请输入约会币红包数量");
-                        return;
-                    }
-                    if (NumberUtil.compareLess(money,"1")){
-                        toast("单个红包约会币不得少于1");
-                        return;
-                    }
-                    if (NumberUtil.compareLess("4000",money)){
-                        toast("单次红包约会币不得大于4000");
-                        return;
-                    }
-                    showPayDialog(view);
-                    break;
-            }
+        switch (view.getId()) {
+            case R.id.tv_back:
+                //取消
+                finish();
+                break;
+            case R.id.tv_sendRedPackage:
+                //赛钱进红包
+                if (StringUtil.isEmpty(money)){
+                    toast("请输入约会币红包数量");
+                    return;
+                }
+                if (NumberUtil.compareLess(money,"1")){
+                    toast("单个红包约会币不得少于1");
+                    return;
+                }
+                if (NumberUtil.compareLess("4000",money)){
+                    toast("单次红包约会币不得大于4000");
+                    return;
+                }
+                showPayDialog(view);
+                break;
         }
 
     }
@@ -137,7 +142,7 @@ public class CurrencyRedPackageActivity extends BaseActivity {
     private void showPayDialog(View view) {
         new XPopup.Builder(mActivity)
                 .dismissOnTouchOutside(false)
-                .asCustom(new CurrencyPayDialog(mActivity, 1, new CurrencyPayDialog.CurrencyPayListener() {
+                .asCustom(new CurrencyPayDialog(mActivity, etMoney.getText().toString(), 1, new CurrencyPayDialog.CurrencyPayListener() {
                     @Override
                     public void recharge(String currencyNum) {
                         //充值
@@ -147,12 +152,9 @@ public class CurrencyRedPackageActivity extends BaseActivity {
                     @Override
                     public void pay() {
                         //支付
-                        Intent intent = new Intent();
-                        intent.putExtra("redId", "redId");
-                        intent.putExtra("redTitle", "redTitle");
-                        intent.putExtra("redContent", "小小意思,拿去浪吧");
-                        mActivity.setResult(Activity.RESULT_OK, intent);
-                        mActivity.finish();
+                        if (!NoDoubleClickUtils.isDoubleClick(2000)){
+                            sendPacket(etMoney.getText().toString());
+                        }
                     }
                 }))
                 .show();
@@ -173,8 +175,8 @@ public class CurrencyRedPackageActivity extends BaseActivity {
                             .dismissOnTouchOutside(false)
                             .asCustom(new CurrencyRechargeDialog(mActivity, priceList, "99", new CurrencyRechargeDialog.GoPayListener() {
                                 @Override
-                                public void goPay(String money) {
-                                    showPayMode(money,view);
+                                public void goPay(String money,String id) {
+                                    showPayMode(money,view,id);
                                 }
                             }))
                             .show();
@@ -194,8 +196,8 @@ public class CurrencyRedPackageActivity extends BaseActivity {
     /**
      * 显示支付方式弹窗
      * */
-    private void showPayMode(String money, View v) {
-        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,2);
+    private void showPayMode(String money, View v, String id) {
+        final PaySelect paySelect = new PaySelect(mActivity,money,"红包",money,1);
         new XPopup.Builder(mActivity)
                 .atView(v)
                 .asCustom(paySelect)
@@ -204,29 +206,88 @@ public class CurrencyRedPackageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //立即支付
-                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
-                int payType = 1;
-                switch (type) {
-                    case ALI:
-                        //支付宝支付
-                        payType = 3;
-                        break;
-                    case WCHAT:
-                        //微信支付
-                        payType = 2;
-                        break;
-                    case WALLET:
-                        //钱包支付
-                        payType = 1;
-                        break;
-                }
                 if (!NoDoubleClickUtils.isDoubleClick(2000)){
-//                    getRedPageId(amount,payType);
-                    ToastHelper.showToast(mActivity,payType == 3 ? "支付宝支付" : "微信支付");
-                    paySelect.dismiss();
+                    //立即支付
+                    PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
+                    switch (type) {
+                        case ALI:
+                            //支付宝支付
+                            recharge("2",money,id);
+                            break;
+                        case WCHAT:
+                            //微信支付
+                            recharge("1",money,id);
+                            break;
+                        case WALLET:
+                            //钱包支付
+                            recharge("4",money,id);
+                            break;
+                    }
                 }
+                paySelect.dismiss();
             }
         });
     }
 
+    private void recharge(String payType, String money, String id) {
+        showProgress(false);
+        UserApi.recharge("8", id, "2", payType, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    PayInfoBean payInfoBean = (PayInfoBean) object;
+                    aliPay(payInfoBean.getPayInfo());
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void aliPay(String payInfo) {
+        MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
+        MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID).build();
+        myALipayUtils.goAliPay(payInfo, mActivity, new MyALipayUtils.AlipayListener() {
+            @Override
+            public void onPaySuccess() {
+
+            }
+
+            @Override
+            public void onPayFailed() {
+
+            }
+        });
+    }
+
+    private void sendPacket(String amount) {
+        if (StringUtil.isEmpty(etDescribe.getText().toString())){
+            redName = "小小意思,拿去浪吧";
+        }else {
+            redName = etDescribe.getText().toString();
+        }
+        showProgress(false);
+        UserApi.sendPacket(redName, amount, "1", "4", targetId, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    finish();
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
 }

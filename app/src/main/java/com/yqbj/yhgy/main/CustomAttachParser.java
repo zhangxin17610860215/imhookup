@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.netease.nimlib.sdk.msg.attachment.MsgAttachment;
 import com.netease.nimlib.sdk.msg.attachment.MsgAttachmentParser;
 import com.yqbj.yhgy.action.SnapChatAttachment;
+import com.yqbj.yhgy.attachment.CurrencyRedPacketAttachment;
+import com.yqbj.yhgy.attachment.CurrencyRedPacketOpenedAttachment;
 import com.yqbj.yhgy.attachment.DefaultCustomAttachment;
 import com.yqbj.yhgy.attachment.RedPacketAttachment;
 import com.yqbj.yhgy.attachment.RedPacketOpenedAttachment;
@@ -64,11 +66,12 @@ public class CustomAttachParser implements MsgAttachmentParser {
                 case CustomAttachmentType.OpenedRedPacket:
                     attachment = new RedPacketOpenedAttachment();
                     break;
-//                case CustomAttachmentType.ShareImage:
-//                    return new ShareImageAttachment(data);
-//                case CustomAttachmentType.ShareCard:
-//                    attachment = new ShareCardAttachment();
-//                    break;
+                case CustomAttachmentType.CurrencyRedPacket:
+                    attachment = new CurrencyRedPacketAttachment();
+                    break;
+                case CustomAttachmentType.CurrencyOpenedRedPacket:
+                    attachment = new CurrencyRedPacketOpenedAttachment();
+                    break;
 //                case CustomAttachmentType.SystemNotify:
 //                    attachment = new SysNotifyAttachment();
 //                    break;

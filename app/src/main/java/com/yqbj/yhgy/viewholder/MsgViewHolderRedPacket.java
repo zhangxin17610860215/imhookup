@@ -5,11 +5,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.netease.nim.uikit.business.session.viewholder.MsgViewHolderBase;
+import com.netease.nim.uikit.common.ToastHelper;
+import com.netease.nim.uikit.common.ui.dialog.DialogMaker;
 import com.netease.nim.uikit.common.ui.recyclerview.adapter.BaseMultiItemFetchLoadAdapter;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.attachment.RedPacketAttachment;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.message.CashRedPackageDetailsActivity;
 import com.yqbj.yhgy.message.OthersCashRPDetailsActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 
 public class MsgViewHolderRedPacket extends MsgViewHolderBase {
 
@@ -83,16 +88,34 @@ public class MsgViewHolderRedPacket extends MsgViewHolderBase {
     @Override
     protected void onItemClick() {
         // 拆红包
+        RedPacketAttachment attachment = (RedPacketAttachment) message.getAttachment();
         if (!isReceivedMessage()){
             //自己发送的
             sendView.setBackgroundResource(R.mipmap.red_packet_send_bg);
             //查看自己发出去的红包页面
-            CashRedPackageDetailsActivity.start(context);
+            CashRedPackageDetailsActivity.start(context,message);
         }else {
             //别人发送的
             revView.setBackgroundResource(R.mipmap.red_packet_rev_bg);
             //查看别人发出去的红包页面
-            OthersCashRPDetailsActivity.start(context);
+            DialogMaker.showProgressDialog(context,null,false);
+            UserApi.getRedPacket(attachment.getRpId(), context, new RequestCallback() {
+                @Override
+                public void onSuccess(int code, Object object) {
+                    DialogMaker.dismissProgressDialog();
+                    if (code == Constants.SUCCESS_CODE || code == Constants.RESPONSE_CODE.CODE_20029){
+                        OthersCashRPDetailsActivity.start(context,message);
+                    }else {
+                        ToastHelper.showToast(context, (Integer) object);
+                    }
+                }
+
+                @Override
+                public void onFailed(String errMessage) {
+                    DialogMaker.dismissProgressDialog();
+                    ToastHelper.showToast(context,errMessage);
+                }
+            });
         }
 
     }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -27,24 +28,24 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_36"
             android:layout_gravity="center_horizontal">
-            <com.netease.nim.uikit.common.ui.imageview.HeadImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_header"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
+                app:riv_corner_radius="@dimen/dimen_5"
                 android:src="@mipmap/default_home_head"/>
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="兔依依的红包"
                 android:textSize="@dimen/text_size_15"
                 android:textColor="@color/red_text_color_f5db92"
                 android:layout_toRightOf="@+id/img_header"
                 android:layout_marginLeft="@dimen/dp_size_7"/>
             <TextView
+                android:id="@+id/tv_redPackaheDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="“小小意思，拿去浪吧”"
                 android:textColor="@color/red_text_color_f5db92"
                 android:textSize="@dimen/text_size_9"
                 android:layout_toRightOf="@+id/img_header"
@@ -68,7 +69,6 @@
                 android:id="@+id/tv_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.00"
                 android:textSize="@dimen/text_size_30"
                 android:textColor="@color/red_text_color_f5db92"
                 android:layout_marginRight="@dimen/dp_10"/>

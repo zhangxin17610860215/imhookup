@@ -78,7 +78,7 @@ public class CurrencyRechargeDialog extends BottomPopupView {
                     tv_money.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            listener.goPay(split[1]);
+                            listener.goPay(split[1],currencyPriceBean.getId());
                             dismiss();
                         }
                     });
@@ -89,7 +89,7 @@ public class CurrencyRechargeDialog extends BottomPopupView {
     }
 
     public interface GoPayListener{
-        void goPay(String money);
+        void goPay(String money,String id);
     }
 
 }

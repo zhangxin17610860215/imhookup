@@ -187,6 +187,7 @@ public class MsgViewHolderSnapChat extends MsgViewHolderBase {
             tips.setText("阅后即焚的照片");
         } else {
             downSee.setVisibility(View.GONE);
+            tips.setText("");
             tips.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(getMsgAdapter().getUuid()) && message.getUuid().equals(getMsgAdapter().getUuid())) {

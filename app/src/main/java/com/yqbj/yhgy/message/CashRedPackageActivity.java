@@ -14,14 +14,21 @@ import com.lxj.xpopup.XPopup;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
+import com.yqbj.yhgy.bean.PayInfoBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.RedPacketTextWatcher;
 import com.yqbj.yhgy.utils.StringUtil;
+import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.view.PaySelect;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.yqbj.yhgy.MyApplication.ALIPAY_APPID;
 
 /**
  * 现金红包
@@ -37,10 +44,12 @@ public class CashRedPackageActivity extends BaseActivity {
 
     private Activity mActivity;
     private String money = "";
+    private String targetId = "";
+    private String redName = "";
 
-    public static void start(Activity context, int requestCode) {
+    public static void start(Activity context, int requestCode, String targetId) {
         Intent intent = new Intent(context, CashRedPackageActivity.class);
-//        context.startActivity(intent);
+        intent.putExtra("targetId",targetId);
         context.startActivityForResult(intent,requestCode);
     }
 
@@ -50,6 +59,7 @@ public class CashRedPackageActivity extends BaseActivity {
         setContentView(R.layout.cashredpackage_activity_layout);
         ButterKnife.bind(this);
         mActivity = this;
+        targetId = getIntent().getStringExtra("targetId");
         initView();
         initData();
     }
@@ -95,31 +105,28 @@ public class CashRedPackageActivity extends BaseActivity {
 
     @OnClick({R.id.tv_back, R.id.tv_sendRedPackage})
     public void onViewClicked(View view) {
-        if (!NoDoubleClickUtils.isDoubleClick(500)){
-            switch (view.getId()) {
-                case R.id.tv_back:
-                    //取消
-                    finish();
-                    break;
-                case R.id.tv_sendRedPackage:
-                    //赛钱进红包
-                    if (StringUtil.isEmpty(money)){
-                        toast("请输入红包金额");
-                        return;
-                    }
-                    if (NumberUtil.compareLess(money,"0.01")){
-                        toast("单个红包金额不得少于0.01");
-                        return;
-                    }
-                    if (NumberUtil.compareLess("200",money)){
-                        toast("单次红包金额不得大于200");
-                        return;
-                    }
-                    showPayMode("99.99",view);
-                    break;
-            }
+        switch (view.getId()) {
+            case R.id.tv_back:
+                //取消
+                finish();
+                break;
+            case R.id.tv_sendRedPackage:
+                //赛钱进红包
+                if (StringUtil.isEmpty(money)){
+                    toast("请输入红包金额");
+                    return;
+                }
+                if (NumberUtil.compareLess(money,"0.01")){
+                    toast("单个红包金额不得少于0.01");
+                    return;
+                }
+                if (NumberUtil.compareLess("200",money)){
+                    toast("单次红包金额不得大于200");
+                    return;
+                }
+                showPayMode(money,view);
+                break;
         }
-
     }
 
     /**
@@ -136,35 +143,78 @@ public class CashRedPackageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //立即支付
-                PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
-                int payType = 1;
-                switch (type) {
-                    case ALI:
-                        //支付宝支付
-                        payType = 3;
-                        break;
-                    case WCHAT:
-                        //微信支付
-                        payType = 2;
-                        break;
-                    case WALLET:
-                        //钱包支付
-                        payType = 1;
-                        break;
-                }
                 if (!NoDoubleClickUtils.isDoubleClick(2000)){
-//                    getRedPageId(amount,payType);
-                    toast(payType == 3 ? "支付宝支付" : "微信支付");
+                    PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
+                    switch (type) {
+                        case ALI:
+                            //支付宝支付
+                            sendPacket("2",amount);
+                            break;
+                        case WCHAT:
+                            //微信支付
+                            sendPacket("1",amount);
+                            break;
+                        case WALLET:
+                            //钱包支付
+                            sendPacket("4",amount);
+                            break;
+                    }
                     paySelect.dismiss();
-                    Intent intent = new Intent();
-                    intent.putExtra("redId", "redId");
-                    intent.putExtra("redTitle", "redTitle");
-                    intent.putExtra("redContent", "小小意思,拿去浪吧");
-                    setResult(Activity.RESULT_OK, intent);
-                    finish();
                 }
             }
         });
 
+    }
+
+    private void sendPacket(String payType, String amount) {
+        if (StringUtil.isEmpty(etDescribe.getText().toString())){
+            redName = "小小意思,拿去浪吧";
+        }else {
+            redName = etDescribe.getText().toString();
+        }
+        showProgress(false);
+        UserApi.sendPacket(redName, amount, "2", payType, targetId, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    if (payType.equals("2")){
+                        PayInfoBean payInfoBean = (PayInfoBean) object;
+                        MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
+                        MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID).build();
+                        myALipayUtils.goAliPay(payInfoBean.getPayInfo(), mActivity, new MyALipayUtils.AlipayListener() {
+                            @Override
+                            public void onPaySuccess() {
+//                                sendPacketFinish();
+                                finish();
+                            }
+
+                            @Override
+                            public void onPayFailed() {
+
+                            }
+                        });
+                    }
+
+                }else {
+                    toast((String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void sendPacketFinish() {
+        Intent intent = new Intent();
+        intent.putExtra("redId", "redId");
+        intent.putExtra("redTitle", "普通红包");
+        intent.putExtra("redContent", redName);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

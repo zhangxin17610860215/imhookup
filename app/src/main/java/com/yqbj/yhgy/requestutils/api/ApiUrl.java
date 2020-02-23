@@ -45,4 +45,14 @@ public class ApiUrl {
     public static String GETVFTOKEN= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/real/person/token";
     public static String AUTHENTICATIONPASS= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/real/person/verify";
     public static String GODDESSPASS= BASE_URL_HEAD + SERVERDOMAIN + "/authentication/goddess";
+    public static String UNLOCKALBUM= BASE_URL_HEAD + SERVERDOMAIN + "/trade/unlock/photo/album";
+    public static String CHECKSHOWALBUM= BASE_URL_HEAD + SERVERDOMAIN + "/multimedia/check/show/photoalbum";
+    public static String UNLOCKUSERINFO= BASE_URL_HEAD + SERVERDOMAIN + "/trade/unlock/user/info";
+    public static String CHARGEPHOTO= BASE_URL_HEAD + SERVERDOMAIN + "/trade/charge/photo";
+    public static String RECHARGE= BASE_URL_HEAD + SERVERDOMAIN + "/trade/user/recharge";
+    public static String WITHDRAWDEPOSIT= BASE_URL_HEAD + SERVERDOMAIN + "/trade/withdraw/deposit";
+    public static String SENDREDPACKET= BASE_URL_HEAD + SERVERDOMAIN + "/redpacket/send";
+    public static String GETREDPACKET= BASE_URL_HEAD + SERVERDOMAIN + "/redpacket/get";
+    public static String GETREDPACKETDETAILS= BASE_URL_HEAD + SERVERDOMAIN + "/redpacket/details";
+    public static String GETORDERLIST= BASE_URL_HEAD + SERVERDOMAIN + "/wallet/trade/order/list";
 }

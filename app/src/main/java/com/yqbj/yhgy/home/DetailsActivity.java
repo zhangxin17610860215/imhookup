@@ -24,20 +24,24 @@ import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseActivity;
 import com.yqbj.yhgy.bean.EvaluateDataBean;
+import com.yqbj.yhgy.bean.PayInfoBean;
 import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.me.LookPhotoActivity;
 import com.yqbj.yhgy.me.MyPhotoActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.ApiUrl;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.NumberUtil;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.TimeUtils;
 import com.yqbj.yhgy.utils.ZodiacUtil;
+import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.view.ChatCautionDialog;
 import com.yqbj.yhgy.view.EvaluateDialog;
 import com.yqbj.yhgy.view.PaySelect;
+import com.yqbj.yhgy.wxapi.WXUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -49,6 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.yqbj.yhgy.MyApplication.ALIPAY_APPID;
 import static com.yqbj.yhgy.config.Constants.CITYBEANLIST;
 import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 
@@ -184,6 +189,7 @@ public class DetailsActivity extends BaseActivity {
         accid = getIntent().getStringExtra("accid");
         initView();
         initData();
+        checkShowAlbum();
     }
 
     private void initView() {
@@ -276,6 +282,7 @@ public class DetailsActivity extends BaseActivity {
             photoBean.setYellowish(albumBean.getCheckFlag() == 0);
             photoBean.setFee(albumBean.getFee()+"");
             photoBean.setOneself(albumBean.getLabelFlag()>0);
+            photoBean.setId(albumBean.getId());
             list.add(photoBean);
         }
         photoList.clear();
@@ -457,8 +464,6 @@ public class DetailsActivity extends BaseActivity {
             llAlbumlock.setVisibility(View.GONE);
         }else {
             tvNoPhoto.setVisibility(View.GONE);
-            llAlbumlock.setVisibility(configBean.getPrivacystate()==2 ? View.VISIBLE : View.GONE);
-            mRecyclerView.setVisibility(configBean.getPrivacystate()==1 ? View.VISIBLE : View.GONE);
             int payNum = 0;
             for (UserInfoBean.PhotoAlbumBean albumBean : photoAlbumBean){
                 if (albumBean.getPayFlag() == 1){
@@ -503,7 +508,7 @@ public class DetailsActivity extends BaseActivity {
                             @Override
                             public void onClick(String money) {
                                 //付费查看
-                                showPayMode(view,money);
+                                showPayMode(view,money,1);
                             }
                         }))
                         .show();
@@ -516,7 +521,7 @@ public class DetailsActivity extends BaseActivity {
                             @Override
                             public void onClick(String money) {
                                 //付费查看
-                                showPayMode(view,money);
+                                showPayMode(view,money,1);
                             }
                         }))
                         .show();
@@ -544,7 +549,7 @@ public class DetailsActivity extends BaseActivity {
                             @Override
                             public void onClick(String money) {
                                 //付费查看
-                                showPayMode(view,money);
+                                showPayMode(view,money,1);
                             }
                         }))
                         .show();
@@ -557,7 +562,7 @@ public class DetailsActivity extends BaseActivity {
                             @Override
                             public void onClick(String money) {
                                 //付费查看
-                                showPayMode(view,money);
+                                showPayMode(view,money,1);
                             }
                         }))
                         .show();
@@ -570,7 +575,7 @@ public class DetailsActivity extends BaseActivity {
                             @Override
                             public void onClick(String money) {
                                 //付费查看
-                                showPayMode(view,money);
+                                showPayMode(view,money,2);
                             }
                         }))
                         .show();
@@ -671,8 +676,8 @@ public class DetailsActivity extends BaseActivity {
     /**
      * 显示支付方式弹窗
      * */
-    private void showPayMode(View v,String amount) {
-        final PaySelect paySelect = new PaySelect(mActivity,amount,"会员套餐",amount,2);
+    private void showPayMode(View v,String amount,int TYPE) {
+        final PaySelect paySelect = new PaySelect(mActivity,amount,"会员套餐",amount,1);
         new XPopup.Builder(mActivity)
                 .atView(v)
                 .asCustom(paySelect)
@@ -682,26 +687,113 @@ public class DetailsActivity extends BaseActivity {
             public void onClick(View v) {
                 //立即支付
                 PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
-                int payType = 1;
-                switch (type) {
-                    case ALI:
-                        //支付宝支付
-                        payType = 3;
-                        break;
-                    case WCHAT:
-                        //微信支付
-                        payType = 2;
-                        break;
-                    case WALLET:
-                        //钱包支付
-                        payType = 1;
-                        break;
-                }
+
                 if (!NoDoubleClickUtils.isDoubleClick(2000)){
-//                    getRedPageId(amount,payType);
-                    toast(payType == 3 ? "支付宝支付" : "微信支付");
+                    switch (type) {
+                        case ALI:
+                            showProgress(false);
+                            if (TYPE == 2){
+                                unLockAlbum("2","2");
+                            }else {
+                                unLockUserInfo("4","2");
+                            }
+//                            aliPay(TYPE);
+                            break;
+                        case WCHAT:
+                            showProgress(false);
+                            if (TYPE == 2){
+                                unLockAlbum("2","1");
+                            }else {
+                                unLockUserInfo("4","1");
+                            }
+                            break;
+                        case WALLET:
+                            if (TYPE == 2){
+                                unLockAlbum("2","4");
+                            }else {
+                                unLockUserInfo("4","4");
+                            }
+                            break;
+                    }
                     paySelect.dismiss();
                 }
+            }
+        });
+    }
+
+    private void aliPay(String payInfo) {
+        MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
+        MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID).build();
+        myALipayUtils.goAliPay(payInfo, mActivity, new MyALipayUtils.AlipayListener() {
+            @Override
+            public void onPaySuccess() {
+                checkShowAlbum();
+            }
+
+            @Override
+            public void onPayFailed() {
+
+            }
+        });
+    }
+
+    /**
+     * 检查是否需要解锁相册
+     * */
+    private void checkShowAlbum() {
+        showProgress(false);
+        UserApi.checkShowAlbum(accid, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    llAlbumlock.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }else {
+                    llAlbumlock.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void unLockUserInfo(String tradeType, String payType) {
+        UserApi.unLockUserInfo(tradeType, accid, "2", payType, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
+        });
+    }
+
+    private void unLockAlbum(String tradeType, String payType) {
+        UserApi.unLockAlbum(tradeType, accid, "2", payType, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code == Constants.SUCCESS_CODE){
+                    PayInfoBean payInfoBean = (PayInfoBean) object;
+                    aliPay(payInfoBean.getPayInfo());
+                }
+
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
             }
         });
     }

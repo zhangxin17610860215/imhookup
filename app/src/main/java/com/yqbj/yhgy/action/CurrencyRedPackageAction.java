@@ -27,7 +27,7 @@ public class CurrencyRedPackageAction extends BaseAction {
     @Override
     public void onClick() {
         int requestCode = makeRequestCode(CREATE_SINGLE_RED_PACKET);
-        CurrencyRedPackageActivity.start(getActivity(),requestCode);
+        CurrencyRedPackageActivity.start(getActivity(),requestCode,getAccount());
     }
 
     @Override

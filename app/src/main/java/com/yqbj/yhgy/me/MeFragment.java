@@ -1,8 +1,6 @@
 package com.yqbj.yhgy.me;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,15 +25,12 @@ import com.netease.nim.uikit.common.media.imagepicker.ImagePicker;
 import com.netease.nim.uikit.common.media.imagepicker.option.DefaultImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.option.ImagePickerOption;
 import com.netease.nim.uikit.common.media.imagepicker.ui.ImageGridActivity;
-import com.netease.nim.uikit.common.ui.widget.BlurTransformation;
 import com.netease.nim.uikit.common.util.CityBean;
 import com.netease.nim.uikit.common.util.NoDoubleClickUtils;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.ResponseCode;
 import com.netease.nimlib.sdk.nos.NosService;
-import com.netease.nimlib.sdk.uinfo.UserService;
-import com.netease.nimlib.sdk.uinfo.constant.UserInfoFieldEnum;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.base.BaseFragment;
 import com.yqbj.yhgy.bean.EvaluateDataBean;
@@ -46,21 +41,16 @@ import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.login.VipCoreActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
-import com.yqbj.yhgy.requestutils.api.ApiUrl;
 import com.yqbj.yhgy.requestutils.api.UserApi;
 import com.yqbj.yhgy.utils.DemoCache;
 import com.yqbj.yhgy.utils.EventBusUtils;
-import com.yqbj.yhgy.utils.ImageFilter;
-import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.Preferences;
 import com.yqbj.yhgy.utils.StringUtil;
 import com.yqbj.yhgy.utils.TimeUtils;
 import com.yqbj.yhgy.utils.UMShareUtil;
 import com.yqbj.yhgy.utils.ZodiacUtil;
-import com.yqbj.yhgy.utils.pay.MyALipayUtils;
 import com.yqbj.yhgy.view.EvaluateDialog;
 import com.yqbj.yhgy.view.MiddleDialog;
-import com.yqbj.yhgy.wxapi.WXUtil;
 import com.yuyh.easyadapter.recyclerview.EasyRVAdapter;
 import com.yuyh.easyadapter.recyclerview.EasyRVHolder;
 
@@ -69,16 +59,13 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.yqbj.yhgy.MyApplication.ALIPAY_APPID;
 import static com.yqbj.yhgy.config.Constants.OCCUPATIONBEANLIST;
 
 /**
@@ -376,7 +363,6 @@ public class MeFragment extends BaseFragment {
                     break;
                 case R.id.img_header:
                     //头像
-//                    WXUtil.weiChatPay(mActivity);
                     break;
                 case R.id.tv_addVIP:
                     //立即加入
@@ -427,15 +413,6 @@ public class MeFragment extends BaseFragment {
                     break;
                 case R.id.tv_recovery:
                     //一键恢复
-                    final MyALipayUtils.ALiPayBuilder builder = new MyALipayUtils.ALiPayBuilder();
-                    MyALipayUtils myALipayUtils = builder.setAppid(ALIPAY_APPID)
-                            .setMoney("12")       //设置金额
-                            .setTitle("杭州吾乐玩网络科技有限公司")     //设置商品信息
-                            .setBody("杭州吾乐玩网络科技有限公司")       //设置商品信息描述
-                            .setOrderTradeId("123123132")   //设置订单ID
-                            .setNotifyUrl(ApiUrl.BASE_URL_HEAD + ApiUrl.BASE_URL + "/notify/alipay") //服务器异步通知页面路径
-                            .build();
-                    myALipayUtils.goAliPay("112", mActivity);
                     break;
                 case R.id.tv_Setting:
                     //设置

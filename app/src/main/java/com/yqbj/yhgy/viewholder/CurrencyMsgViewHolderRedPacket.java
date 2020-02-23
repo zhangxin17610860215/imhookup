@@ -5,11 +5,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.netease.nim.uikit.business.session.viewholder.MsgViewHolderBase;
+import com.netease.nim.uikit.common.ToastHelper;
+import com.netease.nim.uikit.common.ui.dialog.DialogMaker;
 import com.netease.nim.uikit.common.ui.recyclerview.adapter.BaseMultiItemFetchLoadAdapter;
 import com.yqbj.yhgy.R;
 import com.yqbj.yhgy.attachment.CurrencyRedPacketAttachment;
+import com.yqbj.yhgy.bean.RedpacketDetailsBean;
+import com.yqbj.yhgy.config.Constants;
 import com.yqbj.yhgy.message.CurrencyOthersCashRPDetailsActivity;
 import com.yqbj.yhgy.message.CurrencyRedPackageDetailsActivity;
+import com.yqbj.yhgy.message.OthersCashRPDetailsActivity;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
 
 public class CurrencyMsgViewHolderRedPacket extends MsgViewHolderBase {
 
@@ -83,16 +90,35 @@ public class CurrencyMsgViewHolderRedPacket extends MsgViewHolderBase {
     @Override
     protected void onItemClick() {
         // 拆红包
+        CurrencyRedPacketAttachment attachment = (CurrencyRedPacketAttachment) message.getAttachment();
         if (!isReceivedMessage()){
             //自己发送的
             sendView.setBackgroundResource(R.mipmap.currencyred_packet_send_bg);
             //查看自己发出去的红包页面
-            CurrencyRedPackageDetailsActivity.start(context);
+            CurrencyRedPackageDetailsActivity.start(context,message);
         }else {
             //别人发送的
             revView.setBackgroundResource(R.mipmap.currencyred_packet_rev_bg);
             //查看别人发出去的红包页面
-            CurrencyOthersCashRPDetailsActivity.start(context);
+            DialogMaker.showProgressDialog(context,null,false);
+            UserApi.getRedPacket(attachment.getRpId(), context, new RequestCallback() {
+                @Override
+                public void onSuccess(int code, Object object) {
+                    DialogMaker.dismissProgressDialog();
+                    if (code == Constants.SUCCESS_CODE || code == Constants.RESPONSE_CODE.CODE_20029){
+                        CurrencyOthersCashRPDetailsActivity.start(context,message);
+                    } else {
+                        ToastHelper.showToast(context, (Integer) object);
+                    }
+                }
+
+                @Override
+                public void onFailed(String errMessage) {
+                    DialogMaker.dismissProgressDialog();
+                    ToastHelper.showToast(context,errMessage);
+                }
+            });
+
         }
 
     }

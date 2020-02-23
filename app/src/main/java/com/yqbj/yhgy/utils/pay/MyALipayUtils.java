@@ -10,6 +10,7 @@ import com.alipay.sdk.app.PayTask;
 import com.netease.nim.uikit.api.NimUIKit;
 import com.netease.nim.uikit.common.ui.dialog.DialogMaker;
 import com.yqbj.yhgy.utils.Base64;
+import com.yqbj.yhgy.utils.LogUtil;
 import com.yqbj.yhgy.utils.StringUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -51,6 +52,7 @@ public class MyALipayUtils {
 //            6004	支付结果未知（有可能已经支付成功），请查询商户订单列表中订单的支付状态
 //            其它	其它支付错误
             AliPayResult payResult = new AliPayResult((Map<String, String>) msg.obj);
+            LogUtil.e("AliPay_______data",payResult.toString());
             switch (payResult.getResultStatus()) {
                 case "9000":
                     aliPaySuccess.getSuccessListener(payResult);
@@ -91,17 +93,24 @@ public class MyALipayUtils {
     }
 
 
-    public void goAliPay(final String tradeType, final Activity mContext){
-        final Map<String,String> oriMap = buildOrderParamMap(true,tradeType);
+    public void goAliPay(final String payInfo, final Activity mContext, final AlipayListener mListener){
+        toALiPay(mContext, payInfo, new AliPaySuccess() {
+            @Override
+            public void getSuccessListener(AliPayResult payResult) {
+                if(mListener!=null){
+                    mListener.onPaySuccess();
+                }
 
-        final String orderParams = buildOrderParam(oriMap,false);
-        String baseOrderParams = "";
-        try {
-            baseOrderParams = Base64.encode(orderParams.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        DialogMaker.showProgressDialog(mContext, null, true);
+            }
+
+            @Override
+            public void getErrorListener(AliPayResult payResult) {
+                if(mListener!=null){
+                    mListener.onPayFailed();
+                }
+            }
+        });
+//        DialogMaker.showProgressDialog(mContext, null, true);
 //        UserApi.singParams(tradeType, baseOrderParams, opt,rid,money,targetIds,targetType,name,paymentPwd,number,targetId,mContext, new requestCallback() {
 //            @Override
 //            public void onSuccess(int code, Object object) {
@@ -138,25 +147,16 @@ public class MyALipayUtils {
     /**
      * 签名在服务端来做
      * @param context
-     * @param sign
      */
-    public void toALiPay(final Activity context,final String orderParams,final String sign,AliPaySuccess aliPaySuccess) {
+    public void toALiPay(final Activity context,final String payInfo,AliPaySuccess aliPaySuccess) {
         this.context = context;
         this.aliPaySuccess = aliPaySuccess;
-        String encode = "";
-        try {
-            encode = URLEncoder.encode(sign, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        final String orderInfo = orderParams + "&sign=" + encode;
-//        final String orderInfo = "app_id=2019032063603734&biz_content={\"timeout_express\"%3A\"30m\"%2C\"seller_id\"%3A\"\"%2C\"product_code\"%3A\"QUICK_MSECURITY_PAY\"%2C\"total_amount\"%3A\"0.01\"%2C\"subject\"%3A\"%E7%88%B1%E8%81%8A%E7%BA%A2%E5%8C%85%E6%94%AF%E4%BB%98\"%2C\"body\"%3A\"%E7%88%B1%E8%81%8A%E7%BA%A2%E5%8C%85%E6%94%AF%E4%BB%98\"%2C\"out_trade_no\"%3A\"2019041515415722110000008\"}&charset=utf-8&method=alipay.trade.app.pay&notify_url=http%3A%2F%2F139.196.106.67%2Fnotify%2Falipay&sign_type=RSA2&timestamp=2019-04-15+15%3A55%3A26&version=1.0&sign=G2p0Ob9fzJ4so1Tt6qC5woewWTyZeR%2FVIYnvlGGFayBMIrtT6b1FKR8b5XFolfTR983aU%2BoK94iJ0I4U%2BqsaAylXyjBx8hpBOhw88D1jxJCPVrgZhd8PH67BZ67x9Q%2FvdWe7wMEXTHON2J7UyE%2FilScetiP1iSk9%2FnB0kto1lbwtRfm1N59EnyxK1qBA1wkby9%2FUnwpGAL8eEKQRcMRO0H9oADAukjr3JSJRlbY9FYbhiHjiN5RQDf8JmmYoha9oENNVfOiYCbxWip8rRpPMLvRJlVGrsTX9Ocf%2FtIHWLmTe7YJisQEKVzj08zBeipD%2BUglSECGxwV9z58HTNibTrg%3D%3D";
         Runnable payRunnable = new Runnable() {
             @Override
             public void run() {
                 PayTask alipay = new PayTask(context);
                 Map<String, String> result = alipay.payV2
-                        (orderInfo, true);
+                        (payInfo, true);
                 Message msg = new Message();
                 msg.what = SDK_PAY_FLAG;
                 msg.obj = result;

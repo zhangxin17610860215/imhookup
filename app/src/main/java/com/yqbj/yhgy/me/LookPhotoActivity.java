@@ -276,7 +276,7 @@ public class LookPhotoActivity extends BaseActivity {
                         tvGoVIP = tv_goVIP;
                         tvWatermark = tv_Watermark;
                         bean = photoBean;
-                        showPayMode(view,"3.00");
+                        showPayMode(view,"3.00",bean.getId());
                     }
                 });
 
@@ -415,7 +415,7 @@ public class LookPhotoActivity extends BaseActivity {
     /**
      * 显示支付方式弹窗
      * */
-    private void showPayMode(View v, String amount) {
+    private void showPayMode(View v, String amount, int id) {
         final PaySelect paySelect = new PaySelect(mActivity,amount,"红包照片",amount,1);
         new XPopup.Builder(mActivity)
                 .atView(v)
@@ -426,26 +426,35 @@ public class LookPhotoActivity extends BaseActivity {
             public void onClick(View v) {
                 //立即支付
                 PaySelect.SelectPayType type = paySelect.getCurrSeletPayType();
-                int payType = 1;
-                switch (type) {
-                    case ALI:
-                        //支付宝支付
-                        payType = 3;
-                        break;
-                    case WCHAT:
-                        //微信支付
-                        payType = 2;
-                        break;
-                    case WALLET:
-                        //钱包支付
-                        payType = 1;
-                        break;
-                }
                 if (!NoDoubleClickUtils.isDoubleClick(2000)){
-//                    getRedPageId(amount,payType);
-                    toast(payType == 3 ? "支付宝支付" : "微信支付");
-                    bean.setRedEnvelopePhotosPaid(true);
+                    switch (type) {
+                        case ALI:
+                            //支付宝支付
+                            chargePhoto(id,"2");
+                            break;
+                        case WCHAT:
+                            //微信支付
+                            chargePhoto(id,"1");
+                            break;
+                        case WALLET:
+                            //钱包支付
+                            chargePhoto(id,"4");
+                            break;
+                    }
                     paySelect.dismiss();
+                }
+            }
+        });
+    }
+
+    private void chargePhoto(int id, String payType) {
+        showProgress(false);
+        UserApi.chargePhoto("3", id+"", "2", payType, mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                dismissProgress();
+                if (code==Constants.SUCCESS_CODE){
+                    bean.setRedEnvelopePhotosPaid(true);
                     if (!isShowButton && bean.isBurnAfterReading()){
                         if (bean.isBurnedDown()){
                             return;
@@ -461,7 +470,14 @@ public class LookPhotoActivity extends BaseActivity {
                     }
                 }
             }
+
+            @Override
+            public void onFailed(String errMessage) {
+                dismissProgress();
+                toast(errMessage);
+            }
         });
+
     }
 
     @Override

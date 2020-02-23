@@ -9,7 +9,15 @@ import android.widget.TextView;
 
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
+import com.netease.nim.uikit.common.ToastHelper;
+import com.netease.nim.uikit.common.ui.dialog.DialogMaker;
 import com.yqbj.yhgy.R;
+import com.yqbj.yhgy.bean.WalletBalanceBean;
+import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.requestutils.RequestCallback;
+import com.yqbj.yhgy.requestutils.api.UserApi;
+import com.yqbj.yhgy.utils.NumberUtil;
+import com.yqbj.yhgy.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +40,14 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
      * */
     private int type;
 
-    private String currencyNum = "99";
+    private String currencyNum = "";
+    private String currencyPay = "";
     private CurrencyPayListener listener;
 
-    public CurrencyPayDialog(@NonNull Activity activity, int type, CurrencyPayListener listener) {
+    public CurrencyPayDialog(@NonNull Activity activity, String currencyPay, int type, CurrencyPayListener listener) {
         super(activity);
         this.mActivity = activity;
+        this.currencyPay = currencyPay;
         this.type = type;
         this.listener = listener;
     }
@@ -63,6 +73,8 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
         tv_pay = findViewById(R.id.tv_pay);
         tv_Recharge = findViewById(R.id.tv_Recharge);
 
+        tv_payNum.setText(currencyPay);
+
         img_Refresh.setOnClickListener(this);
         tv_pay.setOnClickListener(this);
         tv_Recharge.setOnClickListener(this);
@@ -70,11 +82,35 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
     }
 
     private void initData() {
-        tv_currencyNum.setText(currencyNum);
-
         if (type == 1){
             tv_title.setText("约会币红包");
         }
+
+        getBalance();
+
+    }
+
+    private void getBalance() {
+        DialogMaker.showProgressDialog(mActivity,null,false);
+        UserApi.getBalance(mActivity, new RequestCallback() {
+            @Override
+            public void onSuccess(int code, Object object) {
+                DialogMaker.dismissProgressDialog();
+                if (code == Constants.SUCCESS_CODE){
+                    WalletBalanceBean balanceBean = (WalletBalanceBean) object;
+                    currencyNum = balanceBean.getCurrency() + "";
+                    tv_currencyNum.setText(currencyNum);
+                }else {
+                    ToastHelper.showToast(mActivity,(String) object);
+                }
+            }
+
+            @Override
+            public void onFailed(String errMessage) {
+                DialogMaker.dismissProgressDialog();
+                ToastHelper.showToast(mActivity,errMessage);
+            }
+        });
     }
 
     @Override
@@ -82,6 +118,7 @@ public class CurrencyPayDialog extends BottomPopupView implements View.OnClickLi
         switch (v.getId()){
             case R.id.img_Refresh:
                 //刷新
+                getBalance();
                 break;
             case R.id.tv_pay:
                 //支付
