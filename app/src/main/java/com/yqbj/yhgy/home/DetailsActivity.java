@@ -28,6 +28,7 @@ import com.yqbj.yhgy.bean.PayInfoBean;
 import com.yqbj.yhgy.bean.PhotoBean;
 import com.yqbj.yhgy.bean.UserInfoBean;
 import com.yqbj.yhgy.config.Constants;
+import com.yqbj.yhgy.main.SessionHelper;
 import com.yqbj.yhgy.me.LookPhotoActivity;
 import com.yqbj.yhgy.me.MyPhotoActivity;
 import com.yqbj.yhgy.requestutils.RequestCallback;
@@ -768,6 +769,7 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onSuccess(int code, Object object) {
                 dismissProgress();
+                SessionHelper.startP2PSession(mActivity,accid);
             }
 
             @Override

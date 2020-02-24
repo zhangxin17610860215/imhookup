@@ -1546,7 +1546,7 @@ public class UserApi {
                 LogUtil.e(TAG, "getRedPacket--------->onSuccess" + response.body());
                 try {
                     BaseBean bean = GsonHelper.getSingleton().fromJson(response.body(), BaseBean.class);
-                    if (bean.getCode() == Constants.SUCCESS_CODE){
+                    if (bean.getCode() == Constants.SUCCESS_CODE || bean.getCode() == Constants.RESPONSE_CODE.CODE_20029){
                         callback.onSuccess(bean.getCode(),bean);
                     } else {
                         callback.onFailed(bean.getMsg());

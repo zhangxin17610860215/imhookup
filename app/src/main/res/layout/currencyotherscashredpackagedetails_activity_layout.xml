@@ -33,6 +33,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 app:riv_corner_radius="@dimen/dimen_5"
+                android:scaleType="fitXY"
                 android:src="@mipmap/default_home_head"/>
             <TextView
                 android:id="@+id/tv_name"

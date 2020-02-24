@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.netease.nim.uikit.api.NimUIKit;
 import com.netease.nim.uikit.common.util.SPUtils;
+import com.netease.nimlib.sdk.uinfo.model.UserInfo;
 import com.yqbj.yhgy.bean.UserBean;
 import com.yqbj.yhgy.config.Constants;
 
@@ -159,6 +160,10 @@ public class Preferences {
     }
 
     public static String getHeadImag() {
+        if (StringUtil.isEmpty(getString(KEY_WXHEADIMG))){
+            UserInfo userInfo = NimUIKit.getUserInfoProvider().getUserInfo(getUserAccId());
+            return userInfo.getAvatar();
+        }
         return getString(KEY_WXHEADIMG);
     }
 

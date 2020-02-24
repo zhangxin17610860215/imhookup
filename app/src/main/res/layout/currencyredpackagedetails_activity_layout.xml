@@ -42,6 +42,7 @@
         android:layout_width="@dimen/dp_72"
         android:layout_height="@dimen/dp_72"
         app:riv_corner_radius="@dimen/dimen_5"
+        android:scaleType="fitXY"
         android:src="@mipmap/default_home_head"
         android:layout_below="@+id/view"
         android:layout_centerHorizontal="true"/>
@@ -102,7 +103,6 @@
             android:id="@+id/tv_Progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="等待对方领取红包"
             android:textSize="@dimen/text_size_15"
             android:textColor="@color/red_text_color_ffa507"
             android:layout_gravity="center_horizontal"

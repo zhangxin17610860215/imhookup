@@ -15,6 +15,7 @@ import com.netease.nim.uikit.business.session.viewholder.MsgViewHolderBase;
 import com.netease.nim.uikit.common.ui.recyclerview.adapter.BaseMultiItemFetchLoadAdapter;
 import com.netease.nimlib.sdk.uinfo.model.NimUserInfo;
 import com.yqbj.yhgy.R;
+import com.yqbj.yhgy.attachment.CurrencyRedPacketOpenedAttachment;
 import com.yqbj.yhgy.attachment.RedPacketOpenedAttachment;
 import com.yqbj.yhgy.utils.DemoCache;
 
@@ -23,7 +24,7 @@ public class CurrencyMsgViewHolderOpenRedPacket extends MsgViewHolderBase {
 
     private TextView packetMessageText;
 
-    private RedPacketOpenedAttachment attachment;
+    private CurrencyRedPacketOpenedAttachment attachment;
 
     private LinearLayout linearLayout;
 
@@ -47,7 +48,7 @@ public class CurrencyMsgViewHolderOpenRedPacket extends MsgViewHolderBase {
 
     @Override
     protected void bindContentView() {
-        attachment = (RedPacketOpenedAttachment) message.getAttachment();
+        attachment = (CurrencyRedPacketOpenedAttachment) message.getAttachment();
         if (attachment == null || !validAttachment(attachment) || !belongToMe(attachment)) {
             setLayoutParams(0, 0, linearLayout);
             return;
@@ -96,12 +97,12 @@ public class CurrencyMsgViewHolderOpenRedPacket extends MsgViewHolderBase {
         }
     }
 
-    private boolean validAttachment(RedPacketOpenedAttachment attachment) {
+    private boolean validAttachment(CurrencyRedPacketOpenedAttachment attachment) {
         return !TextUtils.isEmpty(attachment.getOpenAccount()) && !TextUtils.isEmpty(attachment.getSendAccount());
     }
 
     // 我发的红包或者是我打开的红包
-    private boolean belongToMe(RedPacketOpenedAttachment attachment) {
+    private boolean belongToMe(CurrencyRedPacketOpenedAttachment attachment) {
         return attachment.belongTo(userInfo.getAccount());
     }
 

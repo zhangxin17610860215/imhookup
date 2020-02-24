@@ -145,7 +145,7 @@ public class LoginActivity extends BaseActivity {
      * */
     private void login() {
         showProgress(false);
-        UserApi.login(loginType, phone,psw, wxOpenId, wxToken, wxUUID, activity, new RequestCallback() {
+        UserApi.login(loginType, phone,psw, wxToken, wxOpenId, wxUUID, activity, new RequestCallback() {
                     @Override
                     public void onSuccess(int code, Object object) {
                         dismissProgress();

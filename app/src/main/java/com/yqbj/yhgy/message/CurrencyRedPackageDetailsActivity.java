@@ -84,6 +84,19 @@ public class CurrencyRedPackageDetailsActivity extends BaseActivity {
         tvRedPackaheDetails.setText("“"+attachment.getRpContent()+"”");
         tvSendName.setText(Preferences.getNikename()+"的红包");
         tvMoney.setText(detailsBean.getAmount());
+        String progress = "";
+        switch (detailsBean.getStatus()){
+            case 1:
+                progress = "等待对方领取";
+                break;
+            case 2:
+                progress = "对方已领取";
+                break;
+            case 3:
+                progress = "红包超时未领取，已返回您的钱包";
+                break;
+        }
+        tvProgress.setText(progress);
         Glide.with(mActivity).load(Preferences.getHeadImag()).placeholder(R.mipmap.default_home_head).error(R.mipmap.default_home_head).into(imgHeader);
     }
 
