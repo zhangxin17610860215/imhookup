@@ -168,7 +168,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void yunXinLogin() {
-        // 云信只提供消息通道，并不包含用户资料逻辑。开发者需要在管理后台或通过服务器接口将用户帐号和token同步到云信服务器。
+        // 云信只提供消息通道，并不包含用户资料逻辑。 开发者需要在管理后台或通过服务器接口将用户帐号和token同步到云信服务器。
         // 在这里直接使用同步到云信服务器的帐号和token登录。
         // 如果开发者直接使用这个demo，只更改appkey，然后就登入自己的账户体系的话，需要传入同步到云信服务器的token，而不是用户密码。
         showProgress(false);
