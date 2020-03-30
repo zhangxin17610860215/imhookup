@@ -204,7 +204,7 @@ public class SplashActivity extends BaseActivity {
             //有被拒绝的权限   没有勾选
             toast("权限已被拒绝");
         }else {
-            handler.postDelayed(readyShow, 2000);
+            getLongitudeAndLatitude();
         }
 
     }

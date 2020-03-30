@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.yqbj.yhgy.config.Constants;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -392,5 +394,10 @@ public class StringUtil {
             Log.e("VersionInfo", "Exception", e);
         }
         return versionName;
+    }
+
+    public static String stringformat(String URL){
+        String newUrl = String.format(URL,Constants.SERVERDOMAIN);
+        return newUrl;
     }
 }

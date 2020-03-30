@@ -68,7 +68,7 @@ public class UserApi {
                     if (bean.getCode() == Constants.SUCCESS_CODE){
                         Map<String, Object> data = bean.getData();
                         UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
-                        Preferences.saveServerDomain(userBean.getServerDomain());
+                        Constants.SERVERDOMAIN = userBean.getServerDomain();
                         userBean.setLoginType(signupType);
                         userBean.setPassword(password);
                         userBean.setWxToken(Constants.USER_ATTRIBUTE.WXTOKEN);
@@ -190,8 +190,7 @@ public class UserApi {
                     if (bean.getCode() == Constants.SUCCESS_CODE){
                         Map<String, Object> data = bean.getData();
                         UserBean userBean = JSON.parseObject(JSON.toJSONString(data.get("info")),UserBean.class);
-                        Preferences.saveServerDomain(userBean.getServerDomain());
-                        LogUtil.e(TAG, "ServerDomain--------->" + Preferences.getServerDomain());
+                        Constants.SERVERDOMAIN = userBean.getServerDomain();
                         userBean.setLoginType(loginType);
                         userBean.setPassword(password);
                         userBean.setWxToken(wxtoken);
@@ -244,7 +243,7 @@ public class UserApi {
         map.put("latitude",latitude);
         map.put("longitude",longitude);
         map.put("region",city);
-        RequestHelp.postRequest(ApiUrl.LOCATION_UPDATE, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.LOCATION_UPDATE), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "updateLocation--------->onSuccess" + response.body());
@@ -327,7 +326,7 @@ public class UserApi {
         map.put("hidecontactinfo",hidecontactinfo);
         map.put("qq",qq);
         map.put("wechat",wechat);
-        RequestHelp.postRequest(ApiUrl.USER_UPDATEINFO, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.USER_UPDATEINFO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "upDateUserInfo--------->onSuccess" + response.body());
@@ -381,7 +380,7 @@ public class UserApi {
         map.put("queryType",queryType);
         map.put("pageNum",pageNum);
         map.put("pageSize",pageSize);
-        RequestHelp.postRequest(ApiUrl.HOME_INDEX, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.HOME_INDEX), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "index--------->onSuccess" + response.body());
@@ -417,7 +416,7 @@ public class UserApi {
         map.put("keyword",keyword);
         map.put("pageNum",pageNum);
         map.put("pageSize",pageSize);
-        RequestHelp.postRequest(ApiUrl.HOME_SEARCH, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.HOME_SEARCH), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "search--------->onSuccess" + response.body());
@@ -461,7 +460,7 @@ public class UserApi {
         }
         map.put("invisible",invisible);
         map.put("hidecontactinfo",hidecontactinfo);
-        RequestHelp.postRequest(ApiUrl.USER_UPDATEPRIVACYSETTING, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.USER_UPDATEPRIVACYSETTING), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "upPrivacySetting--------->onSuccess" + response.body());
@@ -492,7 +491,7 @@ public class UserApi {
      * */
     public static void getVipListInfo(Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        RequestHelp.getRequest(ApiUrl.GETVIPLISTINFO, object, map, new StringCallback() {
+        RequestHelp.getRequest(StringUtil.stringformat(ApiUrl.GETVIPLISTINFO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getVipListInfo--------->onSuccess" + response.body());
@@ -525,7 +524,7 @@ public class UserApi {
      * */
     public static void getUserDetails(Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        RequestHelp.getRequest(ApiUrl.GETUSERDETAILS, object, map, new StringCallback() {
+        RequestHelp.getRequest(StringUtil.stringformat(ApiUrl.GETUSERDETAILS), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getUserDetails--------->onSuccess" + response.body());
@@ -569,7 +568,7 @@ public class UserApi {
     public static void getTargetDetails(String userAccid, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("userAccid",userAccid);
-        RequestHelp.postRequest(ApiUrl.GETTARGETDETAILS, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETTARGETDETAILS), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getTargetDetails--------->onSuccess" + response.body());
@@ -610,7 +609,7 @@ public class UserApi {
      * */
     public static void getCurrencyPriceList(Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        RequestHelp.getRequest(ApiUrl.GETCURRENCYPRICELIST, object, map, new StringCallback() {
+        RequestHelp.getRequest(StringUtil.stringformat(ApiUrl.GETCURRENCYPRICELIST), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getCurrencyPriceList--------->onSuccess" + response.body());
@@ -644,7 +643,7 @@ public class UserApi {
     public static void getEvalualeData(String targetId, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("targetId",targetId);
-        RequestHelp.postRequest(ApiUrl.GETEVALUALEDATA, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETEVALUALEDATA), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getEvalualeData--------->onSuccess" + response.body());
@@ -693,7 +692,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("targetId",targetId);
         map.put("estimateData",estimateData);
-        RequestHelp.postRequest(ApiUrl.EVALUALEUSER, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.EVALUALEUSER), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "evalualeUser--------->onSuccess" + response.body());
@@ -726,7 +725,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("targetId",targetId);
         map.put("operate",operate+"");
-        RequestHelp.postRequest(ApiUrl.OPERATORENJOY, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.OPERATORENJOY), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "operatorEnjoy--------->onSuccess" + response.body());
@@ -759,7 +758,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("targetId",targetId);
         map.put("operate",operate+"");
-        RequestHelp.postRequest(ApiUrl.OPERATORBLACKLIST, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.OPERATORBLACKLIST), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "operatorBlackList--------->onSuccess" + response.body());
@@ -792,7 +791,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("pageNum",pageNum+"");
         map.put("pageSize",pageSize+"");
-        RequestHelp.postRequest(ApiUrl.GETENJOYLIST, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETENJOYLIST), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getEnjoyList--------->onSuccess" + response.body());
@@ -827,7 +826,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("pageNum",pageNum+"");
         map.put("pageSize",pageSize+"");
-        RequestHelp.postRequest(ApiUrl.GETBLACKLIST, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETBLACKLIST), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getBlackList--------->onSuccess" + response.body());
@@ -860,7 +859,7 @@ public class UserApi {
      * */
     public static void getBalance(Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        RequestHelp.getRequest(ApiUrl.GETBALANCE, object, map, new StringCallback() {
+        RequestHelp.getRequest(StringUtil.stringformat(ApiUrl.GETBALANCE), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getBalance--------->onSuccess" + response.body());
@@ -895,7 +894,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("aliAccount",aliAccount);
         map.put("aliRealName",aliRealName);
-        RequestHelp.postRequest(ApiUrl.BINDALIACCOUNT, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.BINDALIACCOUNT), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "bindALiAccount--------->onSuccess" + response.body());
@@ -928,7 +927,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("smsCodeType",smsCodeType);
         map.put("mobile",mobile);
-        RequestHelp.postRequest(ApiUrl.GETMOBILECODE, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETMOBILECODE), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getMobileCode--------->onSuccess" + response.body());
@@ -963,7 +962,7 @@ public class UserApi {
         map.put("mobile",mobile);
         map.put("smsCode",smsCode);
         map.put("passsword",passsword);
-        RequestHelp.postRequest(ApiUrl.CHANGEACCOUNT, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.CHANGEACCOUNT), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "changeAccount--------->onSuccess" + response.body());
@@ -996,7 +995,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("oldPasssword",oldPasssword);
         map.put("passsword",passsword);
-        RequestHelp.postRequest(ApiUrl.RESETPASSWORD, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.RESETPASSWORD), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "resetPassword--------->onSuccess" + response.body());
@@ -1028,7 +1027,7 @@ public class UserApi {
     public static void upLoadPhoto(String multimediaeInfo, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("multimediaeInfo",multimediaeInfo);
-        RequestHelp.postRequest(ApiUrl.UPLOADPHOTO, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.UPLOADPHOTO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "upLoadPhoto--------->onSuccess" + response.body());
@@ -1060,7 +1059,7 @@ public class UserApi {
     public static void updatePhoto(String multimediaeInfo, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("multimediaeInfo",multimediaeInfo);
-        RequestHelp.postRequest(ApiUrl.UPDATEPHOTO, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.UPDATEPHOTO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "updatePhoto--------->onSuccess" + response.body());
@@ -1092,7 +1091,7 @@ public class UserApi {
     public static void deletePhoto(String multimediaeIds, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("multimediaeIds",multimediaeIds);
-        RequestHelp.postRequest(ApiUrl.DELETEPHOTO, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.DELETEPHOTO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "deletePhoto--------->onSuccess" + response.body());
@@ -1123,7 +1122,7 @@ public class UserApi {
      * */
     public static void getMyAlbum(Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
-        RequestHelp.getRequest(ApiUrl.GETMYALBUM, object, map, new StringCallback() {
+        RequestHelp.getRequest(StringUtil.stringformat(ApiUrl.GETMYALBUM), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getMyAlbum--------->onSuccess" + response.body());
@@ -1166,7 +1165,7 @@ public class UserApi {
         if (useType.equals("2")){
             map.put("multimediaeInfo",multimediaeInfo);
         }
-        RequestHelp.postRequest(ApiUrl.GETVFTOKEN, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETVFTOKEN), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getVfToken--------->onSuccess" + response.body());
@@ -1209,7 +1208,7 @@ public class UserApi {
         Map<String,String> map = new HashMap<>();
         map.put("useType",useType);
         map.put("taskId",taskId);
-        RequestHelp.postRequest(ApiUrl.AUTHENTICATIONPASS, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.AUTHENTICATIONPASS), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "authenticationPass--------->onSuccess" + response.body());
@@ -1241,7 +1240,7 @@ public class UserApi {
     public static void goddessPass(String multimediaeInfo, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("multimediaeInfo",multimediaeInfo);
-        RequestHelp.postRequest(ApiUrl.GODDESSPASS, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GODDESSPASS), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "goddessPass--------->onSuccess" + response.body());
@@ -1276,7 +1275,7 @@ public class UserApi {
         map.put("value",value);
         map.put("currencyType",currencyType);
         map.put("payType",payType);
-        RequestHelp.postRequest(ApiUrl.UNLOCKALBUM, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.UNLOCKALBUM), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "unLockAlbum--------->onSuccess" + response.body());
@@ -1312,7 +1311,7 @@ public class UserApi {
     public static void checkShowAlbum(String targetUid, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("targetUid",targetUid);
-        RequestHelp.postRequest(ApiUrl.CHECKSHOWALBUM, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.CHECKSHOWALBUM), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "checkShowAlbum--------->onSuccess" + response.body());
@@ -1347,7 +1346,7 @@ public class UserApi {
         map.put("value",value);
         map.put("currencyType",currencyType);
         map.put("payType",payType);
-        RequestHelp.postRequest(ApiUrl.UNLOCKUSERINFO, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.UNLOCKUSERINFO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "unLockUserInfo--------->onSuccess" + response.body());
@@ -1382,7 +1381,7 @@ public class UserApi {
         map.put("value",value);
         map.put("currencyType",currencyType);
         map.put("payType",payType);
-        RequestHelp.postRequest(ApiUrl.CHARGEPHOTO, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.CHARGEPHOTO), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "chargePhoto--------->onSuccess" + response.body());
@@ -1417,7 +1416,7 @@ public class UserApi {
         map.put("value",value);
         map.put("currencyType",currencyType);
         map.put("payType",payType);
-        RequestHelp.postRequest(ApiUrl.RECHARGE, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.RECHARGE), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "recharge--------->onSuccess" + response.body());
@@ -1461,7 +1460,7 @@ public class UserApi {
         map.put("value",value);
         map.put("currencyType",currencyType);
         map.put("payType",payType);
-        RequestHelp.postRequest(ApiUrl.WITHDRAWDEPOSIT, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.WITHDRAWDEPOSIT), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "withdrawDeposit--------->onSuccess" + response.body());
@@ -1499,7 +1498,7 @@ public class UserApi {
         map.put("payType",payType);
         map.put("number","1");
         map.put("targetId",targetId);
-        RequestHelp.postRequest(ApiUrl.SENDREDPACKET, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.SENDREDPACKET), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "sendPacket--------->onSuccess" + response.body());
@@ -1540,7 +1539,7 @@ public class UserApi {
     public static void getRedPacket(String rid, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("rid",rid);
-        RequestHelp.postRequest(ApiUrl.GETREDPACKET, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETREDPACKET), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getRedPacket--------->onSuccess" + response.body());
@@ -1572,7 +1571,7 @@ public class UserApi {
     public static void getRedPacketDetails(String rid, Object object, final RequestCallback callback){
         Map<String,String> map = new HashMap<>();
         map.put("rid",rid);
-        RequestHelp.postRequest(ApiUrl.GETREDPACKETDETAILS, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETREDPACKETDETAILS), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getRedPacketDetails--------->onSuccess" + response.body());
@@ -1608,7 +1607,7 @@ public class UserApi {
         map.put("currencyType",currencyType+"");
         map.put("pageNum",pageNum+"");
         map.put("pageSize",pageSize+"");
-        RequestHelp.postRequest(ApiUrl.GETORDERLIST, object, map, new StringCallback() {
+        RequestHelp.postRequest(StringUtil.stringformat(ApiUrl.GETORDERLIST), object, map, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 LogUtil.e(TAG, "getOrderList--------->onSuccess" + response.body());

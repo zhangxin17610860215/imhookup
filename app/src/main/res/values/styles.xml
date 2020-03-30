@@ -23,9 +23,6 @@
     </style>
 
     <!-- toolbar的弹出菜单 -->
-    <style name="ActionMenuTheme" parent="Theme.AppCompat.Light">
-        <item name="android:textColor">@color/color_gray_333333</item>
-    </style>
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">18sp</item>

@@ -4,9 +4,6 @@
     <style name="AppTheme" parent="android:Theme.DeviceDefault.Light">
         <!-- Customize your theme here. -->
     </style>
-    <style name="FullScreenTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
-        <!-- Customize your theme here. -->
-    </style>
 
     <!--DiscreteIndicatorTextAppearance-->
     <style name="Widget.DiscreteIndicatorTextAppearance" parent="android:TextAppearance.Small">

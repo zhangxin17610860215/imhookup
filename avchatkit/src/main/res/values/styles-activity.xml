@@ -20,10 +20,6 @@
         <item name="android:itemTextAppearance">?android:attr/actionMenuTextAppearance</item>
     </style>
 
-    <style name="FullScreenTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
-        <!-- Customize your theme here. -->
-    </style>
-
     <!-- navigation style -->
     <style name="myToolbarNavigationButtonStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:minWidth">0dp</item>

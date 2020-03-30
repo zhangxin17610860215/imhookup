@@ -13,6 +13,8 @@ public class Constants {
 
     public static final String APPSECRET = "jhk779c4pu93t68c";
 
+    public static String SERVERDOMAIN;     // 域名
+
     //第三方分享登录是用到的code值
     public static final int SHARE_REQUESTCODE = 2001;
 

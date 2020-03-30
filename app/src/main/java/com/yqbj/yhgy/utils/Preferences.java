@@ -30,7 +30,6 @@ public class Preferences {
     private static final String KEY_GENDER = "gender";                 // 用户性别
     private static final String KEY_LABELTYPE = "labeltype";           // 标签类型（0普通  1女神）
     private static final String KEY_CERTIFICATION = "certification";   // 是否真人认证（1有图片ID表示通过   0未真人认证）
-    private static final String KEY_SERVERDOMAIN = "serverDomain";     // 域名
     private static final String KEY_LONGITUDE = "longitude";           // 经度
     private static final String KEY_LATITUDE = "latitude";             // 纬度
     private static final String KEY_CITY = "city";                     // 市区
@@ -72,7 +71,6 @@ public class Preferences {
         saveString(KEY_GENDER, userBean.getGender() + "");
         saveString(KEY_LABELTYPE, userBean.getLabeltype() + "");
         saveString(KEY_CERTIFICATION, userBean.getCertification() + "");
-        saveString(KEY_SERVERDOMAIN, userBean.getServerDomain());
     }
 
     public static String getCity() {
@@ -91,20 +89,12 @@ public class Preferences {
         saveBoolean(KEY_VIPMEMBER,vipMember == 1);
     }
 
-    public static void saveServerDomain(String serverDomain){
-        saveString(KEY_SERVERDOMAIN,serverDomain);
-    }
-
     public static void saveUserAccount(String userAccount){
         saveString(KEY_USERACCOUNT,userAccount);
     }
 
     public static void savePsw(String psw){
         saveString(KEY_PSW,psw);
-    }
-
-    public static String getServerDomain() {
-        return getString(KEY_SERVERDOMAIN);
     }
 
     public static void saveLatitude(String latitude){
